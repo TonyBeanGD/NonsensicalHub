@@ -1,0 +1,46 @@
+//动态生成json
+
+//JsonData jd=test(new string[]{"1","2","3"},10086);
+//Debug.Log(  jd["0"]["1"]["2"]);//=10086
+
+    JsonData test(string[] a, int b, int pos = 0)
+    {
+        if (pos == a.Length)
+        {
+            return b;
+        }
+        else
+        {
+            JsonData jd = new JsonData();
+
+            jd[a[(int)pos]] = test(a, b, pos + 1);
+
+            return jd;
+        }
+    }
+
+   JsonData test2(string[] a, int b)
+    {
+        JsonData jd=new JsonData();
+
+        int pos = a.Length-1;
+
+        while (pos>=0)
+        {
+            if (pos==a.Length-1)
+            {
+                jd[a[pos]] = b;
+            }
+            else
+            {
+                //直接使用jd[a[pos]] = temp;会导致堆栈溢出异常
+                JsonData temp = jd;
+                jd = new JsonData();
+                jd[a[pos]] = temp;
+            }
+
+            pos--;
+        }
+
+        return jd;
+    }

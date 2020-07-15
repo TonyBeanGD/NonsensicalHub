@@ -1,0 +1,66 @@
+
+   private void ReadAppsetting()
+    {
+        string file=Application.dataPath + "/Configs/xml.xml";
+
+        if(!System.IO.File.Exists(file))
+        {
+            Debug.LogError("未找到xml文件");
+        }
+        XmlDocument xml =new  XmlDocument();
+        xml.Load(file);
+        XmlNode nodes = xml.SelectSingleNode("Root");
+                                
+        foreach (XmlElement item in nodes)
+        {
+            if(item.Name=="AppName")
+            {
+                Debug.Log("应用程序名称" + item.Attributes["value"].Value);
+                continue;
+            }
+            if (item.Name == "Version")
+            {
+                Debug.Log("版本" + item.Attributes["value"].Value);
+                continue;
+            }
+            if (item.Name == "LoginName")
+            {
+                Debug.Log("用户名" + item.Attributes["value"].Value);
+                continue;
+            }
+            if (item.Name == "IsAutoLogin")
+            {
+                Debug.Log("是否自动登陆" + item.Attributes["value"].Value);
+                continue;
+            }
+        }
+    }
+
+    private void WriteAppsetting()
+    {
+        string file = Application.dataPath + "/Configs/xml.xml";
+
+        if (!System.IO.File.Exists(file))
+        {
+            Debug.LogError("未找到xml文件");
+        }
+        XmlDocument xml = new XmlDocument();
+        xml.Load(file);
+        XmlNode appNameNode = xml.SelectSingleNode("Root/AppName");
+        appNameNode.Attributes["value"].Value = "fangnilaingdegoupi";
+
+        xml.Save(file);
+    }
+
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+  <AppName value="fangnilaingdegoupi" comment="应用程序名称" />
+  <Version value="1.0" comment="版本" />
+  <LoginName value="admin" comment="用户名" />
+  <IsAutoLogin value="true" comment="是否自动登陆" />
+</Root>
+
+XmlElement new_ele = xml.CreateElement("fuck");//在一个文件中创建一个节点，创建后此节点存于内存中
+        new_ele.SetAttribute("haha","ri");//给一个节点添加属性
+        new_ele.InnerText = "aaa";//改变节点的内部文本
+        nodes.AppendChild(new_ele);//将节点追加进另一节点中

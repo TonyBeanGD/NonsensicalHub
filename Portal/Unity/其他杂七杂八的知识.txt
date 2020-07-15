@@ -1,0 +1,171 @@
+//随机出在一个环内的坐标
+vector2 v1=random.insideunitcircle*20;
+vector2 v2=v1.normalized*(0.1f+v1.magnitude);
+vector3 v3=new vector(v2.x,0,v2.y);
+return v3;
+
+欧拉角：Quaternion.Euler(new vector(,,));
+
+private renderer name1;
+private coler name2;
+name1=getcomponter<renderer>();
+name2=name1.material.coler;
+
+renderer.material.color=coler.purple
+wait 3s
+renderer.material.color=coler.name2;
+
+Time.timescale=0;  暂停      =1继续；
+ void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Slow Food")
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(Slow());
+            StartCoroutine(ChangeColor());
+        }
+    }
+
+
+GameObject obj=GameObject.Find("name");
+
+//UnityEngine.SceneManagement.SceneManager.LoadScene();
+        Destroy(gameObject, 2f);
+重置player
+//float v = Input.GetAxis("Mouse ScrollWheel");
+StartCoroutine(abc());
+yield return new WaitForSeconds(0.2f);
+
+// h v值范围 -1 ` 1之间的小数
+//float h = Input.GetAxis("Horizontal");
+//float v = Input.GetAxis("Vertical");
+//只有 -1 0 1这三个数
+//Input.GetAxisRaw
+
+
+
+//GetComponent获取游戏对象的组件
+        rig = target.transform.GetComponent<Rigidbody>();
+
+//3秒之后执行方法Test
+	nvoke("Test", 3f);
+
+//一秒之后每三秒执行一次方法Test
+        InvokeRepeating("Test",1f,3f);
+
+//Time.deltaTime完成上一帧所用的时间
+
+// target.transform.Translate(new Vector3(h, 0, v) * move_speed * Time.deltaTime);
+
+//子物体
+	fire_pos = transform.FindChild("Fire").localPosition;
+     
+   	fire_head = transform.FindChild("Head");
+
+
+//游戏结束
+	Application.Quit
+
+//线性插值移动法
+	float offset = Vector3.Distance(transform.position, target.transform.position);
+	float total_timer = offset / speed;
+
+	if (total_timer < Time.deltaTime)
+	{
+		Die();
+	}
+	else
+	{
+		transform.position =
+			Vector3.Lerp(transform.position, target.transform.position, Time.deltaTime / total_timer);
+	}
+
+//碰撞离开时判定
+	void onCollisionExit(Collision other)
+	{
+		if(other.gameObject.name=="player")
+			collision = false;
+	}
+
+//镜头跟随
+public GameObject target;
+    Vector3 hatime;
+    // Use this for initialization
+    void Start()
+    {
+        hatime = transform.position - target.transform.position;
+    }
+
+    //特定频率去执行
+    private void FixedUpdate()
+    {
+        Vector3 newPos = target.transform.position + hatime;
+        //vector3.lerp线型插值
+        transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime * 5f);
+        transform.LookAt(target.transform);
+    }
+
+Time.time
+从游戏运行到当前时间的间隔（单位：S）
+GetComponent<Rigidbody>().angularVelocity=
+
+random.initstate(system.datetime.now.millisecond)
+
+gameObject.SetActive(false);
+
+弱类型
+var
+
+anima_self.Play("Mario Stand Rt");
+
+transform.right=tramsform.left
+
+protected virtual void OnCollisionEnter2D(Collision2D collision)
+protected override void OnCollisionEnter2D(Collision2D collision)
+
+
+screen.w
+screen.h
+
+
+using DG.Tweening;
+Tween t = transform.DOMove(new Vector2(5, -3), 5, false);
+        t.SetEase(Ease.Linear);
+        t.SetLoops(-5, LoopType.Yoyo);
+
+两点之间的距离
+Vector3.Distance(transform.position,target.position)
+
+看向
+transform.LookAt(target);
+
+获取刚体组件
+_enemyRb = transform.GetComponent<Rigidbody>();
+
+在Update中加入return，当运行到return时，会跳过Update剩余部分
+
+销毁，后加【，5】则是5秒后执行
+Destroy(gameObject);
+
+//是否启用游戏项目
+gameobject.setactive（true）
+
+num.tostring("00")
+
+//清空集合
+            playList.Clear();
+
+            if (playList[0]is Player_Controller)
+            {
+
+            }
+#region something
+            /*
+		something
+             */
+            #endregion
+
+//每次启用都会执行
+public void OnEnable ()
+
+GameObject _food = Resources.Load<GameObject>("Player Slow Food");

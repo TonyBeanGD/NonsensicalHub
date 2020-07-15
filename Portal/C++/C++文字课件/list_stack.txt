@@ -1,0 +1,214 @@
+/*-----------------本节课内容--------------------------------
+	STL线性顺序容器 --- list\stack --- 链表\栈
+	1、list了解 --------------------- 了解
+	2、list类成员函数和异常处理   --- 掌握
+	3、stack容器  ------------------- 掌握
+------------------------------------------------------------
+一、list了解 ---- 双向链表
+1、初识list
+	A、从线性顺序容器角度
+		list是线性顺序容器，但没有vector和deque中数据元素的存储特点，不支持随机存取。
+		
+		注意：顺序容器和顺序存储结构中的"顺序"意义不同
+		      顺序性容器：各元素之间有顺序关系的线性表，是一种线性关系的有序集群，
+		                  顺序容器中的元素均有固定的位置，除非用删除和插入来改变它的位置，
+			              这个位置和元素本身无关，和操作时间和地点有关。
+		
+	B、从包含的数据结构思想来看，list类是一种双向链表的类模板实现。
+	
+    C、和单向链表类似，支持基于list的某个位置插入/删除/查找数据元素。
+	
+2、list类的分析
+    依旧从数据结构的三个方面对list的进行描述：
+    A、逻辑结构：list数据元素是线性逻辑关系，除头尾，数据元素只有一个直接前驱和直接后继。但注意元素之间
+	   有双向的关系。
+	   
+	B、存储结构：链式存储结构，数据元素之间通过“链”实现其逻辑结构。
+	
+	   list内存结构示意： --//插入和删除元素的时候，需要移动数据元素的位置？不移动的话，是怎么实现？
+	       -------     -------            -------     -------
+	<<==== | 节  |---->| 节  |--> ... --> |节   |---->| 节  | ====>>
+	====>> | 点1 |<----| 点2 |<-- ... <-- |点n-1|<----| 点n | <<==== 
+	       -------     -------            -------     -------
+		    表头                                       表尾
+			
+	C、运算:（主要）
+	   A、支持在任何位置插入和删除数据元素，包括链表头和表尾
+	   B、需要根据位置进行遍历后，存/取对应位置数据元素。 ------- 链表决定了
+
+3、list类的特点
+    A、因链式存储，list不支持随机读取，即不支持[]和.at()操作  //不支持对数据元素地址的整型运算
+	B、list在任何位置，插入和删除元素效率很高  ------------ 指针操作，不须移动数据元素	
+    C、list类有不少只适合list的移动数据元素的成员函数 ----- 链式
+  
+4、list类使用注意事项 
+    A、插入和删除操作，不会导致list指针、引用、迭代器失效。 ==== 重点注意：原有迭代器依旧 指向 所存地址对应数据元素
+    B、list同样不提供容量和空间重新分配等操作函数 ------ 因为每个数据元素对应的内存是独立
+    C、所有容器中，list对于异常处理提供最佳支持。
+	D、list的迭代器不支持+/-整数，只能使用全局函数advance(itr,n)进行迭代器移位。 ---- 注意 ++/--
+	
+二、list类中的成员函数
+    list是已实现好的类模板，在了解上述内容后，我们可以当作一种数据结构类直接使用它。
+	
+	list类是定义在std的namespace 内的模板类，使用之前必须包含头文件<list>，使用方式如下：
+	#include<list>
+	using namespace std;
+	
+	已有list类模板实现的情况下，重点关注放在list类的行为/成员函数上，其属性(存储结构的实现)需要再关注。
+	
+    下面从两类，重点查看list类的函数/行为。
+	
+A、list与一般顺序容器不同的成员函数 --- 特殊性变动函数
+    1、listName.sort();            //以operator<（升序）为准则，对所有元素进行排序
+	2、listName.sort(func_ptr);    //以func_ptr()为准则，对所有元素进行排序
+	
+    3、listName.unique();          //如果存在若干相邻且数值相同的元素，就删除重复元素，只留下 一个。
+                                   //===重点注意：先排序，在调用此函数。
+                                   
+	4、listName.unique(func_ptr)； //如果存在若干相邻元素，使得func_ptr()结果为真，则删除重复元素，只留下 一个
+    //拼接 --- 清空listName2
+    
+	5、listName1.splice(itr1,listName2);       //在listName1的迭代器itr1之前，插入listName2中所有数据元素，listName2清空
+	6、listName1.splice(itr1,listName2,itr2);  //在listName1的迭代器itr1的位置前，插入listName2中itr2所指的元素
+	                                           //并删除listName2中itr2所指的元素
+    7、listName1.splice(itr1,listName2,itr2_begin,itr2_end);  //在listName1的迭代器itr1之前，
+	                                                          //插入listName2中[itr2_begin,itr2_end)中的元素
+	//合并--- 有序\清空listName2							  //同时在listName2中清空[itr2_begin,itr2_end)中的元素
+	8、listName1.merge(listName2);  
+	   //前提listName1和listName2均已默认排序（运行时会检测），将listName2转移到listName1，并保证合并后listName1仍有序
+	   //listName2清空
+	   //listName2单个或都是相同元素时, 可以直接merge listName2
+	   
+	9、listName1.merge(listName2,func_ptr); 
+	   //前提listName1和listName2均已按func_ptr()排序（运行时会检测），
+	   //将listName2转移到listName1，并保证合并后listName1仍有序(func_ptr())
+	   //listName2清空
+	   //注意：listName2单个元素或都是相同元素时，可以直接merge listName2
+	   
+	10、listName1.reverse();                 //将所有元素反序 --- 非排序，链表头尾倒置。
+	11、listName1.remove( const T& value );  //删除值为value的所有元素 --- 逐个比较
+	12、listName1.remove_if(func_ptr);       //删除让"func_ptr(elem)为true"的所有元素 --- 逐个传入
+	
+B、list与一般顺序容器相同的成员函数
+	==注意===：1、没有容量相关函数：reserve和capacity函数
+			   2、支持在链表双端插入和删除元素 ----- deque --pop_front/push_front
+			   3、不支持随机访问，在查询类成员函数中，没有[]和.at()函数
+			   4、其他均相同
+   
+	1、没有容量相关的函数 --- 没有reserve和capacity成员函数
+	   
+	2、容器的初始化/销毁  --- 构造函数/析构函数
+		//---------容器适用-------------- container
+		A、list<Type> listName;              //产生一个名listName的空容器，其中没有任何元素
+		B、list<Type> listName2(listName1);  //创建了listName1的副本listName2，两者数据类型和容器类型均相同，
+											   //所有数据元素被拷贝
+		C、list<Type> listName(begin,end);   //创建一个list，其元素是区间[begin,end)内的数据元素的副本
+		
+		//---------我是分割线-----下面两个方法，只适用顺序容器--------------
+		D、list<Type> listName(n);           //创建包含 n个有初值的数据元素的容器，容器大小为n。
+											   //初值 --- 取决于数据元素的构造函数。
+		E、list<Type> listName(n,element);   //产生一个大小为n的list，每个元素均为element
+		F、listName.~list<Type>();           //销毁所有数据元素，并释放内存
+
+	3、顺序容器的大小相关
+		A、listName.size();                  //返回容器中拥有的元素个数，返回值类型：listName::size_type
+		B、listName.max_size();              //返回容器可容纳的元素最大数
+		C、listName.empty();                 //返回容器大小是否为0的布尔值
+		D、listName.resize(n);               //调整容器的大小为n，n<list.size(),删除多的元素，
+											 //反之，添加初始化新的元素（由构造函数决定）。
+		E、listName.resize(n,element);       //调整容器的大小为n，n<list.size(),删除多的元素，反之，添加新的元素element。
+
+	4、访问顺序容器的元素   -------------------- 查询
+		A、list.back();            //返回容器list最后一个元素的引用。如c为空，则该操作未定义 
+		B、list.front();           //返回容器list第一个元素的引用。如c为空，则该操作未定义	
+		   
+	5、删除顺序容器的元素   -------------------- 删除
+	   A、list.clear();          //删除容器list内所有元素，返回void
+	   B、list.pop_back();       //删除容器list最后一个元素，返回void。 如c为空，则该操作未定义 
+	   C、list.pop_front();      //删除容器list首元素，返回void。 如c为空，则该操作未定义  ------------- 不同1
+	   D、list.erase(itr);       //删除itr所指向的元素，返回删除元素的下一个元素的迭代器
+	   E、list.erase(itr_begin,itr_end);   //删除由迭代器确定范围[itr_begin,itr_end)内的所有元素
+										  //返回删除区间的下一个元素的迭代器
+										  
+	   //---------我是分割线-----下面方法，只适用顺序容器list、list--------------	
+	   list.pop_front();      //删除容器list第一个元素，返回void。 如c为空，则该操作未定义 
+	   
+	6、添加顺序容器的元素   -------------------- 插入	
+	   A、list.push_back(element);                //在容器list的尾部添加元素element，返回void  
+	   B、list.push_front(element);               //在容器list的头部添加元素element，返回void   ------------- 不同2   
+	   C、list.insert(itr,element);               //在itr所指向的元素前插入新元素element，返回指向新元素的迭代器
+	   D、list.insert(itr,n,element);             //在itr所指向的元素前插入n个值为element新元素，返回void类型
+	   E、list.insert(itr,itr_begin,itr_end);     //在itr所指向的元素前，
+												  //插入由迭代器确定范围[itr_begin,itr_end)内的所有元素
+												  //返回void类型
+											   
+	   //---------我是分割线-----下面方法，只适用顺序容器list、list--------------	
+	   list.push_front();                      //在容器list的头部添加元素element，返回void 
+		
+	7、容器迭代器相关的函数
+	   A、list.begin();
+	   B、list.end();
+	   C、list.rbegin();                          //返回双向的迭代器，指向容器的最后一个元素
+	   D、list.rend();	
+	   // eg: reverse_iterator
+		 
+		=== 重点注意: 迭代器失效情况  -- --- 需要工程师自己注意
+					  A、迭代器指向的元素已删除或被移动或不存在
+					  B、插入和删除数据元素不会引起其他迭代器失效
+					  C、.resize时，原有其他迭代器不失效。
+			  
+	8、顺序容器赋值相关的函数
+	   A、list1 = list2;             //删除list1所有元素，将list2元素复制给list1，两者数据类型、容器类型必须一样
+	   B、list1.swap(list2);         //完全交换list1、list2容器中的所有元素，两者数据类型、容器类型必须一样
+	   C、list1.assgin(itr2_begin,itr2_end); 
+	      //删除list1所有元素，将由迭代器确定范围[itr2_begin,itr2_end)内的外部所有元素
+	      //复制到list1。itr2_begin/itr2_end必须不是指向list1中的元素。
+	   D、list1.assgin(n,element);              //删除list1所有元素，将list1容器内的元素设置为n个值为element的元素
+
+c、list中的异常处理
+    见PPT课件20页。	    
+
+三、stack容器 
+1、初识stack
+    A、stack是容器适配器，在STL中，它可以基于对vector、deque、list的封装得到，默认是deque
+	B、包含的数据结构思想：栈的类模板实现
+	
+2、stack类分析
+   逻辑结构：线性
+   存储结构：顺序或链式
+   运算：
+      A、只允许从栈顶弹出数据元素，或压入新元素。
+      B、数据元素是先进后出
+	  C、有取栈顶元素的操作
+	  
+3、stack类特点和注意事项
+   A、stack没有迭代器，只能从栈顶压入或弹出数据元素    --- 重要
+   B、不能随机存储数据元素，成员函数只有特定的，不包含顺序容器的通用成员函数  --- 重要
+   
+4、stack类的成员函数
+    stack是已实现好的类模板，在了解上述内容后，我们可以当作一种数据结构类直接使用它。
+	
+	stack类是定义在std的namespace 内的模板类，使用之前必须包含头文件<stack>，使用方式如下：
+	#include<stack>
+	using namespace std;
+	
+	已有stack类模板实现的情况下，重点关注放在list类的行为/成员函数上，其属性(存储结构的实现)需要再关注。
+	
+	下面重点查看stack类的常用函数：
+	
+	A、empty() //栈是否为空
+	B、pop()   //弹出栈顶元素
+	C、push()  //压入新元素到栈顶
+	D、size()  //栈有效元素
+	E、top()   //取栈顶元素
+	
+5、stack其他
+   STL根据stack基于适配容器的不同，提供三种方式，新建stack对象
+   stack<T> ts;   //deque
+   stack<T,deque<T>> ts; > ts; 
+   stack<T,list<T>> ts;
+   stack<T,vector<T>> ts;
+   
+ 其他：queue也有对应的类模板实现，可以查看《C++标准库函数参考手册_英文.chm》中成员函数
+ 
+*/
