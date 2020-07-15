@@ -1,0 +1,55 @@
+ static void Main(string[] args)
+        {
+            string s1 = Console.ReadLine();
+
+         
+
+
+            switch (s1)
+            {
+                case "1":
+                    DirectoryInfo di1 = new DirectoryInfo(Environment.CurrentDirectory);
+
+                    foreach (var item in di1.GetFiles())
+                    {
+                        if (item.Name.Contains(".") == false)
+                        {
+                            File.Move(item.FullName, item.FullName + ".assetbundle");
+                        }
+                    }
+                    break;
+                case "2":
+                    DirectoryInfo di2 = new DirectoryInfo(Environment.CurrentDirectory);
+
+                    foreach (var item in di2.GetDirectories())
+                    {
+                        DirectoryInfo[] dis = item.GetDirectories();
+                        string parentFullName = item.Parent.FullName;
+                        string name1 = item.Name;
+                        string fullName1= item.FullName;
+                        if (dis.Length<2)
+                        {
+                            foreach (var item2 in dis)
+                            {
+                                if (name1.Equals(item2.Name) == true )
+                                {
+
+                                    FileSystemWatcher watcher = new FileSystemWatcher(parentFullName);
+                                    watcher.EnableRaisingEvents = true;
+
+                                    Directory.Move(item2.FullName, fullName1 + "Temp");
+
+                                    watcher.Deleted += (source, e) => { Directory.Move(fullName1 + "Temp", fullName1); watcher.Dispose(); };
+                                    Directory.Delete(fullName1);
+                                    break;
+                                }
+
+                                
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            Console.ReadLine();
+        }

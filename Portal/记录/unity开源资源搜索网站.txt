@@ -1,0 +1,52 @@
+unity开源资源搜索网站
+https://unitylist.com/
+
+List of best publicGitHub repositories:
+
+· Image effects collection – https://github.com/makoto-unity/OneStepEffects
+
+· Filmic Tonemapping – https://github.com/kode80/UnityEffects
+
+· SSAO – https://github.com/keijiro/KinoObscurance
+
+· Bloom – https://github.com/keijiro/KinoBloom
+
+· SMAA – https://github.com/Chman/SMAA-Unity
+
+· Screen water drop, Blur, Oil Paint, Pixel, Color- https://github.com/QianMo/Awesome-Unity-Shader
+
+· Temporal Reprojection Anti-Aliasing – https://github.com/playdeadgames/temporal
+
+· Subpixel Morphological Antialiasing (SMAA) – https://github.com/Chman/SMAA-Unity
+
+· Community ocean – https://github.com/eliasts/Ocean_Community_Next_Gen
+
+· A* for platformers – https://github.com/tutsplus/A-Star-Pathfinding-for-Platformers
+
+· PlaneMesh Splitter – https://github.com/artnas/Unity-PMS
+
+· See list here http://unitycoder.com/blog/2012/10/18/voxel-resources-engines-for-unity/
+
+· 3D Character controller – https://github.com/IronWarrior/SuperCharacterController
+
+· 2D platform controller – https://github.com/cjddmut/Unity-2D-Platformer-Controller
+
+· Raytracer – https://github.com/SIZMW/unity-raytracer
+
+· Volumetric lines – https://github.com/johannesugb/VolumetricLinesUnity
+
+· Page Curl – https://github.com/Dandarawy/Unity3DBookPageCurl
+
+· Mobile console – https://github.com/SpaceMadness/lunar-unity-console
+
+· VS code debugging – https://github.com/Unity-Technologies/vscode-unity-debug
+
+· Simple text – https://github.com/aras-p/UnityStbEasyFont
+
+· Scripts to make editor scripting in Unity easier – https://github.com/JefferiesTube/UnityEditorHelper
+
+· Inspector and Editor helper scripts – https://bitbucket.org/Bitcake-Studio/bitstrap/src/114cc6f39716/Assets/BitStrap/Plugins/?at=default
+
+· Helper extensions – https://github.com/jbruening/unity3d-extensions
+
+· Unity port of sfxr/as3sfxr/bfxr – https://github.com/zeh/usfxr
