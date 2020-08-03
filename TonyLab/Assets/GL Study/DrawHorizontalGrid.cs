@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DrawHorizontalGrid : MonoBehaviour
 {
-    public float horizontal = 0;//地平线高度,默认是0
+    public float horizontal = 0;//地平线高度
     public Color lineColor = new Color(1, 1, 1, 1);//画出的线的颜色，默认是白色
     public Material lineMaterial;//线的材质
     public int gridCount = 200;//单边格子个数
@@ -23,6 +23,82 @@ public class DrawHorizontalGrid : MonoBehaviour
         }
     }
 
+    private void OnPostRender()
+    {
+        float crtHeight = Mathf.Abs(mainCamera.position.y - horizontal);
+        int crtLevel = GetLevel(crtHeight);
+
+        CreateLineMaterial();
+        lineMaterial.SetPass(0);
+
+        GL.PushMatrix();
+
+        GL.Begin(GL.LINES);
+
+        //渲染当前级
+        GL.Color(lineColor);
+        float levelValue = Mathf.Pow(10, crtLevel);
+
+        float pointX = GetNearValue(mainCamera.position.x, crtLevel);
+        float pointZ = GetNearValue(mainCamera.position.z, crtLevel);
+        for (int i = 0; i <= gridCount; i++)
+        {
+            GL.Vertex3(pointX + -gridCount / 2 * levelValue, horizontal, pointZ + (-gridCount / 2 + i) * levelValue);
+            GL.Vertex3(pointX + gridCount / 2 * levelValue, horizontal, pointZ + (-gridCount / 2 + i) * levelValue);
+
+            GL.Vertex3(pointX + (-gridCount / 2 + i) * levelValue, horizontal, pointZ + -gridCount / 2 * levelValue);
+            GL.Vertex3(pointX + (-gridCount / 2 + i) * levelValue, horizontal, pointZ + gridCount / 2 * levelValue);
+        }
+
+        GL.End();
+
+        if (crtHeight / Mathf.Pow(10, crtLevel) <= 2.5)
+        {
+            //渲染低一级
+            GL.Begin(GL.LINES);
+
+            float lowPointX = GetNearValue(mainCamera.position.x, crtLevel - 1);
+            float lowPointZ = GetNearValue(mainCamera.position.z, crtLevel - 1);
+            float lowLevelValue = levelValue / 10;
+            Color lowLevelColor = lineColor;
+            lowLevelColor.a *= (2.5f - crtHeight / levelValue) / 1.5f;
+            GL.Color(lowLevelColor);
+            for (int i = 0; i <= gridCount * 10; i++)
+            {
+                GL.Vertex3(lowPointX + (-gridCount * 10 / 2) * lowLevelValue, horizontal, lowPointZ + (-gridCount * 10 / 2 + i) * lowLevelValue);
+                GL.Vertex3(lowPointX + (gridCount * 10 / 2) * lowLevelValue, horizontal, lowPointZ + (-gridCount * 10 / 2 + i) * lowLevelValue);
+
+                GL.Vertex3(lowPointX + (-gridCount * 10 / 2 + i) * lowLevelValue, horizontal, lowPointZ + (-gridCount * 10 / 2) * lowLevelValue);
+                GL.Vertex3(lowPointX + (-gridCount * 10 / 2 + i) * lowLevelValue, horizontal, lowPointZ + (gridCount * 10 / 2) * lowLevelValue);
+            }
+
+            GL.End();
+        }
+        else
+        {
+            //渲染高一级
+            GL.Begin(GL.LINES);
+            float highPointX = GetNearValue(mainCamera.position.x, crtLevel + 1);
+            float highPointZ = GetNearValue(mainCamera.position.z, crtLevel + 1);
+            float highLevelValue = levelValue * 10;
+            Color highLevelColor = lineColor;
+            highLevelColor.a *= 1 + (crtHeight / levelValue - 10) / 7.5f;
+            GL.Color(highLevelColor);
+            for (int i = 0; i <= gridCount / 10; i++)
+            {
+                GL.Vertex3(highPointX + (-gridCount / 10 / 2) * highLevelValue, horizontal, highPointZ + (-gridCount / 10 / 2 + i) * highLevelValue);
+                GL.Vertex3(highPointX + (gridCount / 10 / 2) * highLevelValue, horizontal, highPointZ + (-gridCount / 10 / 2 + i) * highLevelValue);
+
+                GL.Vertex3(highPointX + (-gridCount / 10 / 2 + i) * highLevelValue, horizontal, highPointZ + (-gridCount / 10 / 2) * highLevelValue);
+                GL.Vertex3(highPointX + (-gridCount / 10 / 2 + i) * highLevelValue, horizontal, highPointZ + (gridCount / 10 / 2) * highLevelValue);
+            }
+
+            GL.End();
+        }
+
+        GL.PopMatrix();
+    }
+
     private void CreateLineMaterial()
     {
         if (!lineMaterial)
@@ -38,62 +114,16 @@ public class DrawHorizontalGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// 渲染当前级和低一级
-    /// </summary>
-    private void OnPostRender()
-    {
-        float crtHeight = Mathf.Abs(mainCamera.position.y - horizontal);
-        int crtLevel = GetLevel(crtHeight);
-        float pointX = GetNearValue(mainCamera.position.x, crtLevel);
-        float pointZ = GetNearValue(mainCamera.position.z, crtLevel);
-
-        CreateLineMaterial();
-        lineMaterial.SetPass(0);
-
-        GL.PushMatrix();
-
-        GL.Begin(GL.LINES);
-
-        //渲染当前级
-        Color crtLevelColor = lineColor;
-        crtLevelColor.a = 0.3f;
-        GL.Color(lineColor);
-        float levelValue = Mathf.Pow(10, GetLevel(crtHeight));
-        for (int i = 0; i <= gridCount; i++)
-        {
-            GL.Vertex3(pointX + -gridCount / 2 * levelValue, horizontal, pointZ + (-gridCount / 2 + i) * levelValue);
-            GL.Vertex3(pointX + gridCount / 2 * levelValue, horizontal, pointZ + (-gridCount / 2 + i) * levelValue);
-
-            GL.Vertex3(pointX + (-gridCount / 2 + i) * levelValue, horizontal, pointZ + -gridCount / 2 * levelValue);
-            GL.Vertex3(pointX + (-gridCount / 2 + i) * levelValue, horizontal, pointZ + gridCount / 2 * levelValue);
-        }
-
-        //渲染低一级
-        float lowLevelValue = levelValue / 10;
-        Color lowLevelColor = lineColor;
-        lowLevelColor.a *= (9f - crtHeight / levelValue + 1) / 9f;
-        GL.Color(lowLevelColor);
-        for (int i = 0; i <= gridCount * 10; i++)
-        {
-            GL.Vertex3(pointX + (-gridCount * 10 / 2) * lowLevelValue, horizontal, pointZ + (-gridCount * 10 / 2 + i) * lowLevelValue);
-            GL.Vertex3(pointX + (gridCount * 10 / 2) * lowLevelValue, horizontal, pointZ + (-gridCount * 10 / 2 + i) * lowLevelValue);
-
-            GL.Vertex3(pointX + (-gridCount * 10 / 2 + i) * lowLevelValue, horizontal, pointZ + (-gridCount * 10 / 2) * lowLevelValue);
-            GL.Vertex3(pointX + (-gridCount * 10 / 2 + i) * lowLevelValue, horizontal, pointZ + (gridCount * 10 / 2) * lowLevelValue);
-        }
-
-        GL.End();
-
-        GL.PopMatrix();
-    }
-
-    /// <summary>
     /// 获取传入数值的级数
     /// </summary>
     /// <param name="rawNum">传入数值</param>
     /// <returns>级数，个位数（如5）是0级，十位数（25）是1级，一位小数（0.5）是-1级</returns>
     private int GetLevel(float rawNum)
     {
+        if (rawNum == 0)
+        {
+            return 0;
+        }
         rawNum = Mathf.Abs(rawNum);
         if (rawNum > 1)
         {
