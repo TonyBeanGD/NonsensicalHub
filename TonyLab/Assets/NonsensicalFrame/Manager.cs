@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace Nonsensical
+namespace NonsensicalFrame
 {
     public class Nonsensical_Manager
     {

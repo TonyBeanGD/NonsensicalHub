@@ -12,7 +12,6 @@ public enum Personality
     Conservative,
 }
 
-
 public class GoBangAI
 {
     public int level;  //AI等级
