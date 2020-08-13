@@ -11,39 +11,30 @@ using System.Threading;
 
 class MD5Helper
 {
-
     /// <summary>
-    /// MD5 16位加密 加密后密码为大写
+    /// md5 16位加密
     /// </summary>
     /// <param name="ConvertString"></param>
+    /// <param name="toLower"></param>
     /// <returns></returns>
-    public static string GetMd5Str(string ConvertString)
+    public static string GetMd5Str(string ConvertString,bool toLower)
     {
         MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
         string t2 = BitConverter.ToString(md5.ComputeHash(UTF8Encoding.Default.GetBytes(ConvertString)), 4, 8);
         t2 = t2.Replace("-", "");
-        return t2;
-    }
-    /// <summary>
-    /// MD5 16位加密 加密后密码为小写
-    /// </summary>
-    /// <param name="ConvertString"></param>
-    /// <returns></returns>
-    public static string GetMd5Str(string ConvertString, bool b)
-    {
-        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-        string t2 = BitConverter.ToString(md5.ComputeHash(UTF8Encoding.Default.GetBytes(ConvertString)), 4, 8);
-        t2 = t2.Replace("-", "");
-        t2 = t2.ToLower();
+        if (toLower)
+        {
+            t2 = t2.ToLower();
+        }
         return t2;
     }
 
-    /**//// <summary>
-        /// MD5　32位加密
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-    static string UserMd5(string str)
+    /// <summary>
+    /// MD5　32位加密
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    public static string UserMd5(string str)
     {
         string cl = str;
         string pwd = "";

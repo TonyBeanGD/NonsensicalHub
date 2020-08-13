@@ -17,3 +17,6 @@ shader教程
 https://www.cnblogs.com/SHOR/p/8019163.html
 
 Unity:在Awake中使用了会锁定主线程的代码，会使得在程序其他部分都能正常运行的情况下，同脚本Start方法不会执行
+
+Unity框架
+https://github.com/yomunsam/TinaX
