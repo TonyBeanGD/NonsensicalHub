@@ -1,5 +1,0 @@
-FileStream fs = new FileStream(filePath, FileMode.CreateNew);
-        StreamWriter sw = new StreamWriter(fs, System.Text.UTF8Encoding.UTF8);
-        sw.WriteLine("hello");
-        sw.Close();
-        fs.Close();
