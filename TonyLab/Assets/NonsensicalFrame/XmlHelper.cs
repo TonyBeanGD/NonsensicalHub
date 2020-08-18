@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace NonsensicalFrame
 {
-    public class Nonsensical_Xml
+    public class XmlHelper
     {
         /// <summary>
         /// 获取目标路径xml文件的根节点
@@ -14,7 +14,7 @@ namespace NonsensicalFrame
         /// <returns>当目标文件存在并且获取成功时，返回目标xml文件根节点，否则返回null</returns>
         public static XmlNode GetRoot(string _path)
         {
-            if (!File.Exists(_path))
+            if (!System.IO.File.Exists(_path))
             {
                 return null;
             }

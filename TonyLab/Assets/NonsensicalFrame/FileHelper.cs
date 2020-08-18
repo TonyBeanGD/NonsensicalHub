@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace NonsensicalFrame
 {
-    public class Nonsensical_File
+    public class FileHelper
     {
         /// <summary>
         /// 转移数据，将源文件的内容作为文本覆盖到目标文件（默认使用UTF-8编码）
@@ -16,7 +16,7 @@ namespace NonsensicalFrame
         /// <returns>当数据转移成功时时，返回真，否则返回假</returns>
         public static bool Transfer_Data(string _filepath1, string _filepath2)
         {
-            if (!File.Exists(_filepath1) || !File.Exists(_filepath1))
+            if (!System.IO.File.Exists(_filepath1) || !System.IO.File.Exists(_filepath1))
             {
                 return false;
             }
@@ -63,7 +63,7 @@ namespace NonsensicalFrame
             StreamReader sr = null;
             FileStream fs = null;
 
-            if (!File.Exists(_filepath1) || !File.Exists(_filepath1))
+            if (!System.IO.File.Exists(_filepath1) || !System.IO.File.Exists(_filepath1))
             {
                 return false;
             }
@@ -108,7 +108,7 @@ namespace NonsensicalFrame
             StreamReader sr = null;
             FileStream fs = null;
 
-            if (!File.Exists(_filepath1) || !File.Exists(_filepath1))
+            if (!System.IO.File.Exists(_filepath1) || !System.IO.File.Exists(_filepath1))
             {
                 return false;
             }

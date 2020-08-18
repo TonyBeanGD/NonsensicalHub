@@ -1,18 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
 
 namespace NonsensicalFrame
 {
-    public class Debugger:MonoSingleton<Debugger>
+    class LogMessage
+    {
+        private string message;
+        private string stackTrace;
+        private LogType logType;
+        private DateTime dateTime;
+
+        public LogMessage(string _message, string _staclTrace, LogType _logType, DateTime _dateTime)
+        {
+            message = _message;
+            stackTrace = _staclTrace;
+            logType = _logType;
+            dateTime = _dateTime;
+        }
+
+        public bool CheckType(LogType _logType)
+        {
+            return logType == _logType;
+        }
+
+        public override string ToString()
+        {
+            return dateTime + " , " + logType.ToString() + "\r\n    " + message + "\r\n    " + stackTrace;
+        }
+    }
+
+    public class Debugger : MonoSingleton<Debugger>
     {
         private const bool useDebug = true;
-        private string LogBuffer = string.Empty;
+
+        private Queue<LogMessage> logMessages;
 
         protected override void Awake()
         {
             base.Awake();
+
+            logMessages = new Queue<LogMessage>();
+
             Application.logMessageReceived += HandleLog;
         }
 
@@ -21,10 +52,37 @@ namespace NonsensicalFrame
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.S))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileStream fs = new FileStream(path, FileMode.Create);
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(LogBuffer);
-                fs.Write(buffer, 0, buffer.Length);
-                fs.Close();
+                FileHelper.Create_And_Write(path, GetAllLog());
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.L))
+            {
+                string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
+                FileHelper.Create_And_Write(path, GetLog (LogType.Log));
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.A))
+            {
+                string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
+                FileHelper.Create_And_Write(path, GetLog(LogType.Assert));
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.E))
+            {
+                string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
+                FileHelper.Create_And_Write(path, GetLog(LogType.Error));
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.B))
+            {
+                string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
+                FileHelper.Create_And_Write(path, GetLog(LogType.Exception));
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.L))
+            {
+                string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
+                FileHelper.Create_And_Write(path, GetLog(LogType.Warning));
             }
         }
 
@@ -35,44 +93,69 @@ namespace NonsensicalFrame
 
         private void HandleLog(string message, string stackTrace, LogType type)
         {
-            LogBuffer += System.DateTime.Now + "\r\n    " + message + "\r\n    " + stackTrace + "\r\n\r\n";
+            logMessages.Enqueue(new LogMessage(message, stackTrace, type, DateTime.Now));
         }
 
-        public void Log(params object[] objs)
+        private string GetAllLog()
         {
-            if (useDebug)
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in logMessages)
             {
-                Debug.Log(GetString(objs));
+                sb.Append(item.ToString());
+                sb.Append("\r\n\r\n");
             }
+            return sb.ToString();
         }
 
-        public void LogWarning(params object[] objs)
+        private string GetLog(LogType _logType)
         {
-            if (useDebug)
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in logMessages)
             {
-                Debug.LogWarning(GetString(objs));
+                if (item.CheckType(_logType))
+                {
+                    sb.Append(item.ToString());
+                    sb.Append("\r\n\r\n");
+                }
             }
+            return sb.ToString();
         }
 
-        public void LogError(params object[] objs)
-        {
-            if (useDebug)
-            {
-                Debug.LogError(GetString(objs));
-            }
-        }
-
-        private string GetString(object[] objs)
+        private string GetString(object[] _objs)
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var item in objs)
+            foreach (var item in _objs)
             {
                 sb.Append('|');
                 sb.Append(item.ToString());
             }
 
             return sb.ToString();
+        }
+
+        public void Log(params object[] _objs)
+        {
+            if (useDebug)
+            {
+                Debug.Log(GetString(_objs));
+            }
+        }
+
+        public void LogWarning(params object[] _objs)
+        {
+            if (useDebug)
+            {
+                Debug.LogWarning(GetString(_objs));
+            }
+        }
+
+        public void LogError(params object[] _objs)
+        {
+            if (useDebug)
+            {
+                Debug.LogError(GetString(_objs));
+            }
         }
     }
 }
