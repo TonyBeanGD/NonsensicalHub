@@ -8,6 +8,8 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
+/*  TODO:自己写一个Resources.FindObjectsOfTypeAll(typeof(Button));来防止获取到非场景内的对象
+ */
 namespace TonyBeanTools
 {
     public static class TBTManager

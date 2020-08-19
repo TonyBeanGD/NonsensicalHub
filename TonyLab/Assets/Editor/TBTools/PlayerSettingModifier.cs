@@ -30,8 +30,7 @@ public class PlayerSettingModifier : EditorWindow
             Debug.Log("自动更改PlayerSetting完成，请手动修改图片等信息");
         }
     }
-
-
+    
     private static void SetBwPlayerSetting(BuildInfo buildInfo)
     {
         PlayerSettings.companyName = buildInfo.companyname;

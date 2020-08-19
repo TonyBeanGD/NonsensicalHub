@@ -7,8 +7,6 @@ namespace TonyBeanTools
 {
     public class AssestBundleAuxiliaryTool : EditorWindow
     {
-
-
         [MenuItem("TBTools/AssestBundle辅助工具")]
         static void ShowWindow()
         {
