@@ -21,17 +21,17 @@ namespace TonyBeanTools
 
         private void OnGUI()
         {
-            buildPath = EditorPrefs.GetString("tb_assestBundleAuxiliaryTool_buildPath", Path.Combine(Application.dataPath,"Editor","AssetBundles"));
+            buildPath = PlayerPrefs.GetString("tb_assestBundleAuxiliaryTool_buildPath", Path.Combine(Application.dataPath,"Editor","AssetBundles"));
             buildPath = EditorGUILayout.TextField("目标文件夹路径：", buildPath);
-            EditorPrefs.SetString("tb_assestBundleAuxiliaryTool_buildPath", buildPath);
+            PlayerPrefs.SetString("tb_assestBundleAuxiliaryTool_buildPath", buildPath);
 
-            buildOption = (BuildAssetBundleOptions)EditorPrefs.GetInt("tb_assestBundleAuxiliaryTool_buildOption", 0);
+            buildOption = (BuildAssetBundleOptions)PlayerPrefs.GetInt("tb_assestBundleAuxiliaryTool_buildOption", 0);
             buildOption = (BuildAssetBundleOptions)EditorGUILayout.EnumPopup("打包类型：", buildOption);
-            EditorPrefs.SetInt("tb_assestBundleAuxiliaryTool_buildOption", (int)buildOption);
+            PlayerPrefs.SetInt("tb_assestBundleAuxiliaryTool_buildOption", (int)buildOption);
 
-            buildTarget = (BuildTarget)EditorPrefs.GetInt("tb_assestBundleAuxiliaryTool_buildTarget", -2);
+            buildTarget = (BuildTarget)PlayerPrefs.GetInt("tb_assestBundleAuxiliaryTool_buildTarget", -2);
             buildTarget = (BuildTarget)EditorGUILayout.EnumPopup("目标平台：", buildTarget);
-            EditorPrefs.SetInt("tb_assestBundleAuxiliaryTool_buildTarget", (int)buildTarget);
+            PlayerPrefs.SetInt("tb_assestBundleAuxiliaryTool_buildTarget", (int)buildTarget);
 
             if (GUILayout.Button("打包"))
             {
