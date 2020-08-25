@@ -1,9 +1,3 @@
-Hello World
-末尾两个以上的空格加上回车  
-才能正常换行
-
-或者连续两个换行也算作换行
-
 使用“=”标记的一级标题
 =============
 
@@ -16,6 +10,12 @@ Hello World
 #### “#”四级标题
 ##### “#”五级标题
 ###### “#”六级标题
+
+Hello World
+末尾两个以上的空格加上回车  
+才能正常换行
+
+或者连续两个换行也算作换行（这样不符合规范）  
 
 _斜体_
 *斜体*
@@ -33,10 +33,7 @@ ___粗斜体___
 
 ~~删除线~~  
 <u>下划线</u>
-
-这是一个脚注 [^Footnote]
  
-[^Footnote]这是脚注的内容(HBuilder X中未生效)
 
 * 无序列表一级
 + 无序列表一级
@@ -86,11 +83,9 @@ ___粗斜体___
 或者直接显示链接也可以使用<https://www.google.com/>  
 还可以使用引用链接[谷歌地址]
 
-
 ![RUNOOB 图标](http://static.runoob.com/images/runoob-logo.png)
 
-![RUNOOB 图标](http://static.runoob.com/images/runoob-logo.png "可选标题")
-
+![RUNOOB 图标](http://static.runoob.com/images/runoob-logo.png "可选标题")  
 
 | 左对齐| 右对齐| 居中对齐	|
 |:-----	|-----:	|:----:		|
@@ -99,8 +94,6 @@ ___粗斜体___
 
 使用 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Del</kbd> 重启电脑
 
-**文本加粗**  
 \*\* 正常显示星号 \*\*
-
 
 [谷歌地址]: http://www.google.com/
