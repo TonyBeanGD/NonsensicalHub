@@ -8,8 +8,7 @@ namespace TonyBeanTools
 {
     public class ComponentModifier : EditorWindow
     {
-
-        [MenuItem("TBTools/Component修改器")]
+        [MenuItem("TBTools/组件内容修改器")]
         public static void ShowWindow()
         {
             EditorWindow.GetWindow(typeof(ComponentModifier));
@@ -17,7 +16,7 @@ namespace TonyBeanTools
 
         private static class CompontentModifierPanel
         {
-            public static readonly string[] components = new string[] { "Transform", "Button", "Font" };
+            public static readonly string[] components = new string[] { "Transform", "Button", "Text" };
 
             public static Vector3 scale;
             public static Navigation.Mode navMode;
@@ -29,7 +28,7 @@ namespace TonyBeanTools
         private void OnGUI()
         {
 
-            CompontentModifierPanel.choiceComponent = EditorGUILayout.Popup("选择组件", CompontentModifierPanel.choiceComponent, new string[] { "Transform", "Button", "Font" });
+            CompontentModifierPanel.choiceComponent = EditorGUILayout.Popup("选择组件", CompontentModifierPanel.choiceComponent, new string[] { "Transform", "Button", "Text" });
 
             EditorGUILayout.Space();
 
@@ -53,7 +52,7 @@ namespace TonyBeanTools
                         }
                     }
                     break;
-                case "Font":
+                case "Text":
                     {
                         CompontentModifierPanel.toChange = (Font)EditorGUILayout.ObjectField("Font", CompontentModifierPanel.toChange, typeof(Font), true, GUILayout.MinWidth(100f));
                         CompontentModifierPanel.toFontStyle = (FontStyle)EditorGUILayout.EnumPopup("FontStyle", CompontentModifierPanel.toFontStyle, GUILayout.MinWidth(100f));
@@ -98,7 +97,7 @@ namespace TonyBeanTools
                 t.font = CompontentModifierPanel.toChange;
                 t.fontStyle = CompontentModifierPanel.toFontStyle;
             }
-            Debug.Log("组件修改成功");
+            Debug.Log($"{CompontentModifierPanel.components[CompontentModifierPanel.choiceComponent]} 组件修改成功");
         }
 
 

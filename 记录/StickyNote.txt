@@ -1,0 +1,16 @@
+﻿
+
+
+[Unity 官方API](https://docs.unity3d.com/ScriptReference/)
+[Unity 官方手册](https://docs.unity3d.com/Manual/index.html)
+Simple LOD 用于优化模型多边形的插件 - Unity
+
+meshsimplify 1.0.0
+链接: https://pan.baidu.com/s/1c1JnFbE 密码: ypz1
+大小：134.1MB
+
+shader教程
+https://www.cnblogs.com/SHOR/p/8019163.html
+
+Unity框架
+https://github.com/yomunsam/TinaX

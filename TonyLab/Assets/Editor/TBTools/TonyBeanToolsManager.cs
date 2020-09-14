@@ -8,6 +8,8 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
+/*  TODO:自己写一个Resources.FindObjectsOfTypeAll(typeof(Button));来防止获取到非场景内的对象
+ */
 namespace TonyBeanTools
 {
     public static class TBTManager
@@ -228,6 +230,51 @@ namespace TonyBeanTools
         {
             AssetDatabase.Refresh();
             Debug.Log("刷新完成");
+        }
+
+        [MenuItem("TBTools/Items/根据名称排序")]
+        public static void NameSort()
+        {
+            GameObject[] roots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+
+            
+            for (int i = 0; i < roots.Length-1; i++)
+            {
+                for (int j = i+1; j < roots.Length; j++)
+                {
+                    if (string.Compare( roots[i].name,roots[j].name)>0)
+                    {
+                        GameObject temp = roots[i];
+                        roots[i] = roots[j];
+                        roots[j] = temp;
+                    }
+                }
+            }
+
+            foreach (var item in roots)
+            {
+                item.transform.SetAsLastSibling();
+            }
+
+            Debug.Log("排序完成");
+        }
+
+        [MenuItem("TBTools/Items/自动设置layer")]
+        public static void AutoSetTag()
+        {
+            GameObject[] roots = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            
+            foreach (var item in roots)
+            {
+                Transform[] childs = item.transform.GetComponentsInChildren<Transform>();
+
+                foreach (var item2 in childs)
+                {
+                    item2.gameObject.layer = LayerMask.NameToLayer("ClickableTarget");
+                }
+            }
+
+            Debug.Log("设置layer完成");
         }
     }
 }

@@ -64,26 +64,26 @@ namespace NonsensicalFrame
             {
                 Directory.CreateDirectory(Root_Path);
 
-                Nonsensical_File.Create_And_Write(Root_Path + "readme.txt", "这个文件夹“Nonsensical”为Nonsensical相关软件的专用文件夹\r\n" +
+                FileHelper.Create_And_Write(Root_Path + "readme.txt", "这个文件夹“Nonsensical”为Nonsensical相关软件的专用文件夹\r\n" +
                     "用于存储相关配置和存档\r\n");
 
                 New_Version_Xml();
             }
             else
             {
-                if (!File.Exists(Root_Path + "readme.txt"))
+                if (!System.IO.File.Exists(Root_Path + "readme.txt"))
                 {
-                    Nonsensical_File.Create_And_Write(Root_Path + "readme.txt", "这个文件夹“Nonsensical”为Nonsensical相关软件的专用文件夹\r\n" +
+                    FileHelper.Create_And_Write(Root_Path + "readme.txt", "这个文件夹“Nonsensical”为Nonsensical相关软件的专用文件夹\r\n" +
                    "用于存储相关配置和存档\r\n");
                 }
 
-                if (!File.Exists(Root_Path + "Version.xml"))
+                if (!System.IO.File.Exists(Root_Path + "Version.xml"))
                 {
                     New_Version_Xml();
                 }
                 else
                 {
-                    Nonsensical_Xml.GetRoot(Root_Path + "Version.xml");
+                    XmlHelper.GetRoot(Root_Path + "Version.xml");
                 }
             }
         }
@@ -93,9 +93,9 @@ namespace NonsensicalFrame
         /// </summary>
         private static void New_Version_Xml()
         {
-            Nonsensical_Xml.Create_New_Xml_File(Root_Path + "Version.xml");
+            XmlHelper.Create_New_Xml_File(Root_Path + "Version.xml");
 
-            XmlNode root = Nonsensical_Xml.GetRoot(Root_Path + "Version.xml");
+            XmlNode root = XmlHelper.GetRoot(Root_Path + "Version.xml");
 
             foreach (XmlNode item in root)
             {
@@ -119,12 +119,7 @@ namespace NonsensicalFrame
         /// 
         /// </summary>
         private const string Root_Path = "D:/Nonsensical/";
-
-        private void test()
-        {
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        }
-
+        
         internal static void Debug_Log(string _message)
         {
             string path = null;
@@ -141,9 +136,9 @@ namespace NonsensicalFrame
                 return;
             }
 
-            if (File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
-                File.Create(path);
+                System.IO.File.Create(path);
             }
         }
     }

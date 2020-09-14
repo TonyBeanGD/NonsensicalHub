@@ -1,6 +1,0 @@
-//让主线程休眠3000毫秒
-System.Threading.Thread.Sleep(3000);
-
-启动新线程
-Thread thread = new Thread(new ThreadStart(【MethodName】));
-thread.Start();

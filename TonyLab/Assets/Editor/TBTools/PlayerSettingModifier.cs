@@ -17,21 +17,20 @@ public class PlayerSettingModifier : EditorWindow
 
     private void OnGUI()
     {
-        isTest = EditorPrefs.GetBool("tb_playerSettingModifier_isTest", false);
+        isTest = PlayerPrefs.GetInt("tb_playerSettingModifier_isTest", 0)==1?true:false;
         isTest = EditorGUILayout.Toggle("是否测试版本", isTest, GUILayout.MinWidth(100f));
-        EditorPrefs.SetBool("tb_playerSettingModifier_isTest", isTest);
+        PlayerPrefs.SetInt("tb_playerSettingModifier_isTest", isTest?1:0);
 
-        version = EditorPrefs.GetString("tb_playerSettingModifier_version", "1.0.0");
+        version = PlayerPrefs.GetString("tb_playerSettingModifier_version", "1.0.0");
         version = EditorGUILayout.TextField("版本：", version);
-        EditorPrefs.SetString("tb_playerSettingModifier_version", version);
+        PlayerPrefs.SetString("tb_playerSettingModifier_version", version);
 
         if (GUILayout.Button("更改设置"))
         {
             Debug.Log("自动更改PlayerSetting完成，请手动修改图片等信息");
         }
     }
-
-
+    
     private static void SetBwPlayerSetting(BuildInfo buildInfo)
     {
         PlayerSettings.companyName = buildInfo.companyname;

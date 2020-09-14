@@ -93,4 +93,46 @@ public class GobangBoard
     {
         return board[x * width + y];
     }
+
+    private float Evaluation(bool isWhite)
+    {
+        LatticeType checkType = isWhite ? LatticeType.White : LatticeType.Black;
+        float total_score = 0;
+
+
+
+        return total_score;
+    }
+
+  
+           
+    public float GetScore(LatticeType type)
+    {
+        List<LatticeType> states5=new List<LatticeType>();
+        List<LatticeType> states6 = new List<LatticeType>();
+        List<LatticeType> states7 = new List<LatticeType>();
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (i<11)
+                {
+                    if (i==10)
+                    {
+
+                    }
+                    else if(i==9)
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
 }

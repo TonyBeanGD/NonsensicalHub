@@ -162,26 +162,5 @@ public class DrawHorizontalGrid : MonoBehaviour
         return nearInt * Mathf.Pow(10, level);
     }
 
-    /// <summary>
-    /// 获取摄像机看向地平线的视点
-    /// </summary>
-    /// <param name="cameraPos">摄像机位置</param>
-    /// <param name="cameraForwardPos">摄像机前方位置</param>
-    /// <returns>没有看向地平线时返回null,否则返回视点的位置</returns>
-    private Vector3? GetViewPoint(Vector3 cameraPos, Vector3 cameraForwardPos)
-    {
-        if ((cameraPos.y - horizontal) * (cameraForwardPos.y - horizontal) > 0//当摄像机的点和摄像机的前方点没有在地平线两侧时
-                   && Mathf.Abs(cameraPos.y) - Mathf.Abs(cameraForwardPos.y) < 0)//且当没有看向地面时
-        {
-            return null;
-        }
-        else
-        {
-            float h1 = Mathf.Abs(cameraPos.y - horizontal);
-            float h2 = Mathf.Abs(cameraForwardPos.y - horizontal);
-            float l1 = Vector3.Distance(cameraPos, cameraForwardPos);
-            float l2 = h1 * l1 / (h1 - h2);
-            return cameraForwardPos + (cameraForwardPos - cameraPos).normalized * l2;
-        }
-    }
+  
 }

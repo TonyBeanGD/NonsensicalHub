@@ -139,7 +139,7 @@ public class #类名# : MonoBehaviour
                     Debug.Log("脚本已存在");
                 }
 
-                Debug.Log("脚本挂在成功");
+                Debug.Log("脚本挂载成功");
 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
