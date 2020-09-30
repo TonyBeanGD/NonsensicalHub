@@ -96,7 +96,7 @@ public class SameFileCheck : MonoBehaviour
 
         temp = "Writing";
 
-        FileStream fs = new FileStream("D:/Test.md", FileMode.CreateNew);
+        FileStream fs = new FileStream("D:/Test.txt", FileMode.CreateNew);
         
 
         StringBuilder sb = new StringBuilder(); 
