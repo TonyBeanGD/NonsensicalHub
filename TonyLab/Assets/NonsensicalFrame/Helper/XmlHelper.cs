@@ -40,7 +40,7 @@ namespace NonsensicalFrame
         /// </summary>
         /// <param name="_path">创建文件的存放路径</param>
         /// <returns></returns>
-        public static bool Create_New_Xml_File(string _path)
+        public static bool CreateNewXmlFile(string _path)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.AppendChild(xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -53,7 +53,7 @@ namespace NonsensicalFrame
             }
             catch (Exception e)
             {
-                Nonsensical_Manager.Debug_Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
+                Manager.GetInstance().Debug_Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
                 return false;
             }
         }

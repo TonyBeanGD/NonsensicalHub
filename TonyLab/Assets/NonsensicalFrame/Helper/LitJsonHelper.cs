@@ -19,8 +19,7 @@ public class LitJsonHelper
             Debug.Log(item.ToString());
         }
     }
-
-
+    
     /// <summary>
     /// 动态生成json(使用递归)
     /// 输入：JsonData jd=test(new string[]{"1","2","3"},10086);

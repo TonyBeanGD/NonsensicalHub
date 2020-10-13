@@ -46,10 +46,12 @@ namespace NonsensicalServerLib
         {
             this.handler = stream;
             var data = GetRequestData(handler);
+            DebugHelper.Instance.Log(data);
             var rows = Regex.Split(data, Environment.NewLine);
 
             this.Headers = new Dictionary<string, string>();
 
+            DebugHelper.Instance.Log(11);
             //Request URL & Method & Version
             var first = Regex.Split(rows[0], @"(\s+)")
                 .Where(e => e.Trim() != string.Empty)
@@ -58,9 +60,11 @@ namespace NonsensicalServerLib
             if (first.Length > 1) this.URL = Uri.UnescapeDataString(first[1]);
             if (first.Length > 2) this.ProtocolVersion = first[2];
 
+            DebugHelper.Instance.Log(12);
             //Request Headers
             this.Headers = GetRequestHeaders(rows);
 
+            DebugHelper.Instance.Log(13);
             //Request Body
             Body = GetRequestBody(rows);
             var contentLength = GetHeader(RequestHeaders.ContentLength);
@@ -68,11 +72,15 @@ namespace NonsensicalServerLib
             {
                 do
                 {
+                    DebugHelper.Instance.Log(21);
                     length = stream.Read(bytes, 0, MAX_SIZE - 1);
+                    DebugHelper.Instance.Log(22);
                     Body += Encoding.UTF8.GetString(bytes, 0, length);
+                    DebugHelper.Instance.Log(23);
                 } while (Body.Length != length);
             }
 
+            DebugHelper.Instance.Log(14);
             //Request "GET"
             if (this.Method == "GET")
             {

@@ -218,6 +218,7 @@ namespace NonsensicalServerLib
         /// <param name="handler">客户端Socket</param>
         private void ProcessRequest(TcpClient handler)
         {
+            DebugHelper.Instance.Log(1);
             //处理请求
             Stream clientStream = handler.GetStream();
 
@@ -225,11 +226,14 @@ namespace NonsensicalServerLib
             if (serverCertificate != null) clientStream = ProcessSSL(clientStream);
             if (clientStream == null) return;
 
+            DebugHelper.Instance.Log(2);
             //构造HTTP请求
             HttpRequest request = new HttpRequest(clientStream);
 
             //构造HTTP响应
             HttpResponse response = new HttpResponse(clientStream);
+
+            DebugHelper.Instance.Log(request.Method);
 
             //处理请求类型
             switch (request.Method)
@@ -290,7 +294,6 @@ namespace NonsensicalServerLib
         /// <summary>
         /// 响应默认请求
         /// </summary>
-
         public abstract void OnDefault(HttpRequest request, HttpResponse response);
 
         #endregion

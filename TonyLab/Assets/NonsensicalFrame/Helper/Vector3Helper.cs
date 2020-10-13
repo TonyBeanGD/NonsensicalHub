@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NonsensicalFrame
 {
-    public static class Vector3Helper
+    public static class VectorHelper
     {
         /// <summary>
         /// 获取点在直线上的垂足
@@ -15,8 +15,8 @@ namespace NonsensicalFrame
         /// <returns>p2在直线p0p1上的垂足坐标</returns>
         public static Vector3 GetFootDrop(Vector3 singlePoint, Vector3 linePoint1, Vector3 linePoint2)
         {
-            float numerator = (linePoint1.x - singlePoint.x) * (linePoint2.x - linePoint1.x) 
-                + (linePoint1.y - singlePoint.y) * (linePoint2.y - linePoint1.y) 
+            float numerator = (linePoint1.x - singlePoint.x) * (linePoint2.x - linePoint1.x)
+                + (linePoint1.y - singlePoint.y) * (linePoint2.y - linePoint1.y)
                 + (linePoint1.z - singlePoint.z) * (linePoint2.z - linePoint1.z);
             float denominator = Mathf.Pow((linePoint2.x - linePoint1.x), 2) + Mathf.Pow(linePoint2.y - linePoint1.y, 2) + Mathf.Pow(linePoint2.z - linePoint1.z, 2);
             float k = -numerator / denominator;
@@ -32,7 +32,7 @@ namespace NonsensicalFrame
         /// <param name="cameraForwardPos">摄像机前方位置</param>
         /// <param name="horizontal">地平线高度</param>
         /// <returns>没有看向地平线时返回null,否则返回视点的位置</returns>
-        private static Vector3? GetViewPoint(Vector3 cameraPos, Vector3 cameraForwardPos,float horizontal)
+        public static Vector3? GetViewPoint(Vector3 cameraPos, Vector3 cameraForwardPos, float horizontal)
         {
             if ((cameraPos.y - horizontal) * (cameraForwardPos.y - horizontal) > 0//当摄像机的点和摄像机的前方点没有在地平线两侧时
                        && Mathf.Abs(cameraPos.y) - Mathf.Abs(cameraForwardPos.y) < 0)//且当摄像机前方的位置比摄像机的位置更加远离地平线时的位置
@@ -51,6 +51,41 @@ namespace NonsensicalFrame
         }
 
         /// <summary>
+        /// 获取线面交点
+        /// </summary>
+        /// <param name="linePoint1"></param>
+        /// <param name="linePoint2"></param>
+        /// <param name="plane"></param>
+        /// <returns></returns>
+        public static Vector3? GetLinePlaneCrossPoint(Vector3 linePoint1, Vector3 linePoint2, Plane plane)
+        {
+            Vector3 l = linePoint2 - linePoint1;
+            Vector3 p0 = -plane.normal * plane.distance;
+            Vector3 l0 = linePoint1;
+            Vector3 n = plane.normal;
+
+            //直线向量和法线向量垂直时（即直线和面平行）
+            if (Vector3.Dot(l, n) == 0)
+            {
+                //直线与平面重合时
+                if (Vector3.Dot(p0 - l0, n) == 0)
+                {
+                    return Vector3.Lerp(linePoint1, linePoint2, 0.5f);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            float d = Vector3.Dot((p0 - l0), n) / Vector3.Dot(l, n);
+
+            Vector3 t = d * l + l0;
+
+            return t;
+        }
+
+        /// <summary>
         /// 将物体移动至UGUI中对应的位置
         /// </summary>
         /// <param name="changeTarget">需要更改位置的对象</param>
@@ -58,7 +93,7 @@ namespace NonsensicalFrame
         /// <param name="posTarget">UGUI中需放置位置的UI对象</param>
         /// <param name="renderCanvas">渲染ui的相机</param>
         /// <param name="zOffset">对象移动目标位置的深度</param>
-        private static void MovePosByUGUI(Transform changeTarget, Camera targetCamera,RectTransform posTarget, RectTransform renderCanvas,float zOffset=10)
+        public static void MovePosByUGUI(Transform changeTarget, Camera targetCamera, RectTransform posTarget, RectTransform renderCanvas, float zOffset = 10)
         {
             float x = (posTarget.localPosition.x + renderCanvas.rect.width * 0.5f) / renderCanvas.rect.width * Screen.width;
             float y = (posTarget.localPosition.y + renderCanvas.rect.height * 0.5f) / renderCanvas.rect.height * Screen.height;
@@ -77,7 +112,7 @@ namespace NonsensicalFrame
         /// <param name="dir1"></param>
         /// <param name="dir2"></param>
         /// <returns></returns>
-        private static Vector3 GetCommonVerticalLine(Vector3 dir1, Vector3 dir2)
+        public static Vector3 GetCommonVerticalLine(Vector3 dir1, Vector3 dir2)
         {
             Vector3 normal = Vector3.zero;
             normal = Vector3.Cross(dir1, dir2);
@@ -106,7 +141,7 @@ namespace NonsensicalFrame
         /// <param name="rotateObject">需要旋转的对象</param>
         /// <param name="crtElementPoints">子物体面上不在一条直线上的三个点的数组</param>
         /// <param name="targetElementPoints">目标物体面上不在一条直线上的三个点的数组</param>
-        private static void RotateByChildren(this Transform rotateObject,Vector3[] crtElementPoints, Vector3[] targetElementPoints)
+        public static void RotateByChildren(this Transform rotateObject, Vector3[] crtElementPoints, Vector3[] targetElementPoints)
         {
             Vector3 dir1 = crtElementPoints[0] - crtElementPoints[1];
             Vector3 dir2 = crtElementPoints[1] - crtElementPoints[2];
@@ -120,6 +155,38 @@ namespace NonsensicalFrame
             Vector3 axis = GetCommonVerticalLine(normal1, normal2);
 
             rotateObject.rotation = Quaternion.AngleAxis(angle, axis) * rotateObject.transform.rotation;
+        }
+
+        /// <summary>
+        /// 获取鼠标位置的世界坐标（深度由所选物体决定）
+        /// </summary>
+        /// <returns></returns>
+        public static Vector3 GetWorldPos(Transform _target)
+        {
+            //获取需要移动物体的世界转屏幕坐标
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(_target.transform.position);
+            //获取鼠标位置
+            Vector3 mousePos = Input.mousePosition;
+            //因为鼠标只有X，Y轴，所以要赋予给鼠标Z轴
+            mousePos.z = screenPos.z;
+            //把鼠标的屏幕坐标转换成世界坐标
+            return Camera.main.ScreenToWorldPoint(mousePos);
+        }
+
+        /// <summary>
+        /// 获取圆内一点
+        /// </summary>
+        /// <param name="m_Radius"></param>
+        /// <returns></returns>
+        public static Vector2 GetCirclePoint(float m_Radius)
+        {
+            //随机获取弧度
+            float radin = RandomHelper.GetRandomFloat(2 * Mathf.PI);
+            float distance = RandomHelper.GetRandomFloat(m_Radius);
+            float x = distance * Mathf.Cos(radin);
+            float y = distance * Mathf.Sin(radin);
+            Vector2 endPoint = new Vector2(x, y);
+            return endPoint;
         }
     }
 }

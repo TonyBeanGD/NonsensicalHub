@@ -19,6 +19,8 @@ namespace NonsensicalClient
                 var requestStream = request.GetRequestStream();
                 var data = Encoding.UTF8.GetBytes("这是一条post信息");
                 requestStream.Write(data, 0, data.Length);
+                Console.WriteLine($"发送信息");
+                
                 var response = request.GetResponse();
 
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
@@ -31,7 +33,8 @@ namespace NonsensicalClient
             {
                 Console.WriteLine($"发生错误:{e.Message}:{e.Data}");
             }
-            
+
+            Console.WriteLine($"程序结束");
             Console.ReadKey();
         }
     }

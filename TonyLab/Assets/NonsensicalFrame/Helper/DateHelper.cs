@@ -56,7 +56,7 @@ namespace NonsensicalFrame
         /// 获取当前日期的字符串，以下划线隔开
         /// </summary>
         /// <returns>当前日期的字符串</returns>
-        internal static string Get_Date_String()
+        internal static string GetDateString()
         {
             return DateTime.Today.Year + "_" + DateTime.Today.Month + "_" + DateTime.Today.Day;
         }

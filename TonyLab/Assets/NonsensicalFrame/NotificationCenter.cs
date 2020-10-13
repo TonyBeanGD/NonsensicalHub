@@ -12,7 +12,7 @@ namespace NonsensicalFrame
 
     public class NotificationCenter
     {
-        private Dictionary<EventName, List<Action<object[]>>> allListeners = new Dictionary<EventName, List<Action<object[]>>>();
+        private Dictionary<EventName, List<Action<object>>> allListeners = new Dictionary<EventName, List<Action<object>>>();
 
         private static NotificationCenter _instance;
 
@@ -33,11 +33,11 @@ namespace NonsensicalFrame
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="action"></param>
-        public void AttachObsever(EventName eventName, Action<object[]> action)
+        public void AttachObsever(EventName eventName, Action<object> action)
         {
             if (!allListeners.Keys.Contains(eventName))
             {
-                allListeners.Add(eventName, new List<Action<object[]>>());
+                allListeners.Add(eventName, new List<Action<object>>());
             }
             allListeners[eventName].Add(action);
         }
@@ -47,7 +47,7 @@ namespace NonsensicalFrame
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="action"></param>
-        public void DetachObsever(EventName eventName, Action<object[]> action)
+        public void DetachObsever(EventName eventName, Action<object> action)
         {
             if (!allListeners.Keys.Contains(eventName))
             {
@@ -68,7 +68,7 @@ namespace NonsensicalFrame
         /// </summary>
         /// <param name="eventName"></param>
         /// <param name="objs"></param>
-        public void PostDispatch(EventName eventName, object[] objs)
+        public void PostDispatch(EventName eventName, object objs)
         {
             if (!allListeners.ContainsKey(eventName))
             {

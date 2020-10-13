@@ -1,0 +1,86 @@
+.box{
+    margin:100px auto;
+    width:1330px;
+}
+.box .onder{
+    position: relative;
+}
+.box .onder .bg{
+    position: absolute;
+    left:20px;
+    top:7px;
+  }
+.box .onder .logo{
+  position: absolute;
+  left:23px;
+  top:10px;
+  width:40px;
+  height:40px;
+}
+.box .onder .border{
+    position: absolute;
+    left:100px;
+    top:10px;
+}
+.box .onder .title{
+    position: absolute;
+    left:110px;
+    top:10px;
+    color:#fff;
+    font-size:20px;
+    font-weight: 600;
+}
+.box .onder .onderRight{
+    position: absolute;
+    right:10px;
+    top:10px;
+    /* background:yellow; */
+    display:flex;
+}
+.box .onder .onderRight .backbtn{
+    width:45px;
+    position: relative;
+    margin-right:8px;
+}
+.box .onder .onderRight .backbtn .back{
+    width:45px;
+    height:42px;
+    display:block;
+ }
+.box .onder .onderRight .backbtn .back1{
+   position: absolute;
+   left:7px;
+    top:7px;
+   
+}
+.box .onder .onderRight  .full{
+   margin-right:8px;  
+ }
+.box .under{
+    display:flex
+}
+.box .under .left{
+    width:200px;
+    padding-top:50px;
+}
+.box .under .left .buttonbox li{
+    list-style: none;
+    width:132px;
+    height:36px;
+    line-height:36px;
+    position: relative;
+    text-align: center;
+    margin-bottom:30px;
+    background:url("img/button.png");
+    color:#fff;
+    font-size:16px;
+}
+.box .under .left .buttonbox li:hover{
+    background:url("img/button1.png");
+}
+.box .under .right{
+    background:yellow;
+    margin-left:20px;
+    width:960px;
+    height:540px;
+}

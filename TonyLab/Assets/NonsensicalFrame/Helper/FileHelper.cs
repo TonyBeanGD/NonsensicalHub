@@ -146,7 +146,7 @@ namespace NonsensicalFrame
         /// <param name="_path">创建文件路径</param>
         /// <param name="_message">写入的消息</param>
         /// <returns>创建并写入成功则返回true，否则返回false</returns>
-        public static bool Create_And_Write(string _path, string _message)
+        public static bool CreateAndWrite(string _path, string _message)
         {
             FileStream fs = null;
             StreamWriter sw = null;
@@ -160,7 +160,7 @@ namespace NonsensicalFrame
             }
             catch (Exception e)
             {
-                Nonsensical_Manager.Debug_Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
+                Manager.GetInstance().Debug_Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
                 return false;
             }
             finally
@@ -196,7 +196,7 @@ namespace NonsensicalFrame
         /// 获取当前工作目录的完全限定路径
         /// </summary>
         /// <returns>当前工作目录的完全限定路径</returns>
-        public static string Get_Current_Path()
+        public static string GetCurrentPath()
         {
             string path = null;
             if (System.Environment.CurrentDirectory == AppDomain.CurrentDomain.BaseDirectory)//Windows应用程序则相等  

@@ -24,6 +24,7 @@ namespace NonsensicalServer
 
         public override void OnPost(HttpRequest request, HttpResponse response)
         {
+            logger.Log($"接受到POST请求{request.URL}");
             //获取客户端传递的参数
             string data = request.Params == null ? "" : string.Join(";", request.Params.Select(x => x.Key + "=" + x.Value).ToArray());
 
@@ -91,7 +92,7 @@ namespace NonsensicalServer
 
         public override void OnDefault(HttpRequest request, HttpResponse response)
         {
-
+            logger.Log($"接受到默认请求{request.URL}");
         }
 
         private string ConvertPath(string[] urls)
