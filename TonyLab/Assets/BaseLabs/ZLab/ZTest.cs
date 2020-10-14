@@ -11,22 +11,31 @@ public class ZTest : MonoBehaviour
         //获取变量名：
         string a = "Value";
         string s = GetVarName(p => a);
+        Debug.Log(s);
     }
 
+    /// <summary>
+    /// 获取变量名
+    /// 用法：
+    /// string a = "Value";
+    /// string s = GetVarName(p => a);
+    /// </summary>
+    /// <param name="exp"></param>
+    /// <returns></returns>
     public static string GetVarName(System.Linq.Expressions.Expression<Func<string, string>> exp)
     {
         return ((System.Linq.Expressions.MemberExpression)exp.Body).Member.Name;
     }
 
-    private void Test()
+    private void Test(string input)
     {
         //字节数组和字符串的相互转换
-        Byte[] buffer = Encoding.UTF8.GetBytes(Console.ReadLine());
+        Byte[] buffer = Encoding.UTF8.GetBytes(input);
         for (int i = 0; i < buffer.Length; i++)
         {
-            Console.WriteLine(buffer[i]);
+           Debug.Log(buffer[i]);
         }
-        Console.WriteLine(new UTF8Encoding().GetString(buffer, 0, buffer.Length));
+        Debug.Log(new UTF8Encoding().GetString(buffer, 0, buffer.Length));
     }
 }
 /* 

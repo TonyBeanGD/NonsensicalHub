@@ -26,8 +26,9 @@ public class Zoom : PostEffectsBase
     // 遮罩中心位置
     private Vector2 pos = new Vector4(0.5f, 0.5f);
 
-    void Start()
+ private new void Start()
     {
+        base.Start();
         //找到对应的Shader文件
         myShader = Shader.Find("Custom/Zoom");
     }

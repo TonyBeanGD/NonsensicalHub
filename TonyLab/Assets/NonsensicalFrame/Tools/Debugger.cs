@@ -52,37 +52,37 @@ namespace NonsensicalFrame
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.S))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetAllLog());
+                FileHelper.WriteTxt(path, GetAllLog());
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.L))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetLog (LogType.Log));
+                FileHelper.WriteTxt(path, GetLog (LogType.Log));
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.A))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetLog(LogType.Assert));
+                FileHelper.WriteTxt(path, GetLog(LogType.Assert));
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.E))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetLog(LogType.Error));
+                FileHelper.WriteTxt(path, GetLog(LogType.Error));
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.B))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetLog(LogType.Exception));
+                FileHelper.WriteTxt(path, GetLog(LogType.Exception));
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.RightControl) && Input.GetKeyDown(KeyCode.L))
             {
                 string path = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop), System.DateTime.Now.ToString("yyyyMMdd") + "UnityLog.txt");
-                FileHelper.CreateAndWrite(path, GetLog(LogType.Warning));
+                FileHelper.WriteTxt(path, GetLog(LogType.Warning));
             }
         }
 

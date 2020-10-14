@@ -141,12 +141,12 @@ namespace NonsensicalFrame
         }
 
         /// <summary>
-        /// 创建一个txt文件并往其中写入消息
+        /// 创建或读取一个txt文件并往其中写入文本(覆盖)
         /// </summary>
-        /// <param name="_path">创建文件路径</param>
-        /// <param name="_message">写入的消息</param>
+        /// <param name="_path">文件路径</param>
+        /// <param name="_text">写入的文本</param>
         /// <returns>创建并写入成功则返回true，否则返回false</returns>
-        public static bool CreateAndWrite(string _path, string _message)
+        public static bool WriteTxt(string _path, string _text)
         {
             FileStream fs = null;
             StreamWriter sw = null;
@@ -155,7 +155,7 @@ namespace NonsensicalFrame
             {
                 fs = new FileStream(_path, FileMode.Create);
                 sw = new StreamWriter(fs, Encoding.UTF8);
-                sw.Write(_message);
+                sw.Write(_text);
                 return true;
             }
             catch (Exception e)
@@ -179,7 +179,7 @@ namespace NonsensicalFrame
         /// <summary>
         /// 读取文档，逐行输出：
         /// </summary>
-        public List<string> ReadByLine()
+        public static List<string> ReadByLine()
         {
             StreamReader sr = new StreamReader(@"Debug.txt", Encoding.UTF8);
             string line;
@@ -190,7 +190,6 @@ namespace NonsensicalFrame
             }
             return lines;
         }
-
 
         /// <summary>
         /// 获取当前工作目录的完全限定路径
@@ -210,26 +209,62 @@ namespace NonsensicalFrame
             return path;
         }
 
-       
+        /// <summary>
+        /// 获取文件内容字符串
+        /// </summary>
+        /// <param name="_path"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string GetFileString(string _path,Encoding encoding=null)
+        {
+            if (encoding==null)
+            {
+                encoding = Encoding.UTF8;
+            }
+
+            if (!System.IO.File.Exists(_path))
+            {
+                return null;
+            }
+
+            StreamReader sr = null;
+
+            try
+            {
+                sr = new StreamReader(_path, encoding);
+                string content = sr.ReadToEnd();
+                return content;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                if (sr != null)
+                {
+                    sr.Close();
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="_path"></param>
+        /// <returns></returns>
+        public static bool DeleteFile(string _path)
+        {
+            try
+            {
+                File.Delete(_path);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
-
-/* 
-        ”我的文档“路径
-        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
-		
-		如何获取指定目录包含的文件和子目录
-		1. DirectoryInfo.GetFiles()：获取目录中（不包含子目录）的文件，返回类型为FileInfo[]，支持通配符查找；
-		2. DirectoryInfo.GetDirectories()：获取目录（不包含子目录）的子目录，返回类型为DirectoryInfo[]，支持通配符查找；
-		3. DirectoryInfo. GetFileSystemInfos()：获取指定目录下（不包含子目录）的文件和子目录，返回类型为FileSystemInfo[]，支持通配符查找；
-		如何获取指定文件的基本信息；
-		FileInfo.Exists：获取指定文件是否存在；
-		FileInfo.Name，FileInfo.Extensioin：获取文件的名称和扩展名；
-		FileInfo.FullName：获取文件的全限定名称（完整路径）；
-		FileInfo.Directory：获取文件所在目录，返回类型为DirectoryInfo；
-		FileInfo.DirectoryName：获取文件所在目录的路径（完整路径）；
-		FileInfo.Length：获取文件的大小（字节数）；
-		FileInfo.IsReadOnly：获取文件是否只读；
-		FileInfo.Attributes：获取或设置指定文件的属性，返回类型为FileAttributes枚举，可以是多个值的组合
-		FileInfo.CreationTime、FileInfo.LastAccessTime、FileInfo.LastWriteTime：分别用于获取文件的创建时间、访问时间、修改时间；
- */

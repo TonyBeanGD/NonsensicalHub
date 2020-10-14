@@ -5,12 +5,16 @@ using UnityEngine;
 
 public static class MeshHelper
 {
+    /// <summary>
+    /// 清除未被使用的定点
+    /// </summary>
+    /// <param name="mesh"></param>
     public static void ClearUnuseVertex(Mesh mesh)
     {
         //值类型转引用类型存储
         List<Vector3?> vertexsQuote = new List<Vector3?>();
-        List<Vector2> uv = new List<Vector2>();
-        List<Vector3> normals = new List<Vector3>();
+        List<Vector2> uv = new List<Vector2>(mesh.uv);
+        List<Vector3> normals = new List<Vector3>(mesh.normals);
 
         foreach (var item in mesh.vertices)
         {
@@ -61,10 +65,12 @@ public static class MeshHelper
         }
 
         //赋值mesh
+        mesh.triangles = triangles.ToArray();
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.normals = normals.ToArray();
-        mesh.triangles = triangles.ToArray();
+
+        Debug.Log(mesh.vertices.Length);
     }
 
     class TriangleContainer

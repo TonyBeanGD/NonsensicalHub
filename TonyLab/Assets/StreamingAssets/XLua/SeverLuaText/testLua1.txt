@@ -1,0 +1,12 @@
+﻿
+function Awake()
+    CS.UnityEngine.Debug.Log("Awake1");
+end
+
+function Update()
+
+end
+
+function OnDestroy()
+  CS.UnityEngine.Debug.Log("OnDestroy1");
+end

@@ -7,12 +7,13 @@ namespace NonsensicalFrame
 {
     public enum EventName
     {
-
+        LoadModelFormAB,
+        ResetAB,
     }
 
     public class NotificationCenter
     {
-        private Dictionary<EventName, List<Action<object>>> allListeners = new Dictionary<EventName, List<Action<object>>>();
+        private Dictionary<EventName, Action<object>> allListeners = new Dictionary<EventName, Action<object>>();
 
         private static NotificationCenter _instance;
 
@@ -37,9 +38,9 @@ namespace NonsensicalFrame
         {
             if (!allListeners.Keys.Contains(eventName))
             {
-                allListeners.Add(eventName, new List<Action<object>>());
+                allListeners.Add(eventName, action);
             }
-            allListeners[eventName].Add(action);
+            allListeners[eventName]+=action;
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace NonsensicalFrame
                 return;
             }
 
-            allListeners[eventName].Remove(action);
+            allListeners[eventName]-=(action);
 
             if (allListeners[eventName] == null)
             {
@@ -76,10 +77,7 @@ namespace NonsensicalFrame
                 return;
             }
 
-            foreach (var item in allListeners[eventName])
-            {
-                item(objs);
-            }
+            allListeners[eventName]?.Invoke(objs);
         }
 
         /// <summary>
