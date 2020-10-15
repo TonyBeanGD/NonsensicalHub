@@ -8,7 +8,7 @@ public class _3DPrinterPlus : MonoBehaviour {
     private List<Material> mats;
     private float value = 0;
     [SerializeField]
-    private float speed = 0.0005f;
+    private readonly float speed = 0.0005f;
 
     void Start()
     {
@@ -21,6 +21,7 @@ public class _3DPrinterPlus : MonoBehaviour {
             foreach (var item2 in item.materials)
             {
                 mats.Add(item2);
+
             }
         }
     }
@@ -32,6 +33,7 @@ public class _3DPrinterPlus : MonoBehaviour {
             foreach (var item in mats)
             {
                 item.SetFloat("_ConstructY", value += speed);
+                item.SetFloat("_ParentY", transform.position.y);
             }
         }
         if (Input.GetKeyDown(KeyCode.Space))

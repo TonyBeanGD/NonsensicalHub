@@ -330,28 +330,46 @@ public class RealCut : MonoBehaviour
         #endregion
 
         #region 缝合
-        for (int verticeIndex = 0; verticeIndex < SortAngleList.Count - 1; verticeIndex++)
-        {
-            if (Vector3.SignedAngle(verticeList[SortAngleList[verticeIndex + 1].Index] - verticeList[rawVerticeCount], verticeList[SortAngleList[verticeIndex].Index] - verticeList[rawVerticeCount], clipPlane.normal) > 0)
-            {
 
-                triangles1.Add(SortAngleList[verticeIndex + 1].Index);
+        Vector3 line1 = verticeList[rawVerticeCount + 1] - verticeList[rawVerticeCount];
+        Vector3 line2 = verticeList[rawVerticeCount + 2] - verticeList[rawVerticeCount];
+
+        float angle12 = Vector3.SignedAngle(line1.normalized, line2.normalized, clipPlane.normal);
+    
+        for (int verticeIndex = 0; verticeIndex < SortAngleList.Count ; verticeIndex++)
+        {
+            if (verticeIndex == 0&& angle12 < 0)
+            {
+                continue;
+            }
+            if (verticeIndex== SortAngleList.Count-1&& angle12 > 0)
+            {
+                continue;
+            }
+            int next = verticeIndex + 1;
+            if (next>= SortAngleList.Count)
+            {
+                next = 0;
+            }
+            if (Vector3.SignedAngle(verticeList[SortAngleList[next].Index] - verticeList[rawVerticeCount], verticeList[SortAngleList[verticeIndex].Index] - verticeList[rawVerticeCount], clipPlane.normal) > 0)
+            {
+                triangles1.Add(SortAngleList[next].Index);
                 triangles1.Add(SortAngleList[verticeIndex].Index);
                 triangles1.Add(rawVerticeCount);
 
                 triangles2.Add(rawVerticeCount);
                 triangles2.Add(SortAngleList[verticeIndex].Index);
-                triangles2.Add(SortAngleList[verticeIndex + 1].Index);
+                triangles2.Add(SortAngleList[next].Index);
             }
             else
             {
 
                 triangles1.Add(SortAngleList[verticeIndex].Index);
-                triangles1.Add(SortAngleList[verticeIndex + 1].Index);
+                triangles1.Add(SortAngleList[next].Index);
                 triangles1.Add(rawVerticeCount);
 
                 triangles2.Add(rawVerticeCount);
-                triangles2.Add(SortAngleList[verticeIndex + 1].Index);
+                triangles2.Add(SortAngleList[next].Index);
                 triangles2.Add(SortAngleList[verticeIndex].Index);
             }
         }

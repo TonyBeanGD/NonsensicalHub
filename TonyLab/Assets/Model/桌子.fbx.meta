@@ -1,15 +1,66 @@
 fileFormatVersion: 2
-guid: 166ff5946d697554da9a5b6b467a149d
+guid: b5ca1c759f8149a458500679306b8f67
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
     100000: //RootNode
+    100002: "\u684C\u817F1"
+    100004: "\u684C\u817F2"
+    100006: "\u684C\u817F3"
+    100008: "\u684C\u817F4"
+    100010: "\u684C\u9762"
     400000: //RootNode
-    2100000: No Name
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: "\u9525\u4F53"
-  externalObjects: {}
+    400002: "\u684C\u817F1"
+    400004: "\u684C\u817F2"
+    400006: "\u684C\u817F3"
+    400008: "\u684C\u817F4"
+    400010: "\u684C\u9762"
+    2100000: "\u684C\u9762"
+    2100002: "\u684C\u817F1"
+    2100004: "\u684C\u817F2"
+    2100006: "\u684C\u817F3"
+    2100008: "\u684C\u817F4"
+    2300000: "\u684C\u817F1"
+    2300002: "\u684C\u817F2"
+    2300004: "\u684C\u817F3"
+    2300006: "\u684C\u817F4"
+    2300008: "\u684C\u9762"
+    3300000: "\u684C\u817F1"
+    3300002: "\u684C\u817F2"
+    3300004: "\u684C\u817F3"
+    3300006: "\u684C\u817F4"
+    3300008: "\u684C\u9762"
+    4300000: "\u684C\u9762"
+    4300002: "\u684C\u817F1"
+    4300004: "\u684C\u817F2"
+    4300006: "\u684C\u817F3"
+    4300008: "\u684C\u817F4"
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u817F1"
+    second: {fileID: 2100000, guid: 416bb7f4c9368034a8e451313cadc0c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u817F2"
+    second: {fileID: 2100000, guid: 416bb7f4c9368034a8e451313cadc0c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u817F3"
+    second: {fileID: 2100000, guid: 416bb7f4c9368034a8e451313cadc0c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u817F4"
+    second: {fileID: 2100000, guid: 416bb7f4c9368034a8e451313cadc0c2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "\u684C\u9762"
+    second: {fileID: 2100000, guid: 7bf956444351d0345b1ed767778a1618, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -88,5 +139,5 @@ ModelImporter:
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
-  assetBundleName: cone
+  assetBundleName: desk
   assetBundleVariant: model

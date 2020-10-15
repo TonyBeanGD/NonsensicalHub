@@ -52,6 +52,8 @@
 		half _Metallic;
 		fixed4 _Color;
 
+		float _ParentY;
+
 		struct Input
 		{
 			float2 uv_MainTex;
@@ -81,14 +83,14 @@
 				s = 0;
 			}
 
-			if (IN.worldPos.y < _ConstructY)
+			if ( IN.worldPos.y -_ParentY< _ConstructY)
 			{
 				fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 				o.Albedo = c.rgb;
 				o.Alpha = c.a;
 				building = 0;
 			}
-			else if(IN.worldPos.y < _ConstructY + _ConstructGap +s)
+			else if(IN.worldPos.y-_ParentY < _ConstructY + _ConstructGap +s)
 			{
 				o.Albedo = _ConstructColor.rgb;
 				o.Alpha = _ConstructColor.a;
