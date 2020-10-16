@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 
 public class AssetBundleHelper : MonoBehaviour
 {
-
     public IEnumerator LoadWebAssetbundle(string uri, uint version, Action<AssetBundle> callback, uint crc = 0)
     {
         UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(uri, version, crc);

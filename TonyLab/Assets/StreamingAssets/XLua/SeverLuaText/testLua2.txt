@@ -1,0 +1,15 @@
+﻿
+function Init()
+  CS.UnityEngine.Debug.Log("Init2");
+  xlua.hotfix(CS.XLuaHotFixTest, 'GetMessage', function()
+                    return 'HotfixMessage'
+                end)
+end
+
+function Update()
+
+end
+
+function OnDestroy()
+  CS.UnityEngine.Debug.Log("OnDestroy2");
+end

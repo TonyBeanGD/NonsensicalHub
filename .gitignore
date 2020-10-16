@@ -57,3 +57,4 @@ crashlytics-build.properties
 # Builds
 *.apk
 *.unitypackage
+TonyLab/Assets/XLua/Gen/

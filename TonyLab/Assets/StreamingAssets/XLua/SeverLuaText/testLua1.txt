@@ -1,6 +1,6 @@
 ﻿
-function Awake()
-    CS.UnityEngine.Debug.Log("Awake1");
+function Init()
+    CS.UnityEngine.Debug.Log("Init1");
 end
 
 function Update()

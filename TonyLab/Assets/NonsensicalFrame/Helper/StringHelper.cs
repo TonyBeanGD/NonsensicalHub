@@ -56,6 +56,13 @@ namespace NonsensicalFrame
 
             return sb.ToString();
         }
+
+        public static string GetFileName(string path)
+        {
+            string[] paths = path.Split(new char[] { '/','\\'});
+            string name = paths[paths.Length-1];
+            return name;
+        }
         
         #endregion
 

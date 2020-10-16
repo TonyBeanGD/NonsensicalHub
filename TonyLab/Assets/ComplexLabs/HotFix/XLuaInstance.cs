@@ -13,7 +13,7 @@ public class XLuaInstance : MonoBehaviour
     private LuaTable scriptEnv;
 
     private LuaEnv luaEnv;
-    
+
     public void Init(string luaScript)
     {
         luaEnv = XLuaManager.luaEnv;
@@ -28,10 +28,10 @@ public class XLuaInstance : MonoBehaviour
         scriptEnv.Set("self", this);
         luaEnv.DoString(luaScript, "LuaTestScript", scriptEnv);
 
-        Action luaAwake = scriptEnv.Get<Action>("Awake");
+        Action luaAwake = scriptEnv.Get<Action>("Init");
         scriptEnv.Get("Update", out luaUpdate);
         scriptEnv.Get("OnDestroy", out luaOnDestroy);
-     
+
         luaAwake?.Invoke();
     }
 

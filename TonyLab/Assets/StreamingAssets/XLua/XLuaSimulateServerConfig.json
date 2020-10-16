@@ -1,7 +1,11 @@
 {
     "scriptList": [{
         "path": "F:/WorkSpace/NonsensicalHub/TonyLab/Assets/StreamingAssets/XLua/SeverLuaText/testLua1.txt",
-        "version": 1,
+        "version": 3,
+        "order": 1000
+    }, {
+        "path": "F:/WorkSpace/NonsensicalHub/TonyLab/Assets/StreamingAssets/XLua/SeverLuaText/testLua2.txt",
+        "version": 4,
         "order": 1000
     }]
 }

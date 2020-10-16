@@ -57,16 +57,21 @@ namespace NonsensicalFrame
         /// <param name="_bundleName"></param>
         /// <param name="_onComplete"></param>
         /// <param name="_onLoading"></param>
-        public void LoadAssetBundle(string _bundleName, Action<float> _onLoading = null)
+        public void LoadAssetBundle(string _bundleName,Action _onComplete, Action<float> _onLoading = null)
         {
             if (assstBundleDic.ContainsKey(_bundleName) == false)
             {
                 Debug.LogWarning($"错误的包名{_bundleName}");
                 return;
             }
+            if (assstBundleDic[_bundleName].AssetBundlePack == true)
+            {
+                _onComplete?.Invoke();
+                return;
+            }
             if (assstBundleDic[_bundleName].Loading == false)
             {
-                StartCoroutine(LoadAssetBundleCoroutine(_bundleName, _onLoading));
+                StartCoroutine(LoadAssetBundleCoroutine(_bundleName, _onComplete, _onLoading));
             }
         }
 
@@ -77,8 +82,20 @@ namespace NonsensicalFrame
         /// <param name="_onComplete"></param>
         /// <param name="_onLoading"></param>
         /// <returns></returns>
-        private IEnumerator LoadAssetBundleCoroutine(string _bundleName, Action<float> _onLoading = null)
+        private IEnumerator LoadAssetBundleCoroutine(string _bundleName,Action _onComplete, Action<float> _onLoading = null)
         {
+            string[] dependencies = assstBundleDic[_bundleName].Dependencies;
+            int completeCount = 0;
+            foreach (var item in dependencies)
+            {
+                assstBundleDic[item].DependencieCount++;
+                LoadAssetBundle(item,()=> { completeCount++; });
+            }
+            while (completeCount< dependencies.Length)
+            {
+                yield return null;
+            }
+
             string bundlePath = Path.Combine(assetBundlePath, _bundleName);
 
             AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(bundlePath);
@@ -104,6 +121,7 @@ namespace NonsensicalFrame
             {
                 Debug.LogError($"AB包加载失败，路径：{bundlePath}");
             }
+            _onComplete?.Invoke();
         }
 
         public void LoadResource<T>(string _resourcesNameOrPath, string _bundleName, Action<T> _onComplete) where T : UnityEngine.Object
@@ -126,7 +144,7 @@ namespace NonsensicalFrame
                     assstBundleDic[_bundleName].LoadCount++;
                     StartCoroutine(LoadResourceCoroutine<T>(_resourcesNameOrPath, assstBundleDic[_bundleName].AssetBundlePack, _onComplete));
                 };
-                LoadAssetBundle(_bundleName);
+                LoadAssetBundle(_bundleName,null);
             }
         }
 
