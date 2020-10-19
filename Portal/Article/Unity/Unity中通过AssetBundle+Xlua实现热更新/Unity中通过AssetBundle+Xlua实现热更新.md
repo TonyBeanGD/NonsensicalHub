@@ -16,6 +16,7 @@
     using LitJson;
     using System.IO;
     using System.Text;
+    using UnityEngine.Networking;
 
     public class XLuaManager : MonoBehaviour
     {
@@ -57,8 +58,8 @@
             int loadCount = 0;
             string localConfig = string.Empty;
             string serverConfig = string.Empty;
-            StartCoroutine(GetText(Path.Combine(Application.streamingAssetsPath, "XLua",     "XLuaLocalConfig.json"), (text) => { localConfig = text; loadCount++; },true));
-            StartCoroutine(GetText(Path.Combine(Application.streamingAssetsPath, "XLua",     "XLuaSimulateServerConfig.json"), (text) => { serverConfig = text; loadCount++; }, false)   );
+            StartCoroutine(GetText(Path.Combine(Application.streamingAssetsPath, "XLua", "XLuaLocalConfig.json"), (text) => { localConfig = text; loadCount++; }, true));
+            StartCoroutine(GetText(Path.Combine(Application.streamingAssetsPath, "XLua", "XLuaSimulateServerConfig.json"), (text) => { serverConfig = text; loadCount++; }, false));
 
             while (loadCount < 2)
             {
@@ -93,7 +94,7 @@
             localLuaConfig.scriptList.Sort();
             StartCoroutine(LoadXlua(localLuaConfig));
 
-            WriteTxt(Path.Combine(Application.streamingAssetsPath, "XLua",   "XLuaLocalConfig.json"), JsonMapper.ToJson(localLuaConfig));
+            WriteTxt(Path.Combine(Application.streamingAssetsPath, "XLua", "XLuaLocalConfig.json"), JsonMapper.ToJson(localLuaConfig));
         }
 
         private IEnumerator LoadXlua(LuaConfig luaConfig)
@@ -147,6 +148,62 @@
             }
         }
 
+        public bool WriteTxt(string _path, string _text)
+        {
+            FileStream fs = null;
+            StreamWriter sw = null;
+
+            try
+            {
+                fs = new FileStream(_path, FileMode.Create);
+                sw = new StreamWriter(fs, Encoding.UTF8);
+                sw.Write(_text);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
+                return false;
+            }
+            finally
+            {
+                if (sw != null)
+                {
+                    sw.Close();
+                }
+                if (fs != null)
+                {
+                    fs.Close();
+                }
+            }
+        }
+
+        public IEnumerator GetText(string url, Action<string> actionResult, bool removeBOM = false)
+        {
+            UnityWebRequest unityWebRequest = new UnityWebRequest(url)
+            {
+                downloadHandler = new DownloadHandlerBuffer()
+            };
+
+            yield return unityWebRequest.SendWebRequest();
+
+            if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+            {
+                Debug.LogWarning(url + " 请求文本出错 " + unityWebRequest.error + "|" + unityWebRequest.downloadHandler.text);
+                actionResult?.Invoke(null);
+            }
+            else
+            {
+                string text = unityWebRequest.downloadHandler.text;
+                if (removeBOM)
+                {
+                    text = text.Substring(1);
+                }
+                actionResult?.Invoke(text);
+            }
+            unityWebRequest.Dispose();
+        }
+
         private class LuaConfig
         {
             public List<LuaConfigElement> scriptList;
@@ -181,7 +238,7 @@
 
                 return copy;
             }
-
+            
             public void Update(LuaConfig target, string dicPath)
             {
                 //删除更新后不存在或者有新版本的对象
@@ -192,15 +249,15 @@
 
                     if (target.GetElementByPath(scriptList[i].path) == null)
                     {
-                        NonsensicalFrame.FileHelper.DeleteFile(Path.Combine(dicPath, name));
+                        DeleteFile(Path.Combine(dicPath, name));
                         scriptList.RemoveAt(i);
                         i--;
                     }
                     else
                     {
-                        if (target.GetElementByPath(scriptList[i].path).version > scriptList[i].    version)
+                        if (target.GetElementByPath(scriptList[i].path).version > scriptList[i].version)
                         {
-                            NonsensicalFrame.FileHelper.DeleteFile(Path.Combine(dicPath, name));
+                            DeleteFile(Path.Combine(dicPath, name));
                             scriptList.RemoveAt(i);
                             i--;
                         }
@@ -215,66 +272,28 @@
                     }
                     else
                     {
-                        LuaConfigElement crtElement = this.GetElementByPath(target.scriptList[i].   path);
+                        LuaConfigElement crtElement = this.GetElementByPath(target.scriptList[i].path);
                         crtElement.order = target.scriptList[i].order;
                     }
                 }
             }
 
-            public static bool WriteTxt(string _path, string _text)
+            /// <summary>
+            /// 删除文件
+            /// </summary>
+            /// <param name="_path"></param>
+            /// <returns></returns>
+            public static bool DeleteFile(string _path)
             {
-                FileStream fs = null;
-                StreamWriter sw = null;
-
                 try
                 {
-                    fs = new FileStream(_path, FileMode.Create);
-                    sw = new StreamWriter(fs, Encoding.UTF8);
-                    sw.Write(_text);
+                    File.Delete(_path);
                     return true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Manager.GetInstance().Debug_Log(DateTime.Now.Date.ToShortTimeString() + ":" + e.Message);
                     return false;
                 }
-                finally
-                {
-                    if (sw != null)
-                    {
-                        sw.Close();
-                    }
-                    if (fs != null)
-                    {
-                        fs.Close();
-                    }
-                }
-            }
-
-            public static IEnumerator GetText(string url, Action<string> actionResult,bool removeBOM=false)
-            {
-                UnityWebRequest unityWebRequest = new UnityWebRequest(url)
-                {
-                    downloadHandler = new DownloadHandlerBuffer()
-                };
-
-                yield return unityWebRequest.SendWebRequest();
-
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
-                {
-                    Debug.LogWarning(url + " 请求文本出错 " + unityWebRequest.error + "|" + unityWebRequest.downloadHandler.text);
-                    actionResult?.Invoke(null);
-                }
-                else
-                {
-                    string text = unityWebRequest.downloadHandler.text;
-                    if (removeBOM)
-                    {
-                        text = text.Substring(1);
-                    }
-                    actionResult?.Invoke(text);
-                }
-                unityWebRequest.Dispose();
             }
 
             public class LuaConfigElement : IComparable<LuaConfigElement>

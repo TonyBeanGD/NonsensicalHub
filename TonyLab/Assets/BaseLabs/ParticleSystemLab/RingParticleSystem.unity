@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 1181472493}
   - component: {fileID: 1181472492}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -125,8 +125,8 @@ public class AutoFixedBoxCollider : EditorWindow
         go.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
         Bounds bounds = Renderer.bounds;
         go.transform.rotation = qn;
-
-        bc.size = bounds.size;
+        
+        bc.size = new Vector3(bounds.size .x/ go.transform.lossyScale.x, bounds.size.y / go.transform.lossyScale.y, bounds.size.z / go.transform.lossyScale.z) ;
     }
 
     /// <summary>
@@ -165,7 +165,8 @@ public class AutoFixedBoxCollider : EditorWindow
 
         collider.isTrigger = true;
         collider.center = bounds.center - go.transform.position;
-        collider.size = bounds.size;
+
+        collider.size = new Vector3(bounds.size.x / go.transform.lossyScale.x, bounds.size.y / go.transform.lossyScale.y, bounds.size.z / go.transform.lossyScale.z);
 
         go.transform.rotation = qn;
     }

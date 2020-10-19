@@ -8,22 +8,30 @@ namespace NonsensicalFrame
     /// <summary>
     /// 框选工具
     /// </summary>
-    public class AllSelect : MonoBehaviour
+    public class SelectionTool : MonoBehaviour
     {
         public List<Transform> crtSelectTargets;
-
         public Transform[] needCheckTargets;
+        public bool IsOpenSelect {  get;  set; } = false;//是否开启框选
+        public Action OnSelectOver;
 
-        public static bool isOpenSelect = false;//是否开启框选
-        public Color rectColor = Color.green;//框选使用的颜色
-        private Vector3 start = Vector3.zero;//记下鼠标按下位置
-        public Material rectMat = null;//这里使用Sprite下的defaultshader的材质即可
-        public float frameWidth = 2.5f;//边框的宽度
-        [Range(0, 1)]
-        public float frameAlpha = 0.8f;//边框的透明度
+        [SerializeField]
+        private Color rectColor = Color.green;//框选使用的颜色
+        [SerializeField]
+        private Material rectMat = null;//这里使用Sprite下的defaultshader的材质即可
+        [SerializeField]
+        private float frameWidth = 2.5f;//边框的宽度
+        [SerializeField,Range(0, 1)]
+        private float frameAlpha = 0.8f;//边框的透明度
+
         private Color mainColor;//主要颜色
         private Color frameColor;//边框的颜色
-        private bool drawRectangle = false;//是否开始画线标志
+        private Vector3 start = Vector3.zero;//记下鼠标按下位置
+        private bool drawRectangle = false;//是否画线
+
+        private List<Transform> lastTargets;//上一次点击时的对象链表
+        private List<Transform> crtTargets;//鼠标当前位置的对象链表
+        private int index = 0;//当前选择的对象的索引
 
         void Start()
         {
@@ -40,7 +48,7 @@ namespace NonsensicalFrame
             mainColor = new Color(rectColor.r, rectColor.g, rectColor.b, 0.1f);
 #endif
 
-            if (isOpenSelect)
+            if (IsOpenSelect)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -50,9 +58,38 @@ namespace NonsensicalFrame
 
                 if (Input.GetMouseButtonUp(0) && drawRectangle)
                 {
-                    drawRectangle = false;//如果鼠标左键放开 结束画线
-                    CheckSelection(start, Input.mousePosition);
+                    if (Vector3.Distance( start, Input.mousePosition) >0)
+                    {
+                        drawRectangle = false;//如果鼠标左键放开 结束画线
+                        CheckSelection(start, Input.mousePosition);
+                    }
+                    else
+                    {
+                        UpdateCrtTargets();
+
+                        crtSelectTargets.Clear();
+
+                        if (crtTargets.Count > 0)
+                        {
+                            if (lastTargets == null || CompareList(lastTargets, crtTargets) == false)
+                            {
+                                index = 0;
+                                lastTargets = new List<Transform>(crtTargets.ToArray());
+                            }
+                            else
+                            {
+                                index++;
+                                if (index >= crtTargets.Count)
+                                {
+                                    index = 0;
+                                }
+                            }
+
+                            crtSelectTargets.Add(crtTargets[index]);
+                        }
+                    }
                 }
+                OnSelectOver?.Invoke();
             }
         }
 
@@ -62,6 +99,10 @@ namespace NonsensicalFrame
             if (drawRectangle)
             {
                 Vector3 end = Input.mousePosition;//鼠标当前位置
+                if (Vector3.Distance(start,end)==0)
+                {
+                    return;
+                }
                 GL.PushMatrix();//保存摄像机变换矩阵,把投影视图矩阵和模型视图矩阵压入堆栈保存
                 if (!rectMat)
                     return;
@@ -119,12 +160,46 @@ namespace NonsensicalFrame
 
                 GL.PopMatrix();//恢复摄像机投影矩阵
             }
+        }
 
+        /// <summary>
+        /// 更新当前选择对象链表
+        /// </summary>
+        private void UpdateCrtTargets()
+        {
+            crtTargets.Clear();
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit[] hitInfos = Physics.RaycastAll(ray, 100);
+            
+            foreach (var item in hitInfos)
+            {
+                crtTargets.Add(item.transform);
+            }
+        }
 
+        /// <summary>
+        /// 比较两个链表内容是否相等
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list1"></param>
+        /// <param name="list2"></param>
+        /// <returns>为true时代表相等</returns>
+        private bool CompareList<T>(List<T> list1, List<T> list2)
+        {
+            if (list1.Count != list2.Count)
+            {
+                return false;
+            }
 
+            for (int i = 0; i < list1.Count; i++)
+            {
+                if (list1[i].Equals(list2[i]) == false)
+                {
+                    return false;
+                }
+            }
 
-            //DrawHorizonLine();
-            //Debug.LogWarning(Screen.width);
+            return true;
         }
 
         /// <summary>
@@ -174,17 +249,12 @@ namespace NonsensicalFrame
 
             foreach (Transform obj in needCheckTargets)
             {
-                if (obj.GetComponent<BoxCollider>() != null)
-                {
-                    BoxCollider bound = obj.GetComponent<BoxCollider>();
-                    Vector3 center = obj.transform.right * bound.center.x + obj.transform.up * bound.center.y + obj.transform.forward * bound.center.z;
-                    Vector3 location = Camera.main.WorldToScreenPoint(obj.transform.position + center);//把对象的position+boxcenter转换成屏幕坐标
+                    Vector3 location = Camera.main.WorldToScreenPoint(obj.transform.position );//把对象的position+boxcenter转换成屏幕坐标
                     if (location.x > p1.x && location.x < p2.x && location.y > p1.y && location.y < p2.y
                     && location.z > Camera.main.nearClipPlane && location.z < Camera.main.farClipPlane)//z方向就用摄像机的设定值，看不见的也不需要选择了
                     {
                         crtSelectTargets.Add(obj);
                     }
-                }
             }
         }
     }
