@@ -6,7 +6,7 @@ using UnityEngine;
 public static class MeshHelper
 {
     /// <summary>
-    /// 清除未被使用的定点
+    /// 清除未被使用的顶点
     /// </summary>
     /// <param name="mesh"></param>
     public static void ClearUnuseVertex(Mesh mesh)
@@ -69,11 +69,35 @@ public static class MeshHelper
         mesh.vertices = vertices.ToArray();
         mesh.uv = uv.ToArray();
         mesh.normals = normals.ToArray();
-
-        Debug.Log(mesh.vertices.Length);
     }
 
-    class TriangleContainer
+    /// <summary>
+    /// 根据顶点数组求出质点并返回回偏移量
+    /// </summary>
+    /// <param name="mesh">需要求质点的mesh</param>
+    /// <returns></returns>
+    public static Vector3 AutoCentroidShift(Mesh mesh)
+    {
+        Vector3[] vertices = mesh.vertices;
+
+        Vector3 sum = Vector3.zero;
+
+        foreach (var item in vertices)
+        {
+            sum += item;
+        }
+
+        Vector3 offSet = -sum / vertices.Length;
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] += offSet;
+        }
+       
+        return offSet;
+    }
+
+    private class TriangleContainer
     {
         public Vector3? Vertice;
 

@@ -287,6 +287,7 @@ public class RealCut : MonoBehaviour
 
         #region 重新排序面上的顶点
         List<SortAngle> SortAngleList = new List<SortAngle>();
+        
         for (int verticeIndex = rawVerticeCount + 1; verticeIndex < verticeList.Count; verticeIndex++)
         {
             //计算角度,以0-1为参照，01一定是相邻的两个点（从同一个三角形中切出的点）
@@ -297,8 +298,7 @@ public class RealCut : MonoBehaviour
             {
                 continue;
             }
-            float angle = Vector3.SignedAngle(line0to1.normalized, line0toi.normalized, clipPlane.normal);
-
+            float angle = Vector3.Angle(line0to1, line0toi);
 
             bool isExistSameAngel = false;
             for (int i = 0; i < SortAngleList.Count; ++i)
@@ -333,16 +333,22 @@ public class RealCut : MonoBehaviour
 
         Vector3 line1 = verticeList[rawVerticeCount + 1] - verticeList[rawVerticeCount];
         Vector3 line2 = verticeList[rawVerticeCount + 2] - verticeList[rawVerticeCount];
+        Vector3 line3 = verticeList[rawVerticeCount + 3] - verticeList[rawVerticeCount];
 
-        float angle12 = Vector3.SignedAngle(line1.normalized, line2.normalized, clipPlane.normal);
-    
+        float angle12 = Vector3.Angle(line1, line2);
+        float angle13 = Vector3.Angle(line1, line3);
+
+        bool type1 = angle12 < angle13;
+
+
         for (int verticeIndex = 0; verticeIndex < SortAngleList.Count ; verticeIndex++)
         {
-            if (verticeIndex == 0&& angle12 < 0)
+
+            if (verticeIndex == 0&& !type1)
             {
                 continue;
             }
-            if (verticeIndex== SortAngleList.Count-1&& angle12 > 0)
+            if (verticeIndex== SortAngleList.Count-1&& type1)
             {
                 continue;
             }
@@ -379,7 +385,7 @@ public class RealCut : MonoBehaviour
         mf.mesh.uv = uvList.ToArray();
         mf.mesh.normals = normalList.ToArray();
         mf.mesh.triangles = triangles1.ToArray();
-
+        
         GameObject newModel = new GameObject("New Model");
         MeshFilter meshFilter = newModel.AddComponent<MeshFilter>();
         meshFilter.mesh.vertices = mf.mesh.vertices;
@@ -392,7 +398,16 @@ public class RealCut : MonoBehaviour
         newModel.AddComponent<RealCut>();
 
         MeshHelper.ClearUnuseVertex(mf.mesh);
+        mf.transform.position+= MeshHelper.AutoCentroidShift(mf.mesh);
+        mf.GetComponent<MeshCollider>().sharedMesh = mf.mesh;
         MeshHelper.ClearUnuseVertex(meshFilter.mesh);
+        newModel.transform.position += MeshHelper.AutoCentroidShift(meshFilter.mesh);
+        newModel.AddComponent<MeshCollider>();
+        newModel.GetComponent<MeshCollider>().convex=true;
+
+
+        newModel.AddComponent<Rigidbody>();
+        newModel.GetComponent<Rigidbody>().drag = 1 ;
     }
 
     /// <summary>

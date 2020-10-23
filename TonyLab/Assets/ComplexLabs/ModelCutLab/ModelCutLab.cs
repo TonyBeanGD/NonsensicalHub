@@ -12,6 +12,7 @@ public class ModelCutLab : MonoBehaviour
     {
         mesh = GetComponent<MeshRenderer>().material;
     }
+    
 
     private void Update()
     {

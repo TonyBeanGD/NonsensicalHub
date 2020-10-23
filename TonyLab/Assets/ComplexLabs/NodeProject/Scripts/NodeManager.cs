@@ -9,6 +9,11 @@ public class NodeManager : MonoBehaviour
 {
     AssetBundle test;
 
+    private void Start()
+    {
+        
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
