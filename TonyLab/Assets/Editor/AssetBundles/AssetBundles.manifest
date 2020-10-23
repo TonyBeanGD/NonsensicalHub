@@ -1,43 +1,63 @@
 ManifestFileVersion: 0
-CRC: 1582011769
+CRC: 3799051021
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
+      Name: cone.prefab
+      Dependencies:
+        Dependency_0: simplewhite.mat
+        Dependency_1: cone.model
+    Info_1:
+      Name: metal.mat
+      Dependencies: {}
+    Info_2:
       Name: desk.prefab
       Dependencies:
         Dependency_0: metal.mat
         Dependency_1: wood.mat
         Dependency_2: desk.model
-    Info_1:
-      Name: torus.prefab
-      Dependencies:
-        Dependency_0: torus.model
-    Info_2:
-      Name: cone.prefab
-      Dependencies:
-        Dependency_0: cone.model
     Info_3:
-      Name: metal.texture
+      Name: wood.mat
       Dependencies: {}
     Info_4:
-      Name: metal.mat
+      Name: torus.prefab
       Dependencies:
-        Dependency_0: metal.texture
+        Dependency_0: simplewhite.mat
+        Dependency_1: torus.model
     Info_5:
-      Name: wood.texture
-      Dependencies: {}
-    Info_6:
-      Name: wood.mat
+      Name: cuball.prefab
       Dependencies:
-        Dependency_0: wood.texture
+        Dependency_0: simplered.mat
+        Dependency_1: simplegreen.mat
+    Info_6:
+      Name: simplered.mat
+      Dependencies: {}
     Info_7:
+      Name: simplegreen.mat
+      Dependencies: {}
+    Info_8:
+      Name: simplewhite.mat
+      Dependencies: {}
+    Info_9:
+      Name: woodcone.prefab
+      Dependencies:
+        Dependency_0: wood.mat
+        Dependency_1: cone.model
+    Info_10:
+      Name: grey.mat
+      Dependencies: {}
+    Info_11:
+      Name: cone.model
+      Dependencies: {}
+    Info_12:
       Name: desk.model
       Dependencies:
         Dependency_0: metal.mat
         Dependency_1: wood.mat
-    Info_8:
+    Info_13:
       Name: torus.model
       Dependencies: {}
-    Info_9:
-      Name: cone.model
-      Dependencies: {}
+    Info_14:
+      Name: greycube.prefab
+      Dependencies:
+        Dependency_0: grey.mat

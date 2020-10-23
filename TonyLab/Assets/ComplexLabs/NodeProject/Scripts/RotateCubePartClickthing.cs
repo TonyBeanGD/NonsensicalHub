@@ -17,9 +17,11 @@ public class RotateCubePartClickthing : MonoBehaviour
     {
         //NotificationCenter.Instance().PostDispatch(ActionType.PartClick, new Notification(transform.localPosition, this));
     }
-
+    
     protected virtual void OnMouseExit()
     {
         //NotificationCenter.Instance().PostDispatch(ActionType.PartExit, new Notification( this));
     }
+
+
 }

@@ -18,7 +18,7 @@ namespace NonsensicalFrame
         [SerializeField]
         private Color rectColor = Color.green;//框选使用的颜色
         [SerializeField]
-        private Material rectMat = null;//这里使用Sprite下的defaultshader的材质即可
+        private Material lineMaterial = null;//这里使用Sprite下的defaultshader的材质即可
         [SerializeField]
         private float frameWidth = 2.5f;//边框的宽度
         [SerializeField,Range(0, 1)]
@@ -37,8 +37,6 @@ namespace NonsensicalFrame
         {
             frameColor = new Color(rectColor.r, rectColor.g, rectColor.b, frameAlpha);
             mainColor = new Color(rectColor.r, rectColor.g, rectColor.b, 0.1f);
-            rectMat.hideFlags = HideFlags.None;
-            rectMat.shader.hideFlags = HideFlags.None;//不显示在hierarchy面板中的组合，不保存到场景并且卸载Resources.UnloadUnusedAssets不卸载的对象。
         }
 
         void Update()
@@ -98,15 +96,16 @@ namespace NonsensicalFrame
             //画线这种操作推荐在OnPostRender（）里进行 而不是直接放在Update，所以需要标志来开启
             if (drawRectangle)
             {
+                CreateLineMaterial();
                 Vector3 end = Input.mousePosition;//鼠标当前位置
                 if (Vector3.Distance(start,end)==0)
                 {
                     return;
                 }
                 GL.PushMatrix();//保存摄像机变换矩阵,把投影视图矩阵和模型视图矩阵压入堆栈保存
-                if (!rectMat)
+                if (!lineMaterial)
                     return;
-                rectMat.SetPass(0);//为渲染激活给定的pass。
+                lineMaterial.SetPass(0);//为渲染激活给定的pass。
                 GL.LoadPixelMatrix();//设置用屏幕坐标绘图
                 GL.Begin(GL.QUADS);//开始绘制矩形
                 GL.Color(mainColor);//设置颜色和透明度，方框内部透明
@@ -257,5 +256,21 @@ namespace NonsensicalFrame
                     }
             }
         }
+
+
+        private void CreateLineMaterial()
+        {
+            if (!lineMaterial)
+            {
+                Shader shader = Shader.Find("Hidden/Internal-Colored");
+                lineMaterial = new Material(shader);
+                lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+                lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+                lineMaterial.SetInt("_ZWrite", 0);
+            }
+        }
+
     }
 }

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1402243088
+CRC: 678371819
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 9b8b9794734ffe1ce071a6a5787c8007
+    Hash: 587513f249b04925e7ee74efc048f823
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6cce62a4d4d67c4e2ef1c17bcee1d794
@@ -24,5 +24,5 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 Assets:
-- Assets/Model/Cone.fbx
+- Assets/Editor/Model/Cone.fbx
 Dependencies: []

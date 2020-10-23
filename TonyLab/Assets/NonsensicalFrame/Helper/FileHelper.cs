@@ -13,98 +13,20 @@ namespace NonsensicalFrame
         /// </summary>
         /// <param name="_filepath1">源文件</param>
         /// <param name="_filepath2">目标文件</param>
-        /// <returns>当数据转移成功时时，返回真，否则返回假</returns>
-        public static bool Transfer_Data(string _filepath1, string _filepath2)
-        {
-            if (!System.IO.File.Exists(_filepath1) || !System.IO.File.Exists(_filepath1))
-            {
-                return false;
-            }
-
-            StreamReader sr = null;
-            FileStream fs = null;
-
-            try
-            {
-                sr = new StreamReader(_filepath1, Encoding.UTF8);
-                string content = sr.ReadToEnd();
-
-                fs = new FileStream(_filepath2, FileMode.Create);
-                byte[] data = Encoding.UTF8.GetBytes(content);
-                fs.Write(data, 0, data.Length);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                if (sr != null)
-                {
-                    sr.Close();
-                }
-                if (fs != null)
-                {
-                    fs.Close();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 转移数据，将源文件的内容作为文本覆盖到目标文件（默认使用UTF-8编码）
-        /// </summary>
-        /// <param name="_filepath1">源文件</param>
-        /// <param name="_filepath2">目标文件</param>
-        /// <param name="_encoding">编码格式</param>
-        /// <returns>当转移成功时时，返回真，否则返回假</returns>
-        public static bool Transfer_Data(string _filepath1, string _filepath2, Encoding _encoding)
-        {
-            StreamReader sr = null;
-            FileStream fs = null;
-
-            if (!System.IO.File.Exists(_filepath1) || !System.IO.File.Exists(_filepath1))
-            {
-                return false;
-            }
-
-            try
-            {
-                sr = new StreamReader(_filepath1, Encoding.UTF8);
-                string content = sr.ReadToEnd();
-
-                fs = new FileStream(_filepath2, FileMode.Create);
-                byte[] data = _encoding.GetBytes(content);
-                fs.Write(data, 0, data.Length);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                if (sr != null)
-                {
-                    sr.Close();
-                }
-                if (fs != null)
-                {
-                    fs.Close();
-                }
-            }
-        }
-
-        /// <summary>
-        /// 转移数据，将源文件的内容作为文本覆盖到目标文件（默认使用UTF-8编码）
-        /// </summary>
-        /// <param name="_filepath1">源文件</param>
-        /// <param name="_filepath2">目标文件</param>
         /// <param name="_origin">源文件编码格式</param>
         /// <param name="_target">目标文件编码格式</param>
         /// <returns>当转移成功时时，返回真，否则返回假</returns>
-        public static bool Transfer_Data(string _filepath1, string _filepath2, Encoding _origin, Encoding _target)
+        public static bool TransferData(string _filepath1, string _filepath2, Encoding _origin =null, Encoding _target=null)
         {
+            if (_origin==null)
+            {
+                _origin = Encoding.UTF8;
+            }
+            if (_target == null)
+            {
+                _target = Encoding.UTF8;
+            }
+
             StreamReader sr = null;
             FileStream fs = null;
 
@@ -176,6 +98,31 @@ namespace NonsensicalFrame
             }
         }
 
+        public static bool FileAppendWrite(string _path,string _name, string _text)
+        {
+            if (!Directory.Exists(_path))
+            {
+                Directory.CreateDirectory(_path);
+            }
+            string pathStr = _path + _name;
+            try
+            {
+                using (FileStream fs = new FileStream(pathStr, FileMode.Append, FileAccess.Write, FileShare.Write))
+                {
+                    using (StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8))
+                    {
+                        sw.Write(_text );
+                        sw.Flush();
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// 读取文档，逐行输出：
         /// </summary>
@@ -213,40 +160,19 @@ namespace NonsensicalFrame
         /// 获取文件内容字符串
         /// </summary>
         /// <param name="_path"></param>
-        /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string GetFileString(string _path,Encoding encoding=null)
+        public static string GetFileString(string _path)
         {
-            if (encoding==null)
-            {
-                encoding = Encoding.UTF8;
-            }
-
             if (!System.IO.File.Exists(_path))
             {
                 return null;
             }
-
-            StreamReader sr = null;
-
-            try
+            
+            using (StreamReader file = File.OpenText(_path))
             {
-                sr = new StreamReader(_path, encoding);
-                string content = sr.ReadToEnd();
-                return content;
+                string fileContent = file.ReadToEnd();
+                return fileContent;
             }
-            catch (Exception)
-            {
-                return null;
-            }
-            finally
-            {
-                if (sr != null)
-                {
-                    sr.Close();
-                }
-            }
-
         }
 
         /// <summary>

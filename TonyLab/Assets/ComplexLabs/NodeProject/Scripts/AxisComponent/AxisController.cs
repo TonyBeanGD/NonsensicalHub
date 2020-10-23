@@ -1,8 +1,7 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using XProject.Models;
-//using System;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
 
 //public enum AxisDirection
 //{
@@ -23,8 +22,8 @@
 //    SELECT,//选择状态（不显示轴）
 //}
 
-//public class AxisController : MonoBehaviour
-//{
+public class AxisController : MonoBehaviour
+{
 //    private bool isClickAxis;                //是否在点击轴
 
 //    [SerializeField]
@@ -80,7 +79,7 @@
 //        scaAxis = transform.Find("缩放轴");
 //        SwitchAxis(new Notification(3, this));
 //    }
-    
+
 //    private void Update()
 //    {
 //        if (GameManager.instance.clickObjs.Count > 0)
@@ -113,7 +112,7 @@
 //                        startPos.x += Input.GetAxis("Mouse X");
 //                        startPos.y += Input.GetAxis("Mouse Y");
 //                    }
-                    
+
 //                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(startPos);
 
 //                    Vector3 offset = worldPos - lastPos;
@@ -343,7 +342,7 @@
 //    public void RotAxisDormancy(Notification noti)
 //    {
 //        isRotClick = false;
-        
+
 //        if (crtTarget.transform.eulerAngles != previousRot)
 //        {
 //            NotificationCenter.Instance().PostDispatch(ActionType.RecordOperater, new Notification(operateRecord, this));
@@ -572,4 +571,4 @@
 //            }
 //        }
 //    }
-//}
+}

@@ -89,6 +89,13 @@ namespace NonsensicalFrame
             unityWebRequest.Dispose();
         }
 
+        /// <summary>
+        /// 请求文本
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="actionResult"></param>
+        /// <param name="removeBOM"></param>
+        /// <returns></returns>
         public static IEnumerator GetText(string url, Action<string> actionResult,bool removeBOM=false)
         {
             UnityWebRequest unityWebRequest = new UnityWebRequest(url)

@@ -1,14 +1,13 @@
-﻿
-//using System;
-//using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 //public enum AxisDirection
 //{
 //    x,y,z,
 //}
 
-//public class ClickMove : MonoBehaviour
-//{
+public class ClickMove : MonoBehaviour
+{
 //    [SerializeField]
 //    private AxisDirection dir;//当前脚本挂载的轴的方向
 //    [SerializeField]
@@ -47,4 +46,4 @@
 //        GetComponent<MeshRenderer>().material.SetInt("_MainIntensity", 1);
 //        GetComponent<MeshRenderer>().material.SetInt("_SecondIntensity", 0);
 //    }
-//}
+}

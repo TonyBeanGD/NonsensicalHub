@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1590981099
+CRC: 2980942273
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 0d1b04eef3aa2a1da3858d360956b4ca
+    Hash: 7e04816e6444f34e42644cb83c7f2cfb
   TypeTreeHash:
     serializedVersion: 2
     Hash: abb9b9167ab0d9f4af2beeb617361f49
@@ -16,6 +16,6 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 Assets:
-- "Assets/Materials/\u6728\u5934\u6750\u8D28.mat"
-Dependencies:
-- F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/wood.texture
+- "Assets/Editor/Materials/\u6728\u5934\u6750\u8D28.mat"
+- "Assets/Editor/Materials/\u6728\u5934\u7EB9\u7406.png"
+Dependencies: []

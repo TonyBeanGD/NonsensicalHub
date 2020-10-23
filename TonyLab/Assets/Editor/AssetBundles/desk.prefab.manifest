@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3897548488
+CRC: 1892989897
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e30985dbbe81c564adce99a89ec63c21
+    Hash: 85cfcfdc097dbd11fd74b9b52850205c
   TypeTreeHash:
     serializedVersion: 2
     Hash: 351bb579360fdabaf2961d8baa6684da
@@ -22,7 +22,7 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 Assets:
-- "Assets/Prefabs/\u684C\u5B50.prefab"
+- "Assets/Editor/Prefabs/\u684C\u5B50.prefab"
 Dependencies:
 - F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/metal.mat
 - F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/wood.mat

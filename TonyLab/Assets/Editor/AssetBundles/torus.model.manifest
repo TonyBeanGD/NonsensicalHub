@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 4061172308
+CRC: 3396330419
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 86b2c96297708488d97ddf6811048c52
+    Hash: 51703cb4627900eef8be199d359cb855
   TypeTreeHash:
     serializedVersion: 2
     Hash: 6cce62a4d4d67c4e2ef1c17bcee1d794
@@ -24,5 +24,5 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 Assets:
-- Assets/Model/Torus.fbx
+- Assets/Editor/Model/Torus.fbx
 Dependencies: []

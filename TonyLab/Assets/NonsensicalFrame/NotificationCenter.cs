@@ -9,6 +9,9 @@ namespace NonsensicalFrame
     {
         LoadModelFormAB,
         ResetAB,
+        PartClick,
+        ResetScene,
+        CameraNeedFocus,
     }
 
     public class NotificationCenter

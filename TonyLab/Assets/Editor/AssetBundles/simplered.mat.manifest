@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 2236961266
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 082f845f7c7d88a0fa4ce37df2f30553
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 51a16e16d5113854a16091e54ae5bb0d
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Editor/Materials/SimpleRed.mat
+Dependencies: []

@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1723427235
+CRC: 1579654926
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 01e0ef36f707e112c241766b1e63934b
+    Hash: fea86c14bc9e27ed5fcc08636e9f8cbf
   TypeTreeHash:
     serializedVersion: 2
     Hash: 351bb579360fdabaf2961d8baa6684da
@@ -22,6 +22,7 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/Torus.prefab
+- Assets/Editor/Prefabs/Torus.prefab
 Dependencies:
+- F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/simplewhite.mat
 - F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/torus.model

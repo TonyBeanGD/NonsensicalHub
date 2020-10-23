@@ -1,8 +1,8 @@
-﻿//using System;
-//using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-//public class ClickRotate : MonoBehaviour
-//{
+public class ClickRotate : MonoBehaviour
+{
 //    public AxisDirection dir;//当前脚本挂载的轴的方向
 
 //    private void OnMouseDown()
@@ -42,4 +42,4 @@
 //        transform.GetChild(0).GetComponent<MeshRenderer>().material.SetInt("_SecondIntensity", 0);
 //        GetComponent<MeshRenderer>().material.SetInt("_SecondIntensity", 0);
 //    }
-//}
+}

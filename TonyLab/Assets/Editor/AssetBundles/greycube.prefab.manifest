@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 511670103
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: bf94bf37420ed2286985c3b4007ed77d
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 53722e4b463365a6659fd0b3f07eaef0
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+Assets:
+- Assets/Editor/Prefabs/GreyCube.prefab
+Dependencies:
+- F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/grey.mat

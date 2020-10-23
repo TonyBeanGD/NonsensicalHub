@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3516107792
+CRC: 709913309
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6789354154efdc0434e28f91da74288d
+    Hash: 7dbaf0ef92d66f5c195fd48299179041
   TypeTreeHash:
     serializedVersion: 2
     Hash: 351bb579360fdabaf2961d8baa6684da
@@ -22,7 +22,7 @@ ClassTypes:
 - Class: 43
   Script: {instanceID: 0}
 Assets:
-- "Assets/Model/\u684C\u5B50.fbx"
+- "Assets/Editor/Model/\u684C\u5B50.fbx"
 Dependencies:
 - F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/metal.mat
 - F:/WorkSpace/NonsensicalHub/TonyLab/Assets/Editor/AssetBundles/wood.mat
