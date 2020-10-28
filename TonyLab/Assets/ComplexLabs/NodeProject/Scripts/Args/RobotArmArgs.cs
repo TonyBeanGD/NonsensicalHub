@@ -22,27 +22,6 @@ public enum DataType
 }
 
 [System.Serializable]
-public struct float3
-{
-    public float x;
-    public float y;
-    public float z;
-
-    public float3(Vector3 vector3)
-    {
-        x = vector3.x;
-        y = vector3.y;
-        z = vector3.z;
-    }
-
-    public Vector3 GetVector3()
-    {
-        return new Vector3(x, y, z);
-    }
-    
-}
-
-[System.Serializable]
 public class RobotArmArgs : ArgsBase, IArgsClass
 {
     public DataType[] axises;//旋转轴
@@ -51,8 +30,6 @@ public class RobotArmArgs : ArgsBase, IArgsClass
     public float[] ConversionRate;//转换率
     public string[] OperationID;//操作对象
     public bool[] fixedRot;
-    public float3[] savePos;
-    public float3[] saveRot;
 
     public override ArgsBase Clone()
     {
@@ -64,8 +41,6 @@ public class RobotArmArgs : ArgsBase, IArgsClass
             OperationID = new string[InitialValue.Length],
             ConversionRate = new float[InitialValue.Length],
             fixedRot = this.fixedRot,
-            savePos = new float3[InitialValue.Length],
-            saveRot = new float3[InitialValue.Length]
         };
         return robotArmArgs;
     }
@@ -100,14 +75,6 @@ public class RobotArmArgs : ArgsBase, IArgsClass
             if (fixedRot == null)
             {
                 fixedRot = new bool[axises.Length];
-            }
-            if (savePos == null)
-            {
-                savePos = new float3[axises.Length];
-            }
-            if (saveRot == null)
-            {
-                saveRot = new float3[axises.Length];
             }
         }
     }

@@ -403,8 +403,8 @@ public class RealCut : MonoBehaviour
         MeshHelper.ClearUnuseVertex(meshFilter.mesh);
         newModel.transform.position += MeshHelper.AutoCentroidShift(meshFilter.mesh);
         newModel.AddComponent<MeshCollider>();
-        newModel.GetComponent<MeshCollider>().convex=true;
-
+        newModel.GetComponent<MeshCollider>().cookingOptions = MeshColliderCookingOptions.InflateConvexMesh | MeshColliderCookingOptions.EnableMeshCleaning | MeshColliderCookingOptions.CookForFasterSimulation | MeshColliderCookingOptions.WeldColocatedVertices;
+        newModel.GetComponent<MeshCollider>().convex = true;
 
         newModel.AddComponent<Rigidbody>();
         newModel.GetComponent<Rigidbody>().drag = 1 ;

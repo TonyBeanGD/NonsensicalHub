@@ -1,31 +1,9 @@
-﻿using System.Collections;
+﻿using NonsensicalFrame;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Float3
-{
-    public float x;
-    public float y;
-    public float z;
-    public Float3(float _x, float _y, float _z)
-    {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
 
-    public Float3(Vector3 _vector3)
-    {
-        x = _vector3.x;
-        y = _vector3.y;
-        z = _vector3.z;
-    }
-
-    public Vector3 ToVector3()
-    {
-        return new Vector3(x, y, z);
-    }
-}
 
 public class NodeInfoArgs
 {

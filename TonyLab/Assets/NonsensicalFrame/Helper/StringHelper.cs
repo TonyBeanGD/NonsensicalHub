@@ -45,10 +45,29 @@ namespace NonsensicalFrame
             sb.Append("[");
             foreach (var item in ienumerable)
             {
-                sb.Append(item);
+                sb.Append(item.ToString());
                 sb.Append(",");
             }
             if (sb[sb.Length - 1]!='[')
+            {
+                sb.Remove(sb.Length - 1, 1);
+            }
+            sb.Append("]");
+
+            return sb.ToString();
+        }
+
+        public static string GetSetString(List<Vector3> ienumerable)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("[");
+            foreach (var item in ienumerable)
+            {
+                sb.Append($"({item.x},{item.y},{item.z})");
+                sb.Append(",");
+            }
+            if (sb[sb.Length - 1] != '[')
             {
                 sb.Remove(sb.Length - 1, 1);
             }

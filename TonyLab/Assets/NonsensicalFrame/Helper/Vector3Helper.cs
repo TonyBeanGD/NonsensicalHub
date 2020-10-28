@@ -188,5 +188,135 @@ namespace NonsensicalFrame
             Vector2 endPoint = new Vector2(x, y);
             return endPoint;
         }
+
+        /// <summary>
+        /// 获取射线和三角形的交点
+        /// 推导过程：https://www.cnblogs.com/graphics/archive/2010/08/09/1795348.html
+        /// </summary>
+        /// <returns></returns>
+        public static Vector3? GetRayTriangleCrossPoint(Vector3 rayOrigin, Vector3 rayUnitVector, Vector3 TringlePoint1, Vector3 TringlePoint2, Vector3 TringlePoint3)
+        {
+            Vector3 E1 = TringlePoint2 - TringlePoint1;
+            Vector3 E2 = TringlePoint3 - TringlePoint1;
+            Vector3 D = rayUnitVector;
+
+            Vector3 P = Vector3.Cross(D, E2);
+
+            Vector3 T;
+            float det = Vector3.Dot(P, E1);
+            if (det > 0)
+            {
+                T = rayOrigin - TringlePoint1;
+            }
+            else
+            {
+                det = -det;
+                T = TringlePoint1 - rayOrigin;
+            }
+
+            //射线在面上
+            if (det==0)
+            {
+                //TODO:返回射线与任一边的交点
+                return null;
+            }
+
+
+            Vector3 Q = Vector3.Cross(T, E1);
+            
+            float t = Vector3.Dot(Q, E2) / det;
+
+            if (t<0)
+            {
+                return null;
+            }
+
+            float u = Vector3.Dot(P, T) / det;
+
+            if (u<0)
+            {
+                return null;
+            }
+
+            float v = Vector3.Dot(Q, D) / det;
+
+            if (v<0)
+            {
+                return null;
+            }
+
+            if ((u + v)>1)
+            {
+                return null;
+            }
+
+            return rayOrigin + D * t;
+        }
+
+        public static bool IsNear(Vector3 vec1, Vector3 vec2)
+        {
+            if (NumHelper.IsNear(Vector3.Distance(vec1, vec2), 0))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static int Compare(Vector3 v1, Vector3 v2)
+        {
+            if (v1.x > v2.x)
+            {
+                return 1;
+            }
+            else if (v1.x < v2.x)
+            {
+                return -1;
+            }
+            else
+            {
+                if (v1.y > v2.y)
+                {
+                    return 1;
+                }
+                else if (v1.y < v2.y)
+                {
+                    return -1;
+                }
+                else
+                {
+                    if (v1.z > v2.z)
+                    {
+                        return 1;
+                    }
+                    else if (v1.z < v2.z)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public static void SortList(List<Vector3> rawData)
+        {
+            for (int i = 0; i < rawData.Count - 1; i++)
+            {
+                for (int j = 0; j < rawData.Count - 1 - i; j++)
+                {
+                    if (Compare(rawData[j], rawData[j + 1]) == 1)
+                    {
+                        Vector3 temp = rawData[j];
+                        rawData[j] = rawData[j + 1];
+                        rawData[j + 1] = temp;
+                    }
+                }
+            }
+        }
     }
 }
