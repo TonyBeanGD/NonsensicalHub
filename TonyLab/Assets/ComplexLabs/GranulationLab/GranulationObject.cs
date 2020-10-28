@@ -215,8 +215,8 @@ public abstract class GranulationObject : MonoBehaviour
             case 1:
             case 2:
                 {
-                    dir1 = new Int3(0, 0, 1);
-                    dir2 = new Int3(0, 1, 0);
+                    dir1 = new Int3(0, 1, 0);
+                    dir2 = new Int3(0, 0, 1);
                     normal = new Vector3(1, 0, 0);
                 }
                 break;
@@ -283,9 +283,12 @@ public abstract class GranulationObject : MonoBehaviour
             }
             else if (dir1Value > minDir1Limit)
             {
-                minDir1Limit = dir1Value;
+                if (changes.Contains(dir1Negative) == false)
+                {
+                    minDir1Limit = dir1Value;
+                }
             }
-            
+
             if (dir1Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true
                 && granulation.points[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == true
                 && bool6s[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3, dir - 1] == false)
@@ -294,8 +297,10 @@ public abstract class GranulationObject : MonoBehaviour
             }
             else if (dir1Value < maxDir1Limit)
             {
-                Debug.Log(dir1Value);
-                maxDir1Limit = dir1Value;
+                if (changes.Contains(dir1Positive) == false)
+                {
+                    maxDir1Limit = dir1Value;
+                }
             }
 
             if (dir2Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true
@@ -304,9 +309,12 @@ public abstract class GranulationObject : MonoBehaviour
             {
                 points.Push(dir2Negative);
             }
-            else if (dir2Value > maxDir2Limit)
+            else if (dir2Value > minDir2Limit)
             {
-                minDir2Limit = dir2Value;
+                if (changes.Contains(dir2Negative) == false)
+                {
+                    minDir2Limit = dir2Value;
+                }
             }
 
             if (dir2Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true
@@ -317,7 +325,10 @@ public abstract class GranulationObject : MonoBehaviour
             }
             else if (dir2Value < maxDir2Limit)
             {
-                maxDir2Limit = dir2Value;
+                if (changes.Contains(dir2Positive) == false)
+                {
+                    maxDir2Limit = dir2Value;
+                }
             }
         }
 
@@ -337,15 +348,22 @@ public abstract class GranulationObject : MonoBehaviour
         float step = Mathf.Pow(10, granulation.level);
         float distance = step * 0.5f;
 
+        Vector3 dir1V3 = new Vector3(dir1.i1, dir1.i2, dir1.i3);
+        Vector3 dir2V3 = new Vector3(dir2.i1, dir2.i2, dir2.i3);
 
-        Debugger.Log(minDir1Limit, maxDir1Limit, minDir2Limit, maxDir2Limit);
+        Vector3 dir1MinOffset = (minDir1Limit - crtPoint.GetValue(dir1)) * dir1V3 * step;
+        Vector3 dir1MaxOffset = (maxDir1Limit - crtPoint.GetValue(dir1)) * dir1V3 * step;
+        Vector3 dir2MinOffset = (minDir2Limit - crtPoint.GetValue(dir2)) * dir2V3 * step;
+        Vector3 dir2MaxOffset = (maxDir2Limit - crtPoint.GetValue(dir2)) * dir2V3 * step;
 
-        point4[0] = (step * (crtPoint.GetValue(dir1) - minDir1Limit)) * new Vector3(-dir1.i1, -dir1.i2, -dir1.i3)
-            + (new Vector3(-dir1.i1, -dir1.i2, -dir1.i3) + new Vector3(-dir2.i1, -dir2.i2, -dir2.i3)) * distance;
-        point4[1] = (step * (maxDir1Limit - crtPoint.GetValue(dir1))) * new Vector3(dir1.i1, dir1.i2, dir1.i3) + (new Vector3(dir1.i1, dir1.i2, dir1.i3) + new Vector3(-dir2.i1, -dir2.i2, -dir2.i3)) * distance;
-        point4[2] = (step * (crtPoint.GetValue(dir2) - minDir2Limit)) * new Vector3(-dir2.i1, -dir2.i2, -dir2.i3) + (new Vector3(dir1.i1, dir1.i2, dir1.i3) + new Vector3(dir2.i1, dir2.i2, dir2.i3)) * distance;
-        point4[3] = (step * (maxDir2Limit - crtPoint.GetValue(dir2))) * new Vector3(dir2.i1, dir2.i2, dir2.i3) + (new Vector3(-dir1.i1, -dir1.i2, -dir1.i3) + new Vector3(dir2.i1, dir2.i2, dir2.i3)) * distance;
+        Debugger.Log(dir1MinOffset, dir1MaxOffset, dir2MinOffset, dir2MaxOffset);
 
+        point4[0] = dir1MinOffset + dir2MinOffset + -dir1V3 * distance + -dir2V3 * distance;
+        point4[1] = dir1MaxOffset + dir2MinOffset + dir1V3 * distance + -dir2V3 * distance;
+        point4[2] = dir1MaxOffset + dir2MaxOffset + dir1V3 * distance + dir2V3 * distance;
+        point4[3] = dir1MinOffset + dir2MaxOffset + -dir1V3 * distance + dir2V3 * distance;
+
+        Debugger.Log(crtPoint);
         Debugger.Log(StringHelper.GetSetString(point4));
         int rawLength = meshBuffer.vertices.Count;
 
@@ -353,10 +371,20 @@ public abstract class GranulationObject : MonoBehaviour
         Vector3 origin = granulation.origin + offset;
         Vector3 faceCenterPoint = origin + normal * distance;
 
-        meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
+        if (dir == 2 || dir == 3 || dir == 6)
+        {
+            meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
+        }
+        else
+        {
+            meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
+            meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
+        }
 
         meshBuffer.uv.Add(Vector2.one * 0.5f);
         meshBuffer.uv.Add(Vector2.one * 0.5f);

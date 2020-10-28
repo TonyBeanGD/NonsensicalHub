@@ -78,6 +78,11 @@ namespace NonsensicalFrame
                 return true;
             }
         }
+
+        public override string ToString()
+        {
+            return $"({i1},{i2},{i3})";
+        }
     }
 
     public struct Float3
