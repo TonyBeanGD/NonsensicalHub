@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace NonsensicalFrame
 {
-    public struct Int3
+    public struct Int3:IJob
     {
         public int i1;
         public int i2;
@@ -14,6 +15,14 @@ namespace NonsensicalFrame
             i1 = _i1;
             i2 = _i2;
             i3 = _i3;
+        }
+
+
+        public Int3(Float3 _float3)
+        {
+            i1 = Mathf.RoundToInt(_float3.f1);
+            i2 = Mathf.RoundToInt(_float3.f2);
+            i3 = Mathf.RoundToInt(_float3.f3);
         }
 
         public static Int3 operator +(Int3 a, Int3 b)
@@ -83,31 +92,95 @@ namespace NonsensicalFrame
         {
             return $"({i1},{i2},{i3})";
         }
+
+        public void Execute()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public struct Float3
     {
-        public float x;
-        public float y;
-        public float z;
+        public float f1;
+        public float f2;
+        public float f3;
 
-        public Float3(float _x, float _y, float _z)
+        public Float3(float _f1, float _f2, float _f3)
         {
-            x = _x;
-            y = _y;
-            z = _z;
+            f1 = _f1;
+            f2 = _f2;
+            f3 = _f3;
         }
 
         public Float3(Vector3 _vector3)
         {
-            x = _vector3.x;
-            y = _vector3.y;
-            z = _vector3.z;
+            f1 = _vector3.x;
+            f2 = _vector3.y;
+            f3 = _vector3.z;
         }
 
         public Vector3 ToVector3()
         {
-            return new Vector3(x, y, z);
+            return new Vector3(f1, f2, f3);
+        }
+
+
+        public static Float3 operator *(Float3 a, float b)
+        {
+            Float3 c = new Float3
+            {
+                f1 = a.f1 * b,
+                f2 = a.f2 * b,
+                f3 = a.f3 * b
+            };
+            return c;
+        }
+
+        public static Float3 operator /(Float3 a, float b)
+        {
+            Float3 c = new Float3
+            {
+                f1 = a.f1 / b,
+                f2 = a.f2 / b,
+                f3 = a.f3 / b
+            };
+            return c;
+        }
+
+        public static Float3 operator +(Float3 a, Float3 b)
+        {
+            Float3 c = new Float3
+            {
+                f1 = a.f1 + b.f1,
+                f2 = a.f2 + b.f2,
+                f3 = a.f3 + b.f3
+            };
+            return c;
+        }
+        public static Float3 operator -(Float3 a, Float3 b)
+        {
+            Float3 c = new Float3
+            {
+                f1 = a.f1 - b.f1,
+                f2 = a.f2 - b.f2,
+                f3 = a.f3 - b.f3
+            };
+            return c;
+        }
+        public static Float3 operator -(Float3 a)
+        {
+            Float3 c = new Float3
+            {
+                f1 = -a.f1,
+                f2 = -a.f2,
+                f3 = -a.f3
+            };
+            return c;
+        }
+
+        public override string ToString()
+        {
+            return $"({f1},{f2},{f3})";
         }
     }
 }

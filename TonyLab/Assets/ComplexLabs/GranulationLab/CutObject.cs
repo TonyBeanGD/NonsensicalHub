@@ -1,6 +1,7 @@
 ﻿using NonsensicalFrame;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class CutObject : GranulationObject
@@ -8,37 +9,56 @@ public class CutObject : GranulationObject
     [SerializeField]
     private CuttingObject cuttingObject;
 
-    private void Update()
+    private bool checkFlag;
+    private bool changeFlag;
+
+    Thread reRender;
+
+    Thread check;
+
+    protected override void Awake()
     {
-        if (Time.frameCount % 10 == 0)
+        base.Awake();
+
+        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalFrame.ModelHelper.GetCube(1.5f, 1.5f, 1.5f);
+        gameObject.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/white");
+
+        checkFlag = true;
+        changeFlag = false;
+
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+
+        if (cuttingObject != null)
         {
-            CheckCutting();
+            if (Time.frameCount % 10 == 0)
+            {
+                if (checkFlag == true)
+                {
+                    checkFlag = false;
+
+                    if (changeFlag == true)
+                    {
+                        changeFlag = false;
+
+                        reRender = new Thread(ReRenderMeshThread);
+                        reRender.Start();
+                    }
+
+                    CheckCutting();
+                }
+            }
         }
     }
 
-    private void CheckCutting()
+    private void CheckThread(CoordinateSystem cs1, CoordinateSystem cs2, Granulation cuttingGranulation)
     {
-        Bounds thisBounds = GetComponent<MeshFilter>().mesh.bounds;
-        Bounds cuttingBounds = cuttingObject.GetComponent<MeshFilter>().mesh.bounds;
+        float step = Mathf.Pow(10, level);
 
-        if (thisBounds.Intersects(cuttingBounds)==false)
-        {
-            return;
-        }
-
-        Granulation cuttingGranulation = cuttingObject.granulation;
-        if (cuttingGranulation.level != granulation.level)
-        {
-            return;
-        }
-
-        Vector3 posOffset =( transform.position+ granulation.origin) - (cuttingObject.transform.position + cuttingGranulation.origin);
-
-        int xOffset = Mathf.RoundToInt(NumHelper.GetNearValue(posOffset.x, granulation.level) / Mathf.Pow(10, granulation.level));
-        int yOffset = Mathf.RoundToInt(NumHelper.GetNearValue(posOffset.y, granulation.level) / Mathf.Pow(10, granulation.level));
-        int zOffset = Mathf.RoundToInt(NumHelper.GetNearValue(posOffset.z, granulation.level) / Mathf.Pow(10, granulation.level));
-        
-        bool changeFlag=false;
+        changeFlag = false;
 
         for (int i = 0; i < granulation.points.GetLength(0); i++)
         {
@@ -48,15 +68,20 @@ public class CutObject : GranulationObject
                 {
                     if (granulation.points[i, j, k] == true)
                     {
-                        if (i + xOffset < 0 || j + yOffset < 0 || k + zOffset < 0)
+                        Float3 point_data = cs2.CoordinateSystemTransform(cs1, new Float3(i, j, k) * step) / step;
+                        Int3 int3 = new Int3(point_data);
+
+                        if (int3.i1 < 0 || int3.i2 < 0 || int3.i3 < 0)
                         {
                             continue;
                         }
-                        if (i + xOffset >= cuttingGranulation.points.GetLength(0) || j + yOffset >= cuttingGranulation.points.GetLength(1) || k + zOffset >= cuttingGranulation.points.GetLength(2))
+
+                        if (int3.i1 >= cuttingGranulation.points.GetLength(0) || int3.i2 >= cuttingGranulation.points.GetLength(1) || int3.i3 >= cuttingGranulation.points.GetLength(2))
                         {
                             continue;
                         }
-                        if (cuttingGranulation.points[i + xOffset, j + yOffset, k + zOffset] == true)
+
+                        if (cuttingGranulation.points[int3.i1, int3.i2, int3.i3] == true)
                         {
                             changeFlag = true;
                             granulation.points[i, j, k] = false;
@@ -66,9 +91,42 @@ public class CutObject : GranulationObject
             }
         }
 
-        if (changeFlag)
+        checkFlag = true;
+    }
+
+    private void CheckCutting()
+    {
+        Bounds thisBounds = GetComponent<MeshFilter>().mesh.bounds;
+        thisBounds.center += transform.position;
+        Bounds cuttingBounds = cuttingObject.GetComponent<MeshFilter>().mesh.bounds;
+        cuttingBounds.center += cuttingObject.transform.position;
+
+        if (thisBounds.Intersects(cuttingBounds) == false)
         {
-            ReRenderMesh();
+            checkFlag = true;
+            return;
         }
+
+        Granulation cuttingGranulation = cuttingObject.granulation;
+        if (cuttingGranulation.level != granulation.level)
+        {
+            checkFlag = true;
+            return;
+        }
+
+        CoordinateSystem cs1 = new CoordinateSystem(transform.position + granulation.origin, transform.right, transform.up, transform.forward);
+        CoordinateSystem cs2 = new CoordinateSystem(cuttingObject.transform.position + cuttingGranulation.origin, cuttingObject.transform.right, cuttingObject.transform.up, cuttingObject.transform.forward);
+
+
+        check = new Thread(() => CheckThread(cs1, cs2, cuttingGranulation));
+        check.Start();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        reRender?.Abort();
+        check?.Abort();
     }
 }

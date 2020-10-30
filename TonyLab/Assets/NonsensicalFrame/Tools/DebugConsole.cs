@@ -133,7 +133,16 @@ public class DebugConsole : MonoBehaviour
             }
 
             GUI.contentColor = logTypeColors[log.logType];
-            GUILayout.Label(log.ToString());
+
+            string logContent = log.ToString();
+
+            if (logContent.Length>300)
+            {
+                logContent = logContent.Substring(0,300);
+                logContent += "..."; 
+            }
+
+            GUILayout.Label(logContent);
         }
 
 

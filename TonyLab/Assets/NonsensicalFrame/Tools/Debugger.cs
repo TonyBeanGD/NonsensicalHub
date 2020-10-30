@@ -11,6 +11,8 @@ namespace NonsensicalFrame
 {
     public static class Debugger
     {
+        public static Queue<string> messages=new Queue<string>();
+
         public static void Log(params object[] obj)
         {
             StringBuilder sb = new StringBuilder();
@@ -39,6 +41,5 @@ namespace NonsensicalFrame
             string content = $" {obj }\r\n{memberName }\r\n({sourceFilePath} :{ sourceLineNumber}";
             UnityEngine.Debug.Log(content);
         }
-
     }
 }

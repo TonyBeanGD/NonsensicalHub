@@ -1,138 +1,72 @@
 ﻿using NonsensicalFrame;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
 public abstract class GranulationObject : MonoBehaviour
 {
-    public struct Granulation
-    {
-        public int level;
-        public bool[,,] points;
-        public Vector3 origin;
+    [SerializeField]
+    protected bool DrawMesh = true;
 
-        /// <summary>
-        /// TODO:可以使用DEXEL模型进行初始化的优化(射线组)
-        /// </summary>
-        public Granulation(int _level, Mesh mesh)
-        {
-            level = _level;
-            float step = Mathf.Pow(10, level);
-
-            Bounds bounds = mesh.bounds;
-
-            origin = NumHelper.GetNearVector3(bounds.center = bounds.min, -1);
-
-            int x = ((bounds.max.x - bounds.min.x) / step).RoundingToInt_Add();
-            int y = ((bounds.max.y - bounds.min.y) / step).RoundingToInt_Add();
-            int z = ((bounds.max.z - bounds.min.z) / step).RoundingToInt_Add();
-
-            points = new bool[x, y, z];
-
-            for (int i = 0; i < x; i++)
-            {
-                for (int j = 0; j < y; j++)
-                {
-                    for (int k = 0; k < z; k++)
-                    {
-                        Vector3 offset = new Vector3((i + 0.5f) * step, (j + 0.5f) * step, (k + 0.5f) * step);
-                        points[i, j, k] = mesh.Contain(origin + offset);
-                    }
-                }
-            }
-        }
-    }
+    [SerializeField]
+    protected int level = -1;
 
     public Granulation granulation;
 
+    private bool meshCalculationEnd;
+
     protected Mesh mesh;
+
+    MeshBuffer meshBuffer;
+
+    Thread firstRender;
 
     protected virtual void Awake()
     {
-        mesh = GetComponent<MeshFilter>().mesh;
-        granulation = new Granulation(-1, mesh);
-        ReRenderMesh();
+        meshCalculationEnd = false;
     }
 
-    protected void ReRenderMesh()
+    protected virtual void Start()
     {
-        //生成方块debug
-        if (false)
+        mesh = GetComponent<MeshFilter>().mesh;
+        granulation = new Granulation(level, mesh);
+        firstRender = new Thread(ReRenderMeshThread);
+        firstRender.Start();
+    }
+
+    protected virtual void Update()
+    {
+      
+        if (meshCalculationEnd == true)
         {
-            for (int i = 0; i < granulation.points.GetLength(0); i++)
-            {
-                for (int j = 0; j < granulation.points.GetLength(1); j++)
-                {
-                    for (int k = 0; k < granulation.points.GetLength(2); k++)
-                    {
-                        if (granulation.points[i, j, k] == true)
-                        {
-                            GameObject newCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                            newCube.transform.position = new Vector3(i, j, k);
-                        }
-                    }
-                }
-            }
+            meshCalculationEnd = false;
+            meshBuffer. Apply(mesh);
+        }
+    }
+
+    protected virtual void OnDestroy()
+    {
+        firstRender.Abort();
+        GC.Collect();
+    }
+
+    protected void ReRenderMeshThread()
+    {
+        if (meshCalculationEnd == true)
+        {
+            return;
+        }
+        if (DrawMesh == false)
+        {
             return;
         }
 
-
-        //MeshBuffer meshBuffer = new MeshBuffer();
-
-        //float step = Mathf.Pow(10, granulation.level);
-
-        //bool[,,,] bools = new bool[granulation.points.GetLength(0), granulation.points.GetLength(1), granulation.points.GetLength(2), 6];
-
-        //for (int i = 0; i < granulation.points.GetLength(0); i++)
-        //{
-        //    for (int j = 0; j < granulation.points.GetLength(1); j++)
-        //    {
-        //        for (int k = 0; k < granulation.points.GetLength(2); k++)
-        //        {
-        //            if (granulation.points[i, j, k] == true)
-        //            {
-        //                Vector3 offset = new Vector3((i + 0.5f) * step, (j + 0.5f) * step, (k + 0.5f) * step);
-
-        //                if (i == 0 || (i > 0 && granulation.points[i - 1, j, k] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 1, granulation.level);
-        //                }
-
-        //                if (i == granulation.points.GetLength(0) - 1 || (i < granulation.points.GetLength(0) - 1 && granulation.points[i + 1, j, k] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 2, granulation.level);
-        //                }
-
-        //                if (j == 0 || (j > 0 && granulation.points[i, j - 1, k] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 3, granulation.level);
-        //                }
-
-        //                if (j == granulation.points.GetLength(1) - 1 || (j < granulation.points.GetLength(1) - 1 && granulation.points[i, j + 1, k] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 4, granulation.level);
-        //                }
-
-        //                if (k == 0 || (k > 0 && granulation.points[i, j, k - 1] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 5, granulation.level);
-        //                }
-
-        //                if (k == granulation.points.GetLength(2) - 1 || (k < granulation.points.GetLength(2) - 1 && granulation.points[i, j, k + 1] == false))
-        //                {
-        //                    AddFace(meshBuffer, granulation.origin + offset, 6, granulation.level);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-        //meshBuffer.Apply(mesh);
-
-        MeshBuffer meshBuffer = new MeshBuffer();
-
+        meshBuffer = new MeshBuffer();
+        
         bool[,,,] bool6s = new bool[granulation.points.GetLength(0), granulation.points.GetLength(1), granulation.points.GetLength(2), 6];
-
+        
         for (int i = 0; i < granulation.points.GetLength(0); i++)
         {
             for (int j = 0; j < granulation.points.GetLength(1); j++)
@@ -145,7 +79,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 0] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 1, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 1, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -153,7 +87,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 1] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 2, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 2, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -161,7 +95,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 2] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 3, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 3, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -169,7 +103,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 3] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 4, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 4, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -177,7 +111,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 4] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 5, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 5, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -185,14 +119,15 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 5] == false)
                             {
-                                AddLittleFace(meshBuffer, granulation, 6, new Int3(i, j, k), bool6s);
+                                AddFace(meshBuffer, granulation, 6, new Int3(i, j, k), bool6s);
                             }
                         }
                     }
                 }
             }
         }
-        meshBuffer.Apply(mesh);
+        Debugger.messages.Enqueue("ReRenderMeshThreadEnd");
+        meshCalculationEnd = true;
     }
 
     /// <summary>
@@ -203,7 +138,7 @@ public abstract class GranulationObject : MonoBehaviour
     /// <param name="dir">1到6分别为x负，x正，y负，y正，z负，z正</param>
     /// <param name="crtPoint"></param>
     /// <param name="bool6s"></param>
-    private void AddLittleFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, bool[,,,] bool6s)
+    private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, bool[,,,] bool6s)
     {
         Vector3 normal;
 
@@ -213,6 +148,12 @@ public abstract class GranulationObject : MonoBehaviour
         switch (dir)
         {
             case 1:
+                {
+                    dir1 = new Int3(0, 1, 0);
+                    dir2 = new Int3(0, 0, 1);
+                    normal = new Vector3(-1, 0, 0);
+                }
+                break;
             case 2:
                 {
                     dir1 = new Int3(0, 1, 0);
@@ -221,6 +162,12 @@ public abstract class GranulationObject : MonoBehaviour
                 }
                 break;
             case 3:
+                {
+                    dir1 = new Int3(1, 0, 0);
+                    dir2 = new Int3(0, 0, 1);
+                    normal = new Vector3(0, -1, 0);
+                }
+                break;
             case 4:
                 {
                     dir1 = new Int3(1, 0, 0);
@@ -229,6 +176,12 @@ public abstract class GranulationObject : MonoBehaviour
                 }
                 break;
             case 5:
+                {
+                    dir1 = new Int3(1, 0, 0);
+                    dir2 = new Int3(0, 1, 0);
+                    normal = new Vector3(0, 0, -1);
+                }
+                break;
             case 6:
                 {
                     dir1 = new Int3(1, 0, 0);
@@ -347,6 +300,9 @@ public abstract class GranulationObject : MonoBehaviour
         Vector3[] point4 = new Vector3[4];
         float step = Mathf.Pow(10, granulation.level);
         float distance = step * 0.5f;
+        Vector3 offset = new Vector3((crtPoint.i1 + 0.5f) * step, (crtPoint.i2 + 0.5f) * step, (crtPoint.i3 + 0.5f) * step);
+        Vector3 origin = granulation.origin + offset;
+        Vector3 faceCenterPoint = origin + normal * distance;
 
         Vector3 dir1V3 = new Vector3(dir1.i1, dir1.i2, dir1.i3);
         Vector3 dir2V3 = new Vector3(dir2.i1, dir2.i2, dir2.i3);
@@ -356,160 +312,61 @@ public abstract class GranulationObject : MonoBehaviour
         Vector3 dir2MinOffset = (minDir2Limit - crtPoint.GetValue(dir2)) * dir2V3 * step;
         Vector3 dir2MaxOffset = (maxDir2Limit - crtPoint.GetValue(dir2)) * dir2V3 * step;
 
-        Debugger.Log(dir1MinOffset, dir1MaxOffset, dir2MinOffset, dir2MaxOffset);
-
-        point4[0] = dir1MinOffset + dir2MinOffset + -dir1V3 * distance + -dir2V3 * distance;
-        point4[1] = dir1MaxOffset + dir2MinOffset + dir1V3 * distance + -dir2V3 * distance;
-        point4[2] = dir1MaxOffset + dir2MaxOffset + dir1V3 * distance + dir2V3 * distance;
-        point4[3] = dir1MinOffset + dir2MaxOffset + -dir1V3 * distance + dir2V3 * distance;
-
-        Debugger.Log(crtPoint);
-        Debugger.Log(StringHelper.GetSetString(point4));
-        int rawLength = meshBuffer.vertices.Count;
-
-        Vector3 offset = new Vector3((crtPoint.i1 + 0.5f) * step, (crtPoint.i2 + 0.5f) * step, (crtPoint.i3 + 0.5f) * step);
-        Vector3 origin = granulation.origin + offset;
-        Vector3 faceCenterPoint = origin + normal * distance;
+        point4[0] = faceCenterPoint + dir1MinOffset + dir2MinOffset + -dir1V3 * distance + -dir2V3 * distance;
+        point4[1] = faceCenterPoint + dir1MaxOffset + dir2MinOffset + dir1V3 * distance + -dir2V3 * distance;
+        point4[2] = faceCenterPoint + dir1MaxOffset + dir2MaxOffset + dir1V3 * distance + dir2V3 * distance;
+        point4[3] = faceCenterPoint + dir1MinOffset + dir2MaxOffset + -dir1V3 * distance + dir2V3 * distance;
 
         if (dir == 2 || dir == 3 || dir == 6)
         {
-            meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
+            meshBuffer.AddQuad(point4, normal, Vector2.one * 0.5f);
         }
         else
         {
-            meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
-            meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
+            meshBuffer.AddQuad(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, normal, Vector2.one * 0.5f);
         }
-
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-
-        meshBuffer.triangles.Add(rawLength + 0);
-        meshBuffer.triangles.Add(rawLength + 1);
-        meshBuffer.triangles.Add(rawLength + 3);
-
-        meshBuffer.triangles.Add(rawLength + 1);
-        meshBuffer.triangles.Add(rawLength + 2);
-        meshBuffer.triangles.Add(rawLength + 3);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="meshBuffer"></param>
-    /// <param name="origin"></param>
-    /// <param name="distance"></param>
-    private void AddFace(MeshBuffer meshBuffer, Vector3 origin, int dir, int level)
+
+    public struct Granulation
     {
-        Vector3[] point4 = new Vector3[4];
-        float distance = Mathf.Pow(10, level) * 0.5f;
+        public int level;
+        public bool[,,] points;
+        /// <summary>
+        /// (0,0,0)位置的本地坐标
+        /// </summary>
+        public Vector3 origin;
 
-        Vector3 normal;
-
-        switch (dir)
+        /// <summary>
+        /// TODO:可以使用DEXEL模型进行初始化的优化(射线组)
+        /// </summary>
+        public Granulation(int _level, Mesh mesh)
         {
-            case 1:
-                {
-                    point4[0] = new Vector3(0, -distance, distance);
-                    point4[1] = new Vector3(0, distance, distance);
-                    point4[2] = new Vector3(0, distance, -distance);
-                    point4[3] = new Vector3(0, -distance, -distance);
+            level = _level;
+            float step = Mathf.Pow(10, level);
 
-                    normal = new Vector3(-1, 0, 0);
-                }
-                break;
-            case 2:
-                {
-                    point4[0] = new Vector3(0, -distance, -distance);
-                    point4[1] = new Vector3(0, distance, -distance);
-                    point4[2] = new Vector3(0, distance, distance);
-                    point4[3] = new Vector3(0, -distance, distance);
+            Bounds bounds = mesh.bounds;
 
-                    normal = new Vector3(1, 0, 0);
-                }
-                break;
-            case 3:
-                {
-                    point4[0] = new Vector3(distance, 0, -distance);
-                    point4[1] = new Vector3(distance, 0, distance);
-                    point4[2] = new Vector3(-distance, 0, distance);
-                    point4[3] = new Vector3(-distance, 0, -distance);
+            origin = NumHelper.GetNearVector3(bounds.center + bounds.min, level);
 
-                    normal = new Vector3(0, -1, 0);
-                }
-                break;
-            case 4:
-                {
-                    point4[0] = new Vector3(-distance, 0, -distance);
-                    point4[1] = new Vector3(-distance, 0, distance);
-                    point4[2] = new Vector3(distance, 0, distance);
-                    point4[3] = new Vector3(distance, 0, -distance);
+            int x = ((bounds.max.x - bounds.min.x) / step).RoundingToInt_Add();
+            int y = ((bounds.max.y - bounds.min.y) / step).RoundingToInt_Add();
+            int z = ((bounds.max.z - bounds.min.z) / step).RoundingToInt_Add();
 
-                    normal = new Vector3(0, 1, 0);
-                }
-                break;
-            case 5:
-                {
-                    point4[0] = new Vector3(-distance, -distance, 0);
-                    point4[1] = new Vector3(-distance, distance, 0);
-                    point4[2] = new Vector3(distance, distance, 0);
-                    point4[3] = new Vector3(distance, -distance, 0);
+            points = new bool[x, y, z];
 
-                    normal = new Vector3(0, 0, -1);
-                }
-                break;
-            case 6:
+            for (int i = 0; i < x; i++)
+            {
+                for (int j = 0; j < y; j++)
                 {
-                    point4[0] = new Vector3(distance, -distance, 0);
-                    point4[1] = new Vector3(distance, distance, 0);
-                    point4[2] = new Vector3(-distance, distance, 0);
-                    point4[3] = new Vector3(-distance, -distance, 0);
-
-                    normal = new Vector3(0, 0, 1);
+                    for (int k = 0; k < z; k++)
+                    {
+                        Vector3 offset = new Vector3((i + 0.5f) * step, (j + 0.5f) * step, (k + 0.5f) * step);
+                        points[i, j, k] = mesh.Contain(origin + offset);
+                    }
                 }
-                break;
-            default:
-                return;
+            }
         }
-
-        int rawLength = meshBuffer.vertices.Count;
-
-        Vector3 faceCenterPoint = origin + normal * distance;
-
-        meshBuffer.vertices.Add(faceCenterPoint + point4[0]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[1]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[2]);
-        meshBuffer.vertices.Add(faceCenterPoint + point4[3]);
-
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-        meshBuffer.uv.Add(Vector2.one * 0.5f);
-
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-        meshBuffer.normals.Add(normal);
-
-        meshBuffer.triangles.Add(rawLength + 0);
-        meshBuffer.triangles.Add(rawLength + 1);
-        meshBuffer.triangles.Add(rawLength + 3);
-
-        meshBuffer.triangles.Add(rawLength + 1);
-        meshBuffer.triangles.Add(rawLength + 2);
-        meshBuffer.triangles.Add(rawLength + 3);
-
     }
+
 }

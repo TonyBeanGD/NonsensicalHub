@@ -58,7 +58,7 @@ namespace NonsensicalFrame
 
         public static Vector3 GetNearVector3(Vector3 rawVector3, int level)
         {
-            return new Vector3(GetNearValue(rawVector3.x,-1), GetNearValue(rawVector3.y, -1), GetNearValue(rawVector3.z, -1));
+            return new Vector3(GetNearValue(rawVector3.x, level), GetNearValue(rawVector3.y, level), GetNearValue(rawVector3.z, level));
         }
 
         /// <summary>

@@ -8,11 +8,12 @@ namespace NonsensicalFrame
     {
         /// <summary>
         /// 获取点在直线上的垂足
+        /// https://blog.csdn.net/u011435933/article/details/106375017/
         /// </summary>
-        /// <param name="singlePoint">直线点1</param>
-        /// <param name="linePoint1">直线点2</param>
-        /// <param name="linePoint2">直线外一点</param>
-        /// <returns>p2在直线p0p1上的垂足坐标</returns>
+        /// <param name="singlePoint"></param>
+        /// <param name="linePoint1"></param>
+        /// <param name="linePoint2"></param>
+        /// <returns></returns>
         public static Vector3 GetFootDrop(Vector3 singlePoint, Vector3 linePoint1, Vector3 linePoint2)
         {
             float numerator = (linePoint1.x - singlePoint.x) * (linePoint2.x - linePoint1.x)
@@ -132,7 +133,7 @@ namespace NonsensicalFrame
                 }
             }
 
-            return normal;
+            return normal.normalized;
         }
 
         /// <summary>
@@ -215,7 +216,7 @@ namespace NonsensicalFrame
             }
 
             //射线在面上
-            if (det==0)
+            if (det == 0)
             {
                 //TODO:返回射线与任一边的交点
                 return null;
@@ -223,29 +224,29 @@ namespace NonsensicalFrame
 
 
             Vector3 Q = Vector3.Cross(T, E1);
-            
+
             float t = Vector3.Dot(Q, E2) / det;
 
-            if (t<0)
+            if (t < 0)
             {
                 return null;
             }
 
             float u = Vector3.Dot(P, T) / det;
 
-            if (u<0)
+            if (u < 0)
             {
                 return null;
             }
 
             float v = Vector3.Dot(Q, D) / det;
 
-            if (v<0)
+            if (v < 0)
             {
                 return null;
             }
 
-            if ((u + v)>1)
+            if ((u + v) > 1)
             {
                 return null;
             }
@@ -265,7 +266,7 @@ namespace NonsensicalFrame
             }
         }
 
-        private static int Compare(Vector3 v1, Vector3 v2)
+        private static int CompareVector3(Vector3 v1, Vector3 v2)
         {
             if (v1.x > v2.x)
             {
@@ -309,7 +310,7 @@ namespace NonsensicalFrame
             {
                 for (int j = 0; j < rawData.Count - 1 - i; j++)
                 {
-                    if (Compare(rawData[j], rawData[j + 1]) == 1)
+                    if (CompareVector3(rawData[j], rawData[j + 1]) == 1)
                     {
                         Vector3 temp = rawData[j];
                         rawData[j] = rawData[j + 1];
@@ -317,6 +318,105 @@ namespace NonsensicalFrame
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// NOT WORKING
+        /// https://blog.csdn.net/csxiaoshui/article/details/65446125
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="axisUnitVector3"></param>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        public static Vector3 RotateAround(this Vector3 point, Vector3 axisUnitVector3, float angle)
+        {
+            float u = axisUnitVector3.x;
+            float v = axisUnitVector3.y;
+            float w = axisUnitVector3.z;
+            Matrix4x4 matrix4X4 = new Matrix4x4(
+                new Vector4(Mathf.Pow(u, 2) + (1 + Mathf.Pow(u, 2)) * Mathf.Cos(angle), u * v * (1 - Mathf.Cos(angle)) - w * Mathf.Sin(angle), u * w * (1 - Mathf.Cos(angle)) + v * Mathf.Sin(angle), 0),
+                new Vector4(u * v * (1 - Mathf.Cos(angle)) + w * Mathf.Sin(angle), Mathf.Pow(v, 2) + (1 - Mathf.Pow(v, 2)) * Mathf.Cos(angle), v * w * (1 - Mathf.Cos(angle)) - u * Mathf.Sin(angle), 0),
+                new Vector4(u * w * (1 - Mathf.Cos(angle)) - v * Mathf.Sin(angle), v * w * (1 - Mathf.Cos(angle)) + u * Mathf.Sin(angle), Mathf.Pow(w, 2) + (1 - Mathf.Pow(w, 2)) * Mathf.Cos(angle), 0),
+                new Vector4(0, 0, 0, 1));
+
+            return matrix4X4.MultiplyPoint(point);
+        }
+
+        public static Float3 CoordinateSystemTransform(CoordinateSystem CoordinateSystem1, CoordinateSystem CoordinateSystem2, Float3 point2Value)
+        {
+            Vector3 point2_World = CoordinateSystem2.origin + point2Value.f1 * CoordinateSystem2.right + point2Value.f2 * CoordinateSystem2.up + point2Value.f3 * CoordinateSystem2.forward;
+
+            Vector3 xPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.right);
+            Vector3 yPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.up);
+            Vector3 zPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.forward);
+
+            float x_distance = Vector3.Distance(CoordinateSystem1.origin, xPoint);
+            float y_distance = Vector3.Distance(CoordinateSystem1.origin, yPoint);
+            float z_distance = Vector3.Distance(CoordinateSystem1.origin, zPoint);
+
+            Float3 Point1Value = new Float3(x_distance, y_distance, z_distance);
+
+            Debug.Log(Point1Value);
+
+            return Point1Value;
+        }
+    }
+
+    public struct CoordinateSystem
+    {
+        public Vector3 origin;
+        public Vector3 right;
+        public Vector3 up;
+        public Vector3 forward;
+
+        public CoordinateSystem(Transform transform)
+        {
+            origin = transform.position;
+            right = transform.right;
+            up = transform.up;
+            forward = transform.forward;
+        }
+
+        public CoordinateSystem(Vector3 _origin, Vector3 _right, Vector3 _up, Vector3 _forward)
+        {
+            origin = _origin;
+            right = _right;
+            up = _up;
+            forward = _forward;
+        }
+
+        
+
+        public Vector3 GetWorldPos(Float3 value)
+        {
+            return origin + right * value.f1 + up * value.f2 + forward * value.f3;
+        }
+
+        public  Float3 CoordinateSystemTransform( CoordinateSystem targetCoordinateSystem, Float3 targetPointValue)
+        {
+            Vector3 point2_World = targetCoordinateSystem.origin + targetPointValue.f1 * targetCoordinateSystem.right +
+                targetPointValue.f2 * targetCoordinateSystem.up + targetPointValue.f3 * targetCoordinateSystem.forward;
+
+            Vector3 xPoint =VectorHelper. GetFootDrop(point2_World, this.origin, this.origin + this.right);
+            Vector3 yPoint = VectorHelper.GetFootDrop(point2_World, this.origin, this.origin + this.up);
+            Vector3 zPoint = VectorHelper.GetFootDrop(point2_World, this.origin, this.origin + this.forward);
+            
+            float x_distance = Vector3.Distance(this.origin, xPoint);
+            float y_distance = Vector3.Distance(this.origin, yPoint);
+            float z_distance = Vector3.Distance(this.origin, zPoint);
+
+            int x_dir = Vector3.Dot(xPoint- origin, right)>0?1:-1;
+            int y_dir = Vector3.Dot(yPoint- origin, up) >0?1:-1;
+            int z_dir = Vector3.Dot(zPoint- origin, forward) >0?1:-1;
+
+            Float3 Point1Value = new Float3(x_dir*x_distance, y_dir*y_distance, z_dir* z_distance);
+
+            return Point1Value;
+        }
+
+        public override string ToString()
+        {
+            return origin.ToString("f5")+","+right.ToString("f5") + ","+up.ToString("f5") + ","+forward.ToString("f5");
         }
     }
 }

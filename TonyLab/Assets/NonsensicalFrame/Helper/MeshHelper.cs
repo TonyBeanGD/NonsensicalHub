@@ -155,24 +155,26 @@ namespace NonsensicalFrame
 
     public class MeshBuffer
     {
-        public List<Vector3> vertices;
-        public List<Vector2> uv;
-        public List<Vector3> normals;
-        public List<int> triangles;
+       
 
+        public List<Vector3> vertices;
+        public List<Vector3> normals;
+        public List<Vector2> uv;
+        public List<int> triangles;
+        
         public MeshBuffer(Mesh mesh)
         {
             vertices = new List<Vector3>(mesh.vertices);
-            uv = new List<Vector2>(mesh.uv);
             normals = new List<Vector3>(mesh.normals);
+            uv = new List<Vector2>(mesh.uv);
             triangles = new List<int>(mesh.triangles);
         }
 
         public MeshBuffer()
         {
             vertices = new List<Vector3>();
-            uv = new List<Vector2>();
             normals = new List<Vector3>();
+            uv = new List<Vector2>();
             triangles = new List<int>();
         }
 
@@ -180,9 +182,49 @@ namespace NonsensicalFrame
         {
             mesh.Clear();
             mesh.SetVertices(vertices);
-            mesh.SetUVs(0, uv);
             mesh.SetNormals(normals);
+            mesh.SetUVs(0, uv);
             mesh.SetTriangles(triangles, 0);
+        }
+        
+        public Mesh GetMesh()
+        {
+            Mesh mesh = new Mesh();
+
+            mesh.SetVertices(vertices);
+            mesh.SetNormals(normals);
+            mesh.SetUVs(0, uv);
+            mesh.SetTriangles(triangles, 0);
+
+            return mesh;
+        }
+
+        public void AddQuad(Vector3[] _vertices, Vector3 _normal, Vector2 _uv)
+        {
+            int rawLength = vertices.Count;
+
+            vertices.Add(_vertices[0]);
+            vertices.Add(_vertices[1]);
+            vertices.Add(_vertices[2]);
+            vertices.Add(_vertices[3]);
+
+            normals.Add(_normal);
+            normals.Add(_normal);
+            normals.Add(_normal);
+            normals.Add(_normal);
+
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+            
+            triangles.Add(rawLength + 0);
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 3);
+
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 2);
+            triangles.Add(rawLength + 3);
         }
     }
 }
