@@ -10,6 +10,10 @@ public abstract class GranulationObject : MonoBehaviour
     [SerializeField]
     protected bool DrawMesh = true;
 
+
+    [SerializeField]
+    protected bool UseThread = true;
+
     [SerializeField]
     protected int level = -1;
 
@@ -19,28 +23,54 @@ public abstract class GranulationObject : MonoBehaviour
 
     public bool needRefresh;
 
+    private bool calculationOver;
+    private bool needApply;
+
+    MeshBuffer meshBuffer;
+
+    Thread renderThread;
+
+
+
     protected virtual void Awake()
     {
+        needRefresh = true;
+        calculationOver = true;
+        needApply = false;
     }
 
     protected virtual void Start()
     {
+        renderThread = new Thread(RenderMesh);
         mesh = GetComponent<MeshFilter>().mesh;
         granulation = new Granulation(level, mesh);
-        RenderMesh();
     }
 
     protected virtual void Update()
     {
         if (Time.frameCount%10==0)
         {
-            if (needRefresh)
+            if (needRefresh == true&& calculationOver == true)
             {
-                needRefresh = false;
-                RenderMesh();
+                 calculationOver = false;
+                 needRefresh = false;
+                if (UseThread)
+                {
+                    Thread renderThread = new Thread(RenderMesh);
+                    renderThread.Start();
+                }
+                else
+                {
+                    RenderMesh();
+                }
             }
         }
-        
+
+        if (needApply)
+        {
+            needApply = false;
+            meshBuffer.Apply(mesh);
+        }
     }
 
     protected virtual void OnDestroy()
@@ -52,10 +82,11 @@ public abstract class GranulationObject : MonoBehaviour
     {
         if (DrawMesh == false)
         {
+            calculationOver = true;
             return;
         }
 
-        MeshBuffer meshBuffer = new MeshBuffer();
+        MeshBuffer crtMeshBuffer = new MeshBuffer();
         
         Bool4Array bool6s = new Bool4Array(granulation.length0, granulation.length1, granulation.length2, 6);
         
@@ -71,7 +102,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 0] == false)
                             {
-                                AddFace(meshBuffer, granulation, 1, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 1, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -79,7 +110,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 1] == false)
                             {
-                                AddFace(meshBuffer, granulation, 2, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 2, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -87,7 +118,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 2] == false)
                             {
-                                AddFace(meshBuffer, granulation, 3, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 3, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -95,7 +126,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 3] == false)
                             {
-                                AddFace(meshBuffer, granulation, 4, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 4, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -103,7 +134,7 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 4] == false)
                             {
-                                AddFace(meshBuffer, granulation, 5, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 5, new Int3(i, j, k), bool6s);
                             }
                         }
 
@@ -111,14 +142,16 @@ public abstract class GranulationObject : MonoBehaviour
                         {
                             if (bool6s[i, j, k, 5] == false)
                             {
-                                AddFace(meshBuffer, granulation, 6, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 6, new Int3(i, j, k), bool6s);
                             }
                         }
                     }
                 }
             }
         }
-        meshBuffer.Apply(mesh);
+        meshBuffer = crtMeshBuffer;
+        calculationOver = true;
+        needApply = true;
     }
 
     /// <summary>
@@ -354,8 +387,7 @@ public abstract class GranulationObject : MonoBehaviour
             meshBuffer.AddQuad(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, normal, Vector2.one * 0.5f);
         }
     }
-
-
+    
     public struct Granulation
     {
         public int level;

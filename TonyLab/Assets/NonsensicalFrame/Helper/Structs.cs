@@ -6,7 +6,7 @@ namespace NonsensicalFrame
 {
     public struct Bool3Array
     {
-        private bool[] boolArray;
+        private readonly bool[] boolArray;
 
         private readonly int length0;
         private readonly int length1;
@@ -34,22 +34,15 @@ namespace NonsensicalFrame
             }
             set
             {
-                try
-                {
                     boolArray[index0 * step0 + index1 * step1 + index2] = value;
-                }
-                catch (System.Exception)
-                {
-
-                    throw;
-                }
+              
             }
         }
     }
 
     public struct Bool4Array
     {
-         bool[] boolArray;
+        readonly bool[] boolArray;
 
         readonly int length0;
         readonly int length1;

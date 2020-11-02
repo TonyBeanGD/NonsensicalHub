@@ -155,8 +155,6 @@ namespace NonsensicalFrame
 
     public class MeshBuffer
     {
-       
-
         public List<Vector3> vertices;
         public List<Vector3> normals;
         public List<Vector2> uv;
@@ -178,7 +176,20 @@ namespace NonsensicalFrame
             triangles = new List<int>();
         }
 
-        public void Apply(Mesh mesh)
+        public MeshBuffer Clone()
+        {
+            MeshBuffer temp = new MeshBuffer()
+            {
+                vertices = new List< Vector3 > (this.vertices.ToArray()),
+                normals = new List<Vector3>(this.normals.ToArray()),
+                uv = new List<Vector2>(this.uv.ToArray()),
+                triangles = new List<int>(this.triangles.ToArray())
+            };
+
+            return temp;
+        }
+
+    public void Apply(Mesh mesh)
         {
             mesh.Clear();
             mesh.SetVertices(vertices);
