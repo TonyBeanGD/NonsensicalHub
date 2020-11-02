@@ -15,63 +15,55 @@ public abstract class GranulationObject : MonoBehaviour
 
     public Granulation granulation;
 
-    private bool meshCalculationEnd;
+    private Mesh mesh;
 
-    protected Mesh mesh;
-
-    MeshBuffer meshBuffer;
-
-    Thread firstRender;
+    public bool needRefresh;
 
     protected virtual void Awake()
     {
-        meshCalculationEnd = false;
     }
 
     protected virtual void Start()
     {
         mesh = GetComponent<MeshFilter>().mesh;
         granulation = new Granulation(level, mesh);
-        firstRender = new Thread(ReRenderMeshThread);
-        firstRender.Start();
+        RenderMesh();
     }
 
     protected virtual void Update()
     {
-      
-        if (meshCalculationEnd == true)
+        if (Time.frameCount%10==0)
         {
-            meshCalculationEnd = false;
-            meshBuffer. Apply(mesh);
+            if (needRefresh)
+            {
+                needRefresh = false;
+                RenderMesh();
+            }
         }
+        
     }
 
     protected virtual void OnDestroy()
     {
-        firstRender.Abort();
-        GC.Collect();
+
     }
 
-    protected void ReRenderMeshThread()
+    protected void RenderMesh()
     {
-        if (meshCalculationEnd == true)
-        {
-            return;
-        }
         if (DrawMesh == false)
         {
             return;
         }
 
-        meshBuffer = new MeshBuffer();
+        MeshBuffer meshBuffer = new MeshBuffer();
         
-        bool[,,,] bool6s = new bool[granulation.points.GetLength(0), granulation.points.GetLength(1), granulation.points.GetLength(2), 6];
+        Bool4Array bool6s = new Bool4Array(granulation.length0, granulation.length1, granulation.length2, 6);
         
-        for (int i = 0; i < granulation.points.GetLength(0); i++)
+        for (int i = 0; i < granulation.length0; i++)
         {
-            for (int j = 0; j < granulation.points.GetLength(1); j++)
+            for (int j = 0; j < granulation.length1; j++)
             {
-                for (int k = 0; k < granulation.points.GetLength(2); k++)
+                for (int k = 0; k < granulation.length2; k++)
                 {
                     if (granulation.points[i, j, k] == true)
                     {
@@ -83,7 +75,7 @@ public abstract class GranulationObject : MonoBehaviour
                             }
                         }
 
-                        if (i == granulation.points.GetLength(0) - 1 || (i < granulation.points.GetLength(0) - 1 && granulation.points[i + 1, j, k] == false))
+                        if (i == granulation.length0 - 1 || (i < granulation.length0 - 1 && granulation.points[i + 1, j, k] == false))
                         {
                             if (bool6s[i, j, k, 1] == false)
                             {
@@ -99,7 +91,7 @@ public abstract class GranulationObject : MonoBehaviour
                             }
                         }
 
-                        if (j == granulation.points.GetLength(1) - 1 || (j < granulation.points.GetLength(1) - 1 && granulation.points[i, j + 1, k] == false))
+                        if (j == granulation.length1 - 1 || (j < granulation.length1 - 1 && granulation.points[i, j + 1, k] == false))
                         {
                             if (bool6s[i, j, k, 3] == false)
                             {
@@ -115,7 +107,7 @@ public abstract class GranulationObject : MonoBehaviour
                             }
                         }
 
-                        if (k == granulation.points.GetLength(2) - 1 || (k < granulation.points.GetLength(2) - 1 && granulation.points[i, j, k + 1] == false))
+                        if (k == granulation.length2 - 1 || (k < granulation.length2 - 1 && granulation.points[i, j, k + 1] == false))
                         {
                             if (bool6s[i, j, k, 5] == false)
                             {
@@ -126,8 +118,7 @@ public abstract class GranulationObject : MonoBehaviour
                 }
             }
         }
-        Debugger.messages.Enqueue("ReRenderMeshThreadEnd");
-        meshCalculationEnd = true;
+        meshBuffer.Apply(mesh);
     }
 
     /// <summary>
@@ -138,7 +129,7 @@ public abstract class GranulationObject : MonoBehaviour
     /// <param name="dir">1到6分别为x负，x正，y负，y正，z负，z正</param>
     /// <param name="crtPoint"></param>
     /// <param name="bool6s"></param>
-    private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, bool[,,,] bool6s)
+    private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, Bool4Array bool6s)
     {
         Vector3 normal;
 
@@ -202,7 +193,10 @@ public abstract class GranulationObject : MonoBehaviour
 
         points.Push(crtPoint);
 
-        List<Int3> changes = new List<Int3>();
+        Bool3Array buffer = new Bool3Array(granulation.length0, granulation.length1, granulation.length2); 
+        int arrMax1 = granulation.length0 - 1;
+        int arrMax2 = granulation.length1 - 1;
+        int arrMax3 = granulation.length2 - 1;
 
         while (points.Count > 0)
         {
@@ -217,83 +211,117 @@ public abstract class GranulationObject : MonoBehaviour
                 continue;
             }
             bool6s[point.i1, point.i2, point.i3, dir - 1] = true;
-            changes.Add(point);
+            buffer[point.i1, point.i2, point.i3] = true;
 
             Int3 dir1Negative = point + (-dir1);
             Int3 dir1Positive = point + dir1;
             Int3 dir2Negative = point + (-dir2);
             Int3 dir2Positive = point + dir2;
-
-            int arrMax1 = granulation.points.GetLength(0) - 1;
-            int arrMax2 = granulation.points.GetLength(1) - 1;
-            int arrMax3 = granulation.points.GetLength(2) - 1;
-
-            if (dir1Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true
-                && granulation.points[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3] == true
-                && bool6s[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3, dir - 1] == false)
+            
+            if (dir1Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                points.Push(dir1Negative);
+                if (granulation.points[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3] == true
+                 && bool6s[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3, dir - 1] == false)
+                {
+                    points.Push(dir1Negative);
+                }
+                else if (dir1Value > minDir1Limit && buffer[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3] == false)
+                {
+                    minDir1Limit = dir1Value;
+                }
+               
             }
-            else if (dir1Value > minDir1Limit)
+            else
             {
-                if (changes.Contains(dir1Negative) == false)
+                if (dir1Value > minDir1Limit)
                 {
                     minDir1Limit = dir1Value;
                 }
             }
 
-            if (dir1Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true
-                && granulation.points[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == true
-                && bool6s[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3, dir - 1] == false)
+            if (dir1Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                points.Push(dir1Positive);
+                if (granulation.points[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == true
+                 && bool6s[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3, dir - 1] == false)
+                {
+                    points.Push(dir1Positive);
+                }
+                else if (dir1Value < maxDir1Limit && buffer[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == false)
+                {
+                    maxDir1Limit = dir1Value;
+                }
+
             }
-            else if (dir1Value < maxDir1Limit)
+            else
             {
-                if (changes.Contains(dir1Positive) == false)
+                if (dir1Value < maxDir1Limit)
                 {
                     maxDir1Limit = dir1Value;
                 }
             }
 
-            if (dir2Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true
-                && granulation.points[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3] == true
-                && bool6s[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3, dir - 1] == false)
+            if (dir2Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                points.Push(dir2Negative);
+                if (granulation.points[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3] == true
+                 && bool6s[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3, dir - 1] == false)
+                {
+                    points.Push(dir2Negative);
+                }
+                else if (dir2Value > minDir2Limit && buffer[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3] == false)
+                {
+                    minDir2Limit = dir2Value;
+                }
+
             }
-            else if (dir2Value > minDir2Limit)
+            else
             {
-                if (changes.Contains(dir2Negative) == false)
+                if (dir2Value > minDir2Limit)
                 {
                     minDir2Limit = dir2Value;
                 }
             }
 
-            if (dir2Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true
-                && granulation.points[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3] == true
-                && bool6s[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3, dir - 1] == false)
+            if (dir2Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                points.Push(dir2Positive);
+                if (granulation.points[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3] == true
+                 && bool6s[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3, dir - 1] == false)
+                {
+                    points.Push(dir2Positive);
+                }
+                else if (dir2Value < maxDir2Limit && buffer[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3] == false)
+                {
+                    maxDir2Limit = dir2Value;
+                }
+
             }
-            else if (dir2Value < maxDir2Limit)
+            else
             {
-                if (changes.Contains(dir2Positive) == false)
+                if (dir2Value < maxDir2Limit)
                 {
                     maxDir2Limit = dir2Value;
                 }
             }
         }
 
-        foreach (var point in changes)
+        for (int i = 0; i < granulation.length0; i++)
         {
-            int dir1Value = point.GetValue(dir1);
-            int dir2Value = point.GetValue(dir2);
-
-            if (dir1Value < minDir1Limit || dir1Value > maxDir1Limit
-                || dir2Value < minDir2Limit || dir2Value > maxDir2Limit)
+            for (int j = 0; j < granulation.length1; j++)
             {
-                bool6s[point.i1, point.i2, point.i3, dir - 1] = false;
+                for (int k = 0; k < granulation.length2; k++)
+                {
+                    if (buffer[i,j,k]==true)
+                    {
+                        Int3 point = new Int3(i, j, k);
+                        int dir1Value = point.GetValue(dir1);
+                        int dir2Value = point.GetValue(dir2);
+
+                        if (dir1Value < minDir1Limit || dir1Value > maxDir1Limit
+                            || dir2Value < minDir2Limit || dir2Value > maxDir2Limit)
+                        {
+                            bool6s[point.i1, point.i2, point.i3, dir - 1] = false;
+                        }
+                    }
+                }
             }
         }
 
@@ -331,7 +359,10 @@ public abstract class GranulationObject : MonoBehaviour
     public struct Granulation
     {
         public int level;
-        public bool[,,] points;
+        public Bool3Array points;
+        public int length0;
+        public int length1;
+        public int length2;
         /// <summary>
         /// (0,0,0)位置的本地坐标
         /// </summary>
@@ -353,7 +384,10 @@ public abstract class GranulationObject : MonoBehaviour
             int y = ((bounds.max.y - bounds.min.y) / step).RoundingToInt_Add();
             int z = ((bounds.max.z - bounds.min.z) / step).RoundingToInt_Add();
 
-            points = new bool[x, y, z];
+            points = new Bool3Array(x, y, z);
+            length0 = x;
+            length1 = y;
+            length2 = z;
 
             for (int i = 0; i < x; i++)
             {

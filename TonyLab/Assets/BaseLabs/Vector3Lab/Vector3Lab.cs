@@ -6,27 +6,27 @@ using UnityEngine;
 public class Vector3Lab : MonoBehaviour
 {
     [SerializeField]
-    private Transform target;
-    
+    private Transform cube1;
+    [SerializeField]
+    private Transform cube2;
     [SerializeField]
     private Transform ball1;
     [SerializeField]
     private Transform ball2;
 
-
-
-    private void Update()
+    private void Start()
     {
-        CoordinateSystem cs1 = new CoordinateSystem(transform.position , transform.right, transform.up, transform.forward);
-        CoordinateSystem cs2 = new CoordinateSystem(target.position, target.right, target.up, target.forward);
+        CoordinateSystem cs1 = new CoordinateSystem(cube1);
+        CoordinateSystem cs2 = new CoordinateSystem(cube2);
 
-        Float3 data = new Float3(1,1,1);
+        var t1F = cs1.GetCoordinate(ball1.position);
 
-        Vector3 ball2Pos = cs2.GetWorldPos(data);
-
-        Vector3 ball1Pos = cs1.GetWorldPos( cs1.CoordinateSystemTransform(cs2,data));
+        CoordinateSystemDiff csd = new CoordinateSystemDiff(cs1, cs2);
         
-        ball1.position = ball1Pos;
-        ball2.position = ball2Pos;
+        var t2F = csd.GetCoordinate( t1F) ;
+
+        var t2WorldPos = cs2.GetWorldPos(t2F);
+
+        ball2.position = t2WorldPos;
     }
 }

@@ -334,31 +334,12 @@ namespace NonsensicalFrame
             float v = axisUnitVector3.y;
             float w = axisUnitVector3.z;
             Matrix4x4 matrix4X4 = new Matrix4x4(
-                new Vector4(Mathf.Pow(u, 2) + (1 + Mathf.Pow(u, 2)) * Mathf.Cos(angle), u * v * (1 - Mathf.Cos(angle)) - w * Mathf.Sin(angle), u * w * (1 - Mathf.Cos(angle)) + v * Mathf.Sin(angle), 0),
+                new Vector4(Mathf.Pow(u, 2) + (1 - Mathf.Pow(u, 2)) * Mathf.Cos(angle), u * v * (1 - Mathf.Cos(angle)) - w * Mathf.Sin(angle), u * w * (1 - Mathf.Cos(angle)) + v * Mathf.Sin(angle), 0),
                 new Vector4(u * v * (1 - Mathf.Cos(angle)) + w * Mathf.Sin(angle), Mathf.Pow(v, 2) + (1 - Mathf.Pow(v, 2)) * Mathf.Cos(angle), v * w * (1 - Mathf.Cos(angle)) - u * Mathf.Sin(angle), 0),
                 new Vector4(u * w * (1 - Mathf.Cos(angle)) - v * Mathf.Sin(angle), v * w * (1 - Mathf.Cos(angle)) + u * Mathf.Sin(angle), Mathf.Pow(w, 2) + (1 - Mathf.Pow(w, 2)) * Mathf.Cos(angle), 0),
                 new Vector4(0, 0, 0, 1));
 
-            return matrix4X4.MultiplyPoint(point);
-        }
-
-        public static Float3 CoordinateSystemTransform(CoordinateSystem CoordinateSystem1, CoordinateSystem CoordinateSystem2, Float3 point2Value)
-        {
-            Vector3 point2_World = CoordinateSystem2.origin + point2Value.f1 * CoordinateSystem2.right + point2Value.f2 * CoordinateSystem2.up + point2Value.f3 * CoordinateSystem2.forward;
-
-            Vector3 xPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.right);
-            Vector3 yPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.up);
-            Vector3 zPoint = GetFootDrop(point2_World, CoordinateSystem1.origin, CoordinateSystem1.origin + CoordinateSystem1.forward);
-
-            float x_distance = Vector3.Distance(CoordinateSystem1.origin, xPoint);
-            float y_distance = Vector3.Distance(CoordinateSystem1.origin, yPoint);
-            float z_distance = Vector3.Distance(CoordinateSystem1.origin, zPoint);
-
-            Float3 Point1Value = new Float3(x_distance, y_distance, z_distance);
-
-            Debug.Log(Point1Value);
-
-            return Point1Value;
+            return matrix4X4 *point;
         }
     }
 
@@ -368,6 +349,7 @@ namespace NonsensicalFrame
         public Vector3 right;
         public Vector3 up;
         public Vector3 forward;
+        public Quaternion rotation;
 
         public CoordinateSystem(Transform transform)
         {
@@ -375,6 +357,7 @@ namespace NonsensicalFrame
             right = transform.right;
             up = transform.up;
             forward = transform.forward;
+            rotation = transform.rotation;
         }
 
         public CoordinateSystem(Vector3 _origin, Vector3 _right, Vector3 _up, Vector3 _forward)
@@ -383,9 +366,28 @@ namespace NonsensicalFrame
             right = _right;
             up = _up;
             forward = _forward;
+            rotation = Quaternion.LookRotation(_forward, _up);
         }
 
-        
+        public Float3 GetCoordinate(Vector3 worldPos)
+        {
+            Vector3 xPoint = VectorHelper.GetFootDrop(worldPos, this.origin, this.origin + this.right);
+            Vector3 yPoint = VectorHelper.GetFootDrop(worldPos, this.origin, this.origin + this.up);
+            Vector3 zPoint = VectorHelper.GetFootDrop(worldPos, this.origin, this.origin + this.forward);
+
+            float x_distance = Vector3.Distance(this.origin, xPoint);
+            float y_distance = Vector3.Distance(this.origin, yPoint);
+            float z_distance = Vector3.Distance(this.origin, zPoint);
+
+            int x_dir = Vector3.Dot(xPoint - origin, right) > 0 ? 1 : -1;
+            int y_dir = Vector3.Dot(yPoint - origin, up) > 0 ? 1 : -1;
+            int z_dir = Vector3.Dot(zPoint - origin, forward) > 0 ? 1 : -1;
+
+            Float3 Point1Value = new Float3(x_dir * x_distance, y_dir * y_distance, z_dir * z_distance);
+         
+            return Point1Value;
+        }
+
 
         public Vector3 GetWorldPos(Float3 value)
         {
@@ -397,21 +399,7 @@ namespace NonsensicalFrame
             Vector3 point2_World = targetCoordinateSystem.origin + targetPointValue.f1 * targetCoordinateSystem.right +
                 targetPointValue.f2 * targetCoordinateSystem.up + targetPointValue.f3 * targetCoordinateSystem.forward;
 
-            Vector3 xPoint =VectorHelper. GetFootDrop(point2_World, this.origin, this.origin + this.right);
-            Vector3 yPoint = VectorHelper.GetFootDrop(point2_World, this.origin, this.origin + this.up);
-            Vector3 zPoint = VectorHelper.GetFootDrop(point2_World, this.origin, this.origin + this.forward);
-            
-            float x_distance = Vector3.Distance(this.origin, xPoint);
-            float y_distance = Vector3.Distance(this.origin, yPoint);
-            float z_distance = Vector3.Distance(this.origin, zPoint);
-
-            int x_dir = Vector3.Dot(xPoint- origin, right)>0?1:-1;
-            int y_dir = Vector3.Dot(yPoint- origin, up) >0?1:-1;
-            int z_dir = Vector3.Dot(zPoint- origin, forward) >0?1:-1;
-
-            Float3 Point1Value = new Float3(x_dir*x_distance, y_dir*y_distance, z_dir* z_distance);
-
-            return Point1Value;
+            return GetCoordinate(point2_World);
         }
 
         public override string ToString()
