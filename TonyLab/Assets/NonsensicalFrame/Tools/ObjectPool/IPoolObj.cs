@@ -1,4 +1,4 @@
-﻿namespace NonsensicalFrame
+﻿namespace NonsensicalKit
 {
     public interface IPoolObj
     {

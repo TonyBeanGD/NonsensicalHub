@@ -9,7 +9,7 @@ using System.Xml;
 using System.Security.Cryptography;
 using System.Threading;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     class MD5Helper
     {

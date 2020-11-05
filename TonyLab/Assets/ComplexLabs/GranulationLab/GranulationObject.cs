@@ -1,10 +1,13 @@
-﻿using NonsensicalFrame;
+﻿using NonsensicalKit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+/// <summary>
+/// 可以使用chunk进行运算的优化
+/// </summary>
 public abstract class GranulationObject : MonoBehaviour
 {
     [SerializeField]
@@ -48,23 +51,21 @@ public abstract class GranulationObject : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (Time.frameCount%10==0)
+        if (needRefresh == true && calculationOver == true)
         {
-            if (needRefresh == true&& calculationOver == true)
+            calculationOver = false;
+            needRefresh = false;
+            if (UseThread)
             {
-                 calculationOver = false;
-                 needRefresh = false;
-                if (UseThread)
-                {
-                    Thread renderThread = new Thread(RenderMesh);
-                    renderThread.Start();
-                }
-                else
-                {
-                    RenderMesh();
-                }
+                Thread renderThread = new Thread(RenderMesh);
+                renderThread.Start();
+            }
+            else
+            {
+                RenderMesh();
             }
         }
+
 
         if (needApply)
         {
@@ -87,9 +88,9 @@ public abstract class GranulationObject : MonoBehaviour
         }
 
         MeshBuffer crtMeshBuffer = new MeshBuffer();
-        
+
         Bool4Array bool6s = new Bool4Array(granulation.length0, granulation.length1, granulation.length2, 6);
-        
+
         for (int i = 0; i < granulation.length0; i++)
         {
             for (int j = 0; j < granulation.length1; j++)
@@ -164,10 +165,9 @@ public abstract class GranulationObject : MonoBehaviour
     /// <param name="bool6s"></param>
     private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, Bool4Array bool6s)
     {
-        Vector3 normal;
-
         Int3 dir1;
         Int3 dir2;
+        Int3 normal;
 
         switch (dir)
         {
@@ -175,42 +175,42 @@ public abstract class GranulationObject : MonoBehaviour
                 {
                     dir1 = new Int3(0, 1, 0);
                     dir2 = new Int3(0, 0, 1);
-                    normal = new Vector3(-1, 0, 0);
+                    normal = new Int3(-1, 0, 0);
                 }
                 break;
             case 2:
                 {
                     dir1 = new Int3(0, 1, 0);
                     dir2 = new Int3(0, 0, 1);
-                    normal = new Vector3(1, 0, 0);
+                    normal = new Int3(1, 0, 0);
                 }
                 break;
             case 3:
                 {
                     dir1 = new Int3(1, 0, 0);
                     dir2 = new Int3(0, 0, 1);
-                    normal = new Vector3(0, -1, 0);
+                    normal = new Int3(0, -1, 0);
                 }
                 break;
             case 4:
                 {
                     dir1 = new Int3(1, 0, 0);
                     dir2 = new Int3(0, 0, 1);
-                    normal = new Vector3(0, 1, 0);
+                    normal = new Int3(0, 1, 0);
                 }
                 break;
             case 5:
                 {
                     dir1 = new Int3(1, 0, 0);
                     dir2 = new Int3(0, 1, 0);
-                    normal = new Vector3(0, 0, -1);
+                    normal = new Int3(0, 0, -1);
                 }
                 break;
             case 6:
                 {
                     dir1 = new Int3(1, 0, 0);
                     dir2 = new Int3(0, 1, 0);
-                    normal = new Vector3(0, 0, 1);
+                    normal = new Int3(0, 0, 1);
                 }
                 break;
             default:
@@ -226,7 +226,7 @@ public abstract class GranulationObject : MonoBehaviour
 
         points.Push(crtPoint);
 
-        Bool3Array buffer = new Bool3Array(granulation.length0, granulation.length1, granulation.length2); 
+        Bool3Array buffer = new Bool3Array(granulation.length0, granulation.length1, granulation.length2);
         int arrMax1 = granulation.length0 - 1;
         int arrMax2 = granulation.length1 - 1;
         int arrMax3 = granulation.length2 - 1;
@@ -250,19 +250,32 @@ public abstract class GranulationObject : MonoBehaviour
             Int3 dir1Positive = point + dir1;
             Int3 dir2Negative = point + (-dir2);
             Int3 dir2Positive = point + dir2;
-            
+            Int3 dir1NegativeFace = dir1Negative + normal;
+            Int3 dir1PositiveFace = dir1Positive + normal;
+            Int3 dir2NegativeFace = dir2Negative + normal;
+            Int3 dir2PositiveFace = dir2Positive + normal;
+
             if (dir1Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                if (granulation.points[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3] == true
-                 && bool6s[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3, dir - 1] == false)
+                if (granulation.points[dir1Negative] == true
+                 && bool6s[dir1Negative, dir - 1] == false)
                 {
-                    points.Push(dir1Negative);
+                    if (dir1NegativeFace.CheckBound(arrMax1, arrMax2, arrMax3) == true && granulation.points[dir1NegativeFace] == true)
+                    {
+                        if (dir1Value > minDir1Limit)
+                        {
+                            minDir1Limit = dir1Value;
+                        }
+                    }
+                    else
+                    {
+                        points.Push(dir1Negative);
+                    }
                 }
-                else if (dir1Value > minDir1Limit && buffer[dir1Negative.i1, dir1Negative.i2, dir1Negative.i3] == false)
+                else if (dir1Value > minDir1Limit && buffer[dir1Negative] == false)
                 {
                     minDir1Limit = dir1Value;
                 }
-               
             }
             else
             {
@@ -274,12 +287,22 @@ public abstract class GranulationObject : MonoBehaviour
 
             if (dir1Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                if (granulation.points[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == true
-                 && bool6s[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3, dir - 1] == false)
+                if (granulation.points[dir1Positive] == true
+                 && bool6s[dir1Positive, dir - 1] == false)
                 {
-                    points.Push(dir1Positive);
+                    if (dir1PositiveFace.CheckBound(arrMax1, arrMax2, arrMax3) == true && granulation.points[dir1PositiveFace] == true)
+                    {
+                        if (dir1Value < maxDir1Limit)
+                        {
+                            maxDir1Limit = dir1Value;
+                        }
+                    }
+                    else
+                    {
+                        points.Push(dir1Positive);
+                    }
                 }
-                else if (dir1Value < maxDir1Limit && buffer[dir1Positive.i1, dir1Positive.i2, dir1Positive.i3] == false)
+                else if (dir1Value < maxDir1Limit && buffer[dir1Positive] == false)
                 {
                     maxDir1Limit = dir1Value;
                 }
@@ -295,12 +318,22 @@ public abstract class GranulationObject : MonoBehaviour
 
             if (dir2Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                if (granulation.points[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3] == true
-                 && bool6s[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3, dir - 1] == false)
+                if (granulation.points[dir2Negative] == true
+                 && bool6s[dir2Negative, dir - 1] == false)
                 {
-                    points.Push(dir2Negative);
+                    if (dir2NegativeFace.CheckBound(arrMax1, arrMax2, arrMax3) == true && granulation.points[dir2NegativeFace] == true)
+                    {
+                        if (dir2Value > minDir2Limit)
+                        {
+                            minDir2Limit = dir2Value;
+                        }
+                    }
+                    else
+                    {
+                        points.Push(dir2Negative);
+                    }
                 }
-                else if (dir2Value > minDir2Limit && buffer[dir2Negative.i1, dir2Negative.i2, dir2Negative.i3] == false)
+                else if (dir2Value > minDir2Limit && buffer[dir2Negative] == false)
                 {
                     minDir2Limit = dir2Value;
                 }
@@ -316,12 +349,22 @@ public abstract class GranulationObject : MonoBehaviour
 
             if (dir2Positive.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
-                if (granulation.points[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3] == true
-                 && bool6s[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3, dir - 1] == false)
+                if (granulation.points[dir2Positive] == true
+                 && bool6s[dir2Positive, dir - 1] == false)
                 {
-                    points.Push(dir2Positive);
+                    if (dir2PositiveFace.CheckBound(arrMax1, arrMax2, arrMax3) == true && granulation.points[dir2PositiveFace] == true)
+                    {
+                        if (dir2Value < maxDir2Limit)
+                        {
+                            maxDir2Limit = dir2Value;
+                        }
+                    }
+                    else
+                    {
+                        points.Push(dir2Positive);
+                    }
                 }
-                else if (dir2Value < maxDir2Limit && buffer[dir2Positive.i1, dir2Positive.i2, dir2Positive.i3] == false)
+                else if (dir2Value < maxDir2Limit && buffer[dir2Positive] == false)
                 {
                     maxDir2Limit = dir2Value;
                 }
@@ -342,7 +385,7 @@ public abstract class GranulationObject : MonoBehaviour
             {
                 for (int k = 0; k < granulation.length2; k++)
                 {
-                    if (buffer[i,j,k]==true)
+                    if (buffer[i, j, k] == true)
                     {
                         Int3 point = new Int3(i, j, k);
                         int dir1Value = point.GetValue(dir1);
@@ -358,12 +401,14 @@ public abstract class GranulationObject : MonoBehaviour
             }
         }
 
+        Vector3 normalVector3 = new Vector3(normal.i1, normal.i2, normal.i3);
+
         Vector3[] point4 = new Vector3[4];
         float step = Mathf.Pow(10, granulation.level);
         float distance = step * 0.5f;
         Vector3 offset = new Vector3((crtPoint.i1 + 0.5f) * step, (crtPoint.i2 + 0.5f) * step, (crtPoint.i3 + 0.5f) * step);
         Vector3 origin = granulation.origin + offset;
-        Vector3 faceCenterPoint = origin + normal * distance;
+        Vector3 faceCenterPoint = origin + normalVector3 * distance;
 
         Vector3 dir1V3 = new Vector3(dir1.i1, dir1.i2, dir1.i3);
         Vector3 dir2V3 = new Vector3(dir2.i1, dir2.i2, dir2.i3);
@@ -380,14 +425,14 @@ public abstract class GranulationObject : MonoBehaviour
 
         if (dir == 2 || dir == 3 || dir == 6)
         {
-            meshBuffer.AddQuad(point4, normal, Vector2.one * 0.5f);
+            meshBuffer.AddQuad(point4, normalVector3, Vector2.one * 0.5f);
         }
         else
         {
-            meshBuffer.AddQuad(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, normal, Vector2.one * 0.5f);
+            meshBuffer.AddQuad(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, normalVector3, Vector2.one * 0.5f);
         }
     }
-    
+
     public struct Granulation
     {
         public int level;

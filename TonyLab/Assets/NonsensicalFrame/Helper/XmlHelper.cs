@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public class XmlHelper
     {

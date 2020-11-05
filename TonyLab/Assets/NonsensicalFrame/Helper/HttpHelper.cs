@@ -7,7 +7,7 @@ using LitJson;
 using UnityEngine;
 using System.IO;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class HttpHelper
     {

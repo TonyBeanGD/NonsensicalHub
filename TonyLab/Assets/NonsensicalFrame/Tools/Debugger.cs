@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using System.Text;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class Debugger
     {

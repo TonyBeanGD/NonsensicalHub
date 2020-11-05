@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class VectorHelper
     {
+        public static Vector3 LocalPosTransform(this Vector3 selfCenter,Vector3 targetCenter,Vector3 targetLocalPoint)
+        {
+            Vector3 targetWorldPoint = targetCenter + targetLocalPoint;
+            Vector3 selfLocalPoint = targetWorldPoint- selfCenter;
+            return selfLocalPoint;
+
+        }
+
         /// <summary>
         /// 获取点在直线上的垂足
         /// https://blog.csdn.net/u011435933/article/details/106375017/

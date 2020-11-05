@@ -1,4 +1,4 @@
-﻿using NonsensicalFrame;
+﻿using NonsensicalKit;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +12,7 @@ public class CuttingObject : GranulationObject
     {
         base.Awake();
 
-        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalFrame.ModelHelper.GetCube(0.5f, 1f, 0.5f);
+        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalKit.ModelHelper.GetCube(0.5f, 1f, 0.5f);
         gameObject.AddComponent<MeshRenderer>().material=Resources.Load<Material>("Materials/white");
     }
 

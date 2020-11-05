@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     /// <summary>
     /// 框选工具

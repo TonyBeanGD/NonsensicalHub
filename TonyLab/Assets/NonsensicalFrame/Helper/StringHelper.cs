@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System.Text;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class StringHelper
     {

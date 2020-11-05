@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class MeshHelper
     {
@@ -152,14 +152,16 @@ namespace NonsensicalFrame
         }
     }
 
-
+    /// <summary>
+    /// 用于缓存mesh数据以进行处理
+    /// </summary>
     public class MeshBuffer
     {
         public List<Vector3> vertices;
         public List<Vector3> normals;
         public List<Vector2> uv;
         public List<int> triangles;
-        
+
         public MeshBuffer(Mesh mesh)
         {
             vertices = new List<Vector3>(mesh.vertices);
@@ -176,11 +178,16 @@ namespace NonsensicalFrame
             triangles = new List<int>();
         }
 
+        public Vector3 GetVerticeByTrianglesIndex(int _index)
+        {
+            return vertices[triangles[_index]];
+        }
+
         public MeshBuffer Clone()
         {
             MeshBuffer temp = new MeshBuffer()
             {
-                vertices = new List< Vector3 > (this.vertices.ToArray()),
+                vertices = new List<Vector3>(this.vertices.ToArray()),
                 normals = new List<Vector3>(this.normals.ToArray()),
                 uv = new List<Vector2>(this.uv.ToArray()),
                 triangles = new List<int>(this.triangles.ToArray())
@@ -189,7 +196,7 @@ namespace NonsensicalFrame
             return temp;
         }
 
-    public void Apply(Mesh mesh)
+        public void Apply(Mesh mesh)
         {
             mesh.Clear();
             mesh.SetVertices(vertices);
@@ -197,7 +204,7 @@ namespace NonsensicalFrame
             mesh.SetUVs(0, uv);
             mesh.SetTriangles(triangles, 0);
         }
-        
+
         public Mesh GetMesh()
         {
             Mesh mesh = new Mesh();
@@ -228,7 +235,35 @@ namespace NonsensicalFrame
             uv.Add(_uv);
             uv.Add(_uv);
             uv.Add(_uv);
-            
+
+            triangles.Add(rawLength + 0);
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 3);
+
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 2);
+            triangles.Add(rawLength + 3);
+        }
+
+        public void AddQuadSoften(Vector3[] _vertices, Vector3 _center, Vector2 _uv)
+        {
+            int rawLength = vertices.Count;
+
+            vertices.Add(_vertices[0]);
+            vertices.Add(_vertices[1]);
+            vertices.Add(_vertices[2]);
+            vertices.Add(_vertices[3]);
+
+            normals.Add(_vertices[0] - _center);
+            normals.Add(_vertices[1] - _center);
+            normals.Add(_vertices[2] - _center);
+            normals.Add(_vertices[3] - _center);
+
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+
             triangles.Add(rawLength + 0);
             triangles.Add(rawLength + 1);
             triangles.Add(rawLength + 3);

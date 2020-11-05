@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public class AppConfigManager : MonoBehaviour
     {

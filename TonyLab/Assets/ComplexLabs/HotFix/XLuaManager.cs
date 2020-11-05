@@ -6,7 +6,7 @@ using XLua;
 using LitJson;
 using System.IO;
 using System.Text;
-using NonsensicalFrame;
+using NonsensicalKit;
 
 public class XLuaManager : MonoBehaviour
 {
@@ -183,7 +183,7 @@ public class XLuaManager : MonoBehaviour
 
                 if (target.GetElementByPath(scriptList[i].path) == null)
                 {
-                    NonsensicalFrame.FileHelper.DeleteFile(Path.Combine(dicPath, name));
+                    NonsensicalKit.FileHelper.DeleteFile(Path.Combine(dicPath, name));
                     scriptList.RemoveAt(i);
                     i--;
                 }
@@ -191,7 +191,7 @@ public class XLuaManager : MonoBehaviour
                 {
                     if (target.GetElementByPath(scriptList[i].path).version > scriptList[i].version)
                     {
-                        NonsensicalFrame.FileHelper.DeleteFile(Path.Combine(dicPath, name));
+                        NonsensicalKit.FileHelper.DeleteFile(Path.Combine(dicPath, name));
                         scriptList.RemoveAt(i);
                         i--;
                     }

@@ -2,7 +2,7 @@
 using Unity.Jobs;
 using UnityEngine;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public struct Bool3Array
     {
@@ -36,6 +36,19 @@ namespace NonsensicalFrame
             {
                     boolArray[index0 * step0 + index1 * step1 + index2] = value;
               
+            }
+        }
+
+        public bool this[Int3 int3]
+        {
+            get
+            {
+                return boolArray[int3.i1 * step0 + int3.i2 * step1 + int3.i3];
+            }
+            set
+            {
+                boolArray[int3.i1 * step0 + int3.i2 * step1 + int3.i3] = value;
+
             }
         }
     }
@@ -75,6 +88,18 @@ namespace NonsensicalFrame
             set
             {
                 boolArray[index0 * step0 + index1 * step1 + index2 * step2 + index3] = value;
+            }
+        }
+
+        public bool this[Int3 int3,int index3]
+        {
+            get
+            {
+                return boolArray[int3.i1 * step0 + int3.i2 * step1 + int3.i3 * step2 + index3];
+            }
+            set
+            {
+                boolArray[int3.i1 * step0 + int3.i2 * step1 + int3.i3 * step2 + index3] = value;
             }
         }
     }
@@ -313,6 +338,7 @@ namespace NonsensicalFrame
     }
 
     /// <summary>
+    /// 自定义Quaternion，用于求四元数差值
     /// https://stackoverflow.com/questions/22157435/difference-between-the-two-quaternions
     /// </summary>
     public struct Quat

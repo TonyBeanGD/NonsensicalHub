@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public class ObjectPool : MonoSingleton<ObjectPool>
     {

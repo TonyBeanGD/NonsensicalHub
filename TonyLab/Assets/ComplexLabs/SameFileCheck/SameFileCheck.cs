@@ -8,7 +8,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public class SameFileCheck : MonoBehaviour
     {

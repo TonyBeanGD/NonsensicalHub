@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public static class LogoutTool
     {

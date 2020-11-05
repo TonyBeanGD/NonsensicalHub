@@ -7,6 +7,6 @@ public class ModelLab : MonoBehaviour
 
     void Start()
     {
-        transform.GetComponent<MeshFilter>().mesh = NonsensicalFrame.ModelHelper.GetCube(0.1f, 0.1f, 0.1f);
+        transform.GetComponent<MeshFilter>().mesh = NonsensicalKit.ModelHelper.GetCube(0.1f, 0.1f, 0.1f);
     }
 }

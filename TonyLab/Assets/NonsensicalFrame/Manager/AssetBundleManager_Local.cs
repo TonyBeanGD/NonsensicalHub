@@ -1,4 +1,4 @@
-﻿using NonsensicalFrame;
+﻿using NonsensicalKit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     /// <summary>
     /// 适用于所有ab包都在本地同一个文件夹内的情况

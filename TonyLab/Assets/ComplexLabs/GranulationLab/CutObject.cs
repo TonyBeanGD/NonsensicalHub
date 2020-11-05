@@ -1,4 +1,4 @@
-﻿using NonsensicalFrame;
+﻿using NonsensicalKit;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -10,7 +10,7 @@ public class CutObject : GranulationObject
     {
         base.Awake();
 
-        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalFrame.ModelHelper.GetCube(4f, 2f, 4f);
+        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalKit.ModelHelper.GetCube(10f, 2f,10f);
         gameObject.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/white");
     }
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace NonsensicalFrame
+namespace NonsensicalKit
 {
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
