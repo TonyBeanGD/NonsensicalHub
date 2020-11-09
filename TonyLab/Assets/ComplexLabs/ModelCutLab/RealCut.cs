@@ -12,7 +12,7 @@ public class RealCut : MonoBehaviour
     private Vector3 touchBeganPos;
 
     private Plane clipPlane;
-
+    
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -287,7 +287,7 @@ public class RealCut : MonoBehaviour
 
         #region 重新排序面上的顶点
         List<SortAngle> SortAngleList = new List<SortAngle>();
-        
+
         for (int verticeIndex = rawVerticeCount + 1; verticeIndex < verticeList.Count; verticeIndex++)
         {
             //计算角度,以0-1为参照，01一定是相邻的两个点（从同一个三角形中切出的点）
@@ -341,19 +341,19 @@ public class RealCut : MonoBehaviour
         bool type1 = angle12 < angle13;
 
 
-        for (int verticeIndex = 0; verticeIndex < SortAngleList.Count ; verticeIndex++)
+        for (int verticeIndex = 0; verticeIndex < SortAngleList.Count; verticeIndex++)
         {
 
-            if (verticeIndex == 0&& !type1)
+            if (verticeIndex == 0 && !type1)
             {
                 continue;
             }
-            if (verticeIndex== SortAngleList.Count-1&& type1)
+            if (verticeIndex == SortAngleList.Count - 1 && type1)
             {
                 continue;
             }
             int next = verticeIndex + 1;
-            if (next>= SortAngleList.Count)
+            if (next >= SortAngleList.Count)
             {
                 next = 0;
             }
@@ -385,7 +385,7 @@ public class RealCut : MonoBehaviour
         mf.mesh.uv = uvList.ToArray();
         mf.mesh.normals = normalList.ToArray();
         mf.mesh.triangles = triangles1.ToArray();
-        
+
         GameObject newModel = new GameObject("New Model");
         MeshFilter meshFilter = newModel.AddComponent<MeshFilter>();
         meshFilter.mesh.vertices = mf.mesh.vertices;
@@ -398,7 +398,7 @@ public class RealCut : MonoBehaviour
         newModel.AddComponent<RealCut>();
 
         MeshHelper.ClearUnuseVertex(mf.mesh);
-        mf.transform.position+= MeshHelper.AutoCentroidShift(mf.mesh);
+        mf.transform.position += MeshHelper.AutoCentroidShift(mf.mesh);
         mf.GetComponent<MeshCollider>().sharedMesh = mf.mesh;
         MeshHelper.ClearUnuseVertex(meshFilter.mesh);
         newModel.transform.position += MeshHelper.AutoCentroidShift(meshFilter.mesh);
@@ -407,7 +407,7 @@ public class RealCut : MonoBehaviour
         newModel.GetComponent<MeshCollider>().convex = true;
 
         newModel.AddComponent<Rigidbody>();
-        newModel.GetComponent<Rigidbody>().drag = 1 ;
+        newModel.GetComponent<Rigidbody>().drag = 1;
     }
 
     /// <summary>

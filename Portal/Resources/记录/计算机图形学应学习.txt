@@ -1,2 +1,0 @@
-httpsocr.space --图像识别网站
-1. 数学类：微积分，线性代数（或矩阵论），向量微积分（Vector Calculus）或者多变量微积分（multivariable calculus）。其中请务必认真学习线性代数，因为图形学里大量应用矩阵和三维空间的知识。

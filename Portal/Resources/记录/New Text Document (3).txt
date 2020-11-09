@@ -1,3 +1,0 @@
-https://www.jianshu.com/p/97b062122ecc
-Retro3D原理简析和Unity可编程渲染管线SRP初探
-https://zhuanlan.zhihu.com/p/35681027

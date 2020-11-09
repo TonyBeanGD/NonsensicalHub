@@ -1,5 +1,3 @@
 {
-    "ReserveBool":false,
-    "ReserveFloat":0,
-    "ReserveString":""
+    "LogPath":"/NonsensicalHub/Log"
 }

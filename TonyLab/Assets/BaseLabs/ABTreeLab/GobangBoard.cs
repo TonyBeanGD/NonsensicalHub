@@ -98,9 +98,7 @@ public class GobangBoard
     {
         LatticeType checkType = isWhite ? LatticeType.White : LatticeType.Black;
         float total_score = 0;
-
-
-
+        
         return total_score;
     }
 

@@ -18,7 +18,7 @@ public class NodeManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            AssetBundleManager_Local.instance.LoadResource<GameObject>("Cuball", "cuball.prefab", (go) =>
+            AssetBundleManager_Local.Instance.LoadResource<GameObject>("Cuball", "cuball.prefab", (go) =>
             {
                 Instantiate(go);
                 Debugger.Log(go.name);
@@ -26,7 +26,7 @@ public class NodeManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            AssetBundleManager_Local.instance.LoadResource<GameObject>("GreyCube", "greycube.prefab", (go) =>
+            AssetBundleManager_Local.Instance.LoadResource<GameObject>("GreyCube", "greycube.prefab", (go) =>
             {
                 Instantiate(go);
                 Debugger.Log(go.name);
