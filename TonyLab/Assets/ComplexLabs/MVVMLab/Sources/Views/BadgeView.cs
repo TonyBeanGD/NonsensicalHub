@@ -5,9 +5,11 @@ using System.Text;
 using Assets.Sources.Core.Infrastructure;
 using Assets.Sources.Infrastructure;
 using Assets.Sources.ViewModels;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 using UnityEngine;
 using UnityEngine.UI;
+using NonsensicalKit;
+
 
 namespace Assets.Sources.Views
 {

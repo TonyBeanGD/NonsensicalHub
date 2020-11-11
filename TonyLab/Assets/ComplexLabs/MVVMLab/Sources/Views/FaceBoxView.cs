@@ -5,14 +5,14 @@ using System.Text;
 using Assets.Sources.Infrastructure;
 using Assets.Sources.Models;
 using Assets.Sources.ViewModels;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Sources.Views
 {
-    public class FaceBoxView:ViewBase<FaceBoxViewModel>
+    public class FaceBoxView:UGUIViewBase<FaceBoxViewModel>
     {
         public Text nameText;
         public Text levelText;

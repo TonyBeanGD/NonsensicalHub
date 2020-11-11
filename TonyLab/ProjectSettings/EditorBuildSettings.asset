@@ -4,8 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/ComplexLabs/ModelCutLab/ModelCutLab.unity
-    guid: 1391f566d1a77bf449c66c039859c3ed
+  m_Scenes: []
   m_configObjects: {}

@@ -1,12 +1,11 @@
-﻿
-using uMVVM.Sources.Infrastructure;
+﻿using NonsensicalKit;
 using uMVVM.Sources.Models;
 using uMVVM.Sources.ViewModels;
 using UnityEngine.UI;
 
 namespace uMVVM.Sources.Views
 {
-    public class SetupView:ViewBase<SetupViewModel>
+    public class SetupView:UGUIViewBase<SetupViewModel>
     {
         public InputField nameInputField;
         public Text nameMessageText;

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using Assets.Sources.Models;
 using Assets.Sources.ViewModels;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Sources.Views
 {
-    public class ClanView : ViewBase<ClanViewModel>
+    public class ClanView : UGUIViewBase<ClanViewModel>
     {
         public RectTransform clanMembersRectTransform;
         public Button addButton;
@@ -33,7 +33,6 @@ namespace Assets.Sources.Views
             }
             addButton.onClick.AddListener(AddMember);
             removeButton.onClick.AddListener(RemoveMember);
-
         }
 
 
@@ -53,7 +52,7 @@ namespace Assets.Sources.Views
 
                 //获取子View
                 var subView = newGameObject.GetComponent<FaceBoxView>();
-                subView.BindingContext = new FaceBoxViewModel() { ParentViewModel = BindingContext };
+                subView.BindingContext = new FaceBoxViewModel();
                 subView.BindingContext.InitializationFromData(member);
                 subView.Reveal();
 
@@ -78,13 +77,12 @@ namespace Assets.Sources.Views
 
             //获取子View
             var subView = newGameObject.GetComponent<FaceBoxView>();
-            subView.BindingContext = new FaceBoxViewModel() { ParentViewModel = BindingContext };
+            subView.BindingContext = new FaceBoxViewModel();
             subView.BindingContext.InitializationFromData(instance);
             subView.Reveal();
 
             newGameObject.transform.SetParent(clanMembersRectTransform, false);
             newGameObject.transform.localScale = Vector3.one;
-
         }
 
         private void ClanMembers_OnRemove(FaceBox instance)

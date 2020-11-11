@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Sources.ViewModels;
-using uMVVM.Sources.Infrastructure;
 using uMVVM.Sources.ViewModels;
 using UnityEngine;
 using UnityEngine.UI;
+using NonsensicalKit;
 
 namespace Assets.Sources.Views
 {
-    public class TestView:ViewBase<TestViewModel>
+    public class TestView:UGUIViewBase<TestViewModel>
     {
         public Image buttonImage;
-        public TestViewModel ViewModelBase { get { return (TestViewModel)BindingContext; } }
 
         protected override void OnInitialize()
         {

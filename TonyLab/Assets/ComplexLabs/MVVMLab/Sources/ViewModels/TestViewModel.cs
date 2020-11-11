@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Sources.Core.Message;
 using Assets.Sources.Infrastructure;
-using uMVVM.Sources.Infrastructure;
 using UnityEngine;
+using NonsensicalKit;
 
 namespace Assets.Sources.ViewModels
 {
-    public class TestViewModel:ViewModelBase
+    public class TestViewModel: UGUIViewModelBase
     {
         public readonly BindableProperty<string> Color=new BindableProperty<string>();
 
         public TestViewModel()
         {
-            MessageAggregator<object>.Instance.Subscribe("Toggle",ToggleHandler);
+            MessageAggregator<object>.Instance.Subscribe("Toggle", ToggleHandler);
         }
 
-        private void ToggleHandler(object sender, MessageArgs<object> args)
+        public void ToggleHandler(object o)
         {
-            Color.Value = (string) args.Item;
+            Debug.Log(o);
         }
     }
 }

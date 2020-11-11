@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Sources.Core.DataBinding;
 using Assets.Sources.Models;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 
 namespace Assets.Sources.ViewModels
 {
-    public class ClanViewModel : ViewModelBase
+    public class ClanViewModel : UGUIViewModelBase
     {
         public readonly ObservableList<FaceBox> Members = new ObservableList<FaceBox>();
 

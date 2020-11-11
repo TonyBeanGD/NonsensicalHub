@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Sources.Core.DataBinding;
 using Assets.Sources.Models;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 
 namespace Assets.Sources.ViewModels
 {
-    public class BadgeViewModel:ViewModelBase
+    public class BadgeViewModel: UGUIViewModelBase
     {   
         public readonly BindableProperty<string> Icon=new BindableProperty<string>();
         public readonly BindableProperty<string> ElementColor = new BindableProperty<string>();

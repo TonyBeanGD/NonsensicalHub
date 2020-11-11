@@ -7,9 +7,10 @@ using Assets.Sources.Core.Network;
 using Assets.Sources.Core.Proxy;
 using Assets.Sources.Core.Repository;
 using Assets.Sources.Models;
-using uMVVM.Sources.Infrastructure;
+using NonsensicalKit;
 using UnityEngine;
 using UnityEngine.UI;
+using NonsensicalKit;
 
 namespace Assets.Sources.Views
 {
@@ -32,7 +33,7 @@ namespace Assets.Sources.Views
 
             //Loding
             repository.Get<Response<User>>("http://localhost/User/List",
-                new Identity() {DeviceId = SystemInfo.deviceUniqueIdentifier, Token = TokenHelper.Create()},
+                new Identity() {DeviceId = SystemInfo.deviceUniqueIdentifier, Token = TokenHelper.CreateToken()},
                 (response) =>
                 {
                     Debug.Log(response.Items[0].Address.Name);
