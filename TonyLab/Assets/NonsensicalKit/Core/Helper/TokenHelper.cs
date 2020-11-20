@@ -5,7 +5,6 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using UnityEngine.iOS;
 using NonsensicalKit;
 
 namespace NonsensicalKit

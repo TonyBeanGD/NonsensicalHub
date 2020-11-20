@@ -14,6 +14,16 @@ namespace NonsensicalKit
 
             return newTweener;
         }
+
+
+        public static Tweenner DoMove(this Transform _transform, Vector3 endValue, float duration)
+        {
+            TransformMoveTweener newTweener = new TransformMoveTweener(_transform, endValue, duration);
+            
+            NonsensicalUnityInstance.Instance.tweenners.Add(newTweener);
+
+            return newTweener;
+        }
     }
 
     public abstract class Tweenner
@@ -27,8 +37,7 @@ namespace NonsensicalKit
 
         public delegate void OnCompleteHander();
         public OnCompleteHander OnCompleteEvent;
-
-
+        
         protected Tweenner(float _duration)
         {
             duration = _duration;
@@ -79,9 +88,9 @@ namespace NonsensicalKit
 
     public class CanvasGroupTweener : Tweenner
     {
-        private CanvasGroup canvasGroup;
-        private float startValue;
-        private float endValue;
+        private readonly CanvasGroup canvasGroup;
+        private readonly float startValue;
+        private readonly float endValue;
 
         public CanvasGroupTweener(CanvasGroup _canvasGroup, float _endValue, float _duration) : base(_duration)
         {
@@ -94,11 +103,35 @@ namespace NonsensicalKit
         {
             if (canvasGroup == null)
             {
-                return false;
+                return true;
             }
             canvasGroup.alpha = startValue + (endValue - startValue) * schedule;
 
-            return true;
+            return false;
+        }
+    }
+
+    public class TransformMoveTweener:Tweenner
+    {
+        private readonly Transform transform;
+        private readonly Vector3 startValue;
+        private readonly Vector3 endValue;
+        public TransformMoveTweener(Transform _transform, Vector3 _endValue, float _duration) : base(_duration)
+        {
+            transform = _transform;
+            startValue = _transform.position;
+            endValue = _endValue;
+        }
+
+        public override bool DoSpecific(float schedule)
+        {
+            if (transform == null)
+            {
+                return true ;
+            }
+            transform.position = Vector3.Lerp(startValue, endValue, schedule); 
+
+            return false;
         }
     }
 }
