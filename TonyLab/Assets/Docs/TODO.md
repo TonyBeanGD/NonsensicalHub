@@ -8,3 +8,4 @@
 6. 错误碰撞判断问题：记录需要判断的碰撞体
 7. 万能协议
 8. 万能存储
+9. 自己写一个Resources.FindObjectsOfTypeAll(typeof(Button));来防止获取到非场景内的对象  

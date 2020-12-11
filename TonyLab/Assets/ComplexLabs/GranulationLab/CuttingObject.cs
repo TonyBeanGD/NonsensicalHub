@@ -1,39 +1,31 @@
 ﻿using NonsensicalKit;
+using NonsensicalKit.Custom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
-public class CuttingObject : GranulationObject
+public abstract class CuttingObject : GranulationObject
 {
-    [SerializeField]
-    private CutObject cutObject;
+    [SerializeField] protected CutObject cutObject;
 
-    protected override void Awake()
+    public delegate void CheckOverHandle();
+    protected event CheckOverHandle OnCheckOver;
+
+    protected bool CheckCutting()
     {
-        base.Awake();
-
-        gameObject.AddComponent<MeshFilter>().mesh = NonsensicalKit.ModelHelper.GetCube(0.5f, 1f, 0.5f);
-        gameObject.AddComponent<MeshRenderer>().material=Resources.Load<Material>("Materials/white");
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-
-        if (cutObject != null)
+        //TODO：计算边界，减少远离时的计算量
+        Granulation cutGranulation = cutObject.granulation;
+        if (cutGranulation.Level != granulation.Level)
         {
-            if (Time.frameCount % 1 == 0)
-            {
-                CheckCutting();
-            }
+            Debug.LogWarning("切削物体和被切削物体划分等级不一致");
+            return false;
         }
-    }
 
-    private void DoCheck(CoordinateSystem cs1, CoordinateSystem cs2, Granulation cutGranulation)
-    {
-        float step = Mathf.Pow(10, level);
+        CoordinateSystem cs1 = new CoordinateSystem(granulation.point + granulation.originOffset, granulation._right, granulation._up, granulation._forward);
+        CoordinateSystem cs2 = new CoordinateSystem(cutGranulation.point + cutGranulation.originOffset, cutGranulation._right, cutGranulation._up, cutGranulation._forward);
 
-        CoordinateSystemDiff csd = new CoordinateSystemDiff(cs1, cs2, step);
+        CoordinateSystemDiff csd = new CoordinateSystemDiff(cs1, cs2, granulation.step);
 
         bool changeFlag = false;
 
@@ -66,33 +58,16 @@ public class CuttingObject : GranulationObject
             }
         }
 
-        if (changeFlag==true)
+        OnCheckOver?.Invoke();
+        if (changeFlag == true)
         {
-            cutObject.needRefresh = true;
+            Debug.Log("change");
+            return true;
         }
-    }
-
-    private void CheckCutting()
-    {
-        Bounds thisBounds = GetComponent<MeshFilter>().mesh.bounds;
-        thisBounds.center += transform.position;
-        Bounds cuttingBounds = cutObject.GetComponent<MeshFilter>().mesh.bounds;
-        cuttingBounds.center += cutObject.transform.position;
-
-        if (thisBounds.Intersects(cuttingBounds) == false)
+        else
         {
-            return;
+            return false;
         }
 
-        Granulation cutGranulation = cutObject.granulation;
-        if (cutGranulation.level != granulation.level)
-        {
-            return;
-        }
-
-        CoordinateSystem cs1 = new CoordinateSystem(transform.position + granulation.origin, transform.right, transform.up, transform.forward);
-        CoordinateSystem cs2 = new CoordinateSystem(cutObject.transform.position + cutGranulation.origin, cutObject.transform.right, cutObject.transform.up, cutObject.transform.forward);
-
-        DoCheck(cs1, cs2, cutGranulation);
     }
 }

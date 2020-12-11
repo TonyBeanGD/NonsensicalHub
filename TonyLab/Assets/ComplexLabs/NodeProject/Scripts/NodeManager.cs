@@ -1,4 +1,5 @@
 ﻿using NonsensicalKit;
+using NonsensicalKit.Helper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class NodeManager : MonoBehaviour
             AssetBundleManager_Local.Instance.LoadResource<GameObject>("Cuball", "cuball.prefab", (go) =>
             {
                 Instantiate(go);
-                Debugger.Log(go.name);
+                NonsensicalDebugger.Log(go.name);
             });
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -29,7 +30,7 @@ public class NodeManager : MonoBehaviour
             AssetBundleManager_Local.Instance.LoadResource<GameObject>("GreyCube", "greycube.prefab", (go) =>
             {
                 Instantiate(go);
-                Debugger.Log(go.name);
+                NonsensicalDebugger.Log(go.name);
             });
         }
     }
