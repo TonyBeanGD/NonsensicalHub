@@ -258,7 +258,10 @@ namespace NonsensicalKit
                 Vertice = _vertice;
             }
         }
+
+
     }
+    
 
     /// <summary>
     /// 用于缓存mesh数据以进行处理
@@ -383,6 +386,34 @@ namespace NonsensicalKit
             normals.Add(_normal);
             normals.Add(_normal);
             normals.Add(_normal);
+
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+
+            triangles.Add(rawLength + 0);
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 3);
+
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 2);
+            triangles.Add(rawLength + 3);
+        }
+
+        public void AddQuad_2(Vector3[] _vertices, Vector3 _center, Vector2 _uv)
+        {
+            int rawLength = vertices.Count;
+
+            vertices.Add(_vertices[0]);
+            vertices.Add(_vertices[1]);
+            vertices.Add(_vertices[2]);
+            vertices.Add(_vertices[3]);
+
+            normals.Add(_vertices[0]-_center);
+            normals.Add(_vertices[1]-_center);
+            normals.Add(_vertices[2]-_center);
+            normals.Add(_vertices[3]-_center);
 
             uv.Add(_uv);
             uv.Add(_uv);

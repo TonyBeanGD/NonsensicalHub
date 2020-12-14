@@ -1,4 +1,5 @@
-﻿using NonsensicalKit;
+﻿using mattatz.MeshSmoothingSystem;
+using NonsensicalKit;
 using NonsensicalKit.Custom;
 using System.Collections;
 using System.Collections.Generic;
@@ -83,7 +84,11 @@ public abstract class CutObject : GranulationObject
             if (_needRefresh)
             {
                 _needRefresh = false;
+               
+
                 _meshBuffer.Apply(mesh);
+                
+                GetComponent<MeshFilter>().  mesh = MeshSmoothing.LaplacianFilter(GetComponent<MeshFilter>().mesh, 2);
             }
         }
     }
@@ -171,6 +176,7 @@ public abstract class CutObject : GranulationObject
             _meshBuffer = crtMeshBuffer;
             calculationOver = true;
         }
+
         return crtMeshBuffer;
     }
 
@@ -449,5 +455,17 @@ public abstract class CutObject : GranulationObject
         {
             meshBuffer.AddQuad(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, normalVector3, Vector2.one * 0.5f);
         }
+
+
+        //Vector3 offset2 = new Vector3((granulation.length0*0.5f + 0.5f), (granulation.length1 * 0.5f + 0.5f), (granulation.length2 * 0.5f + 0.5f)) * step;
+        //Vector3 origin2 = granulation.origin + offset2;
+        //if (dir == 2 || dir == 3 || dir == 6)
+        //{
+        //    meshBuffer.AddQuad_2(point4, origin2, Vector2.one * 0.5f);
+        //}
+        //else
+        //{
+        //    meshBuffer.AddQuad_2(new Vector3[] { point4[2], point4[1], point4[0], point4[3] }, origin2, Vector2.one * 0.5f);
+        //}
     }
 }
