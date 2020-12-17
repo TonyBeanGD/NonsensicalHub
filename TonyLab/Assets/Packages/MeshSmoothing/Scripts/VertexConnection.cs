@@ -2,62 +2,46 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using NonsensicalKit;
 
-namespace mattatz.MeshSmoothingSystem
-{
+namespace mattatz.MeshSmoothingSystem {
 
-    public class VertexConnection
-    {
+	public class VertexConnection {
 
-        public HashSet<int> Connection { get; }
+		public HashSet<int> Connection { get { return connection; } }
 
-        public HashSet<int> Points;
+		HashSet<int> connection;
 
-        public VertexConnection()
-        {
-            this.Connection = new HashSet<int>();
-            this.Points = new HashSet<int>();
-        }
+		public VertexConnection() {
+			this.connection = new HashSet<int>();
+		}
 
-        public void Connect(int to)
-        {
-            Connection.Add(to);
-        }
+		public void Connect (int to) {
+			connection.Add(to);
+		}
 
-        public static Dictionary<Vector3, VertexConnection> BuildNetwork(MeshBuffer meshbuffer)
-        {
-            var table = new Dictionary<Vector3, VertexConnection>();
+		public static Dictionary<int, VertexConnection> BuildNetwork (int[] triangles) {
+			var table = new Dictionary<int, VertexConnection>();
 
-            for (int i = 0, n = meshbuffer.triangles.Count; i < n; i += 3)
-            {
-                Vector3 a = meshbuffer.GetVerticeByTrianglesIndex(i), b = meshbuffer.GetVerticeByTrianglesIndex(i + 1), c = meshbuffer.GetVerticeByTrianglesIndex(i + 2);
-                if (!table.ContainsKey(a))
-                {
-                    table.Add(a, new VertexConnection());
-                }
-                table[a].Points.Add(meshbuffer.triangles[i + 0]);
-                if (!table.ContainsKey(b))
-                {
-                    table.Add(b, new VertexConnection());
-                }
-                table[b].Points.Add(meshbuffer.triangles[i + 1]);
-                if (!table.ContainsKey(c))
-                {
-                    table.Add(c, new VertexConnection());
-                }
-                table[c].Points.Add(meshbuffer.triangles[i + 2]);
+			for(int i = 0, n = triangles.Length; i < n; i += 3) {
+				int a = triangles[i], b = triangles[i + 1], c = triangles[i + 2];
+				if(!table.ContainsKey(a)) {
+					table.Add(a, new VertexConnection());
+				}
+				if(!table.ContainsKey(b)) {
+					table.Add(b, new VertexConnection());
+				}
+				if(!table.ContainsKey(c)) {
+					table.Add(c, new VertexConnection());
+				}
+				table[a].Connect(b); table[a].Connect(c);
+				table[b].Connect(a); table[b].Connect(c);
+				table[c].Connect(a); table[c].Connect(b);
+			}
 
+			return table;
+		}
 
-                table[a].Connect(meshbuffer.triangles[i + 1]); table[a].Connect(meshbuffer.triangles[i + 2]);
-                table[b].Connect(meshbuffer.triangles[i + 0]); table[b].Connect(meshbuffer.triangles[i + 2]);
-                table[c].Connect(meshbuffer.triangles[i + 0]); table[c].Connect(meshbuffer.triangles[i + 1]);
-            }
-
-            return table;
-        }
-
-    }
+	}
 
 }
 

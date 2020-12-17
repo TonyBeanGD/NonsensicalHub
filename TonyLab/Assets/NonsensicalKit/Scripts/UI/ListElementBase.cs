@@ -21,7 +21,8 @@ public abstract class ListElementBase<ElementData>:MonoBehaviour where ElementDa
 
     protected virtual void OnSelectFunc(MessageArgs<ElementData> value)
     {
-        SelectSwitch(value.Item == _elementData);
+        _isSelect = (value.Item == _elementData);
+        SelectSwitch(_isSelect);
         UpdateUI();
     }
 

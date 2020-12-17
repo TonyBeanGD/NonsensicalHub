@@ -11,46 +11,29 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NonsensicalKit;
 
 namespace mattatz.MeshSmoothingSystem {
 
 	public class MeshSmoothing {
 
 		public static Mesh LaplacianFilter (Mesh mesh, int times = 1) {
-			mesh.vertices = LaplacianFilter(new MeshBuffer(mesh), times);
+			mesh.vertices = LaplacianFilter(mesh.vertices, mesh.triangles, times);
 			mesh.RecalculateNormals();
 			mesh.RecalculateBounds();
 			return mesh;
 		}
 
-		public static Vector3[] LaplacianFilter(MeshBuffer mesh, int times) {
-			var network = VertexConnection.BuildNetwork(mesh);
-            Vector3[] vectors= mesh.vertices.ToArray();
+		public static Vector3[] LaplacianFilter(Vector3[] vertices, int[] triangles, int times) {
+			var network = VertexConnection.BuildNetwork(triangles);
 			for(int i = 0; i < times; i++) {
-                vectors = LaplacianFilter(network, mesh, vectors);
+				vertices = LaplacianFilter(network, vertices, triangles);
 			}
-            return vectors;
+			return vertices;
 		}
 
-        static Vector3[] LaplacianFilter(Dictionary<Vector3, VertexConnection> network, MeshBuffer mesh, Vector3[] vertices) {
-			Vector3[] vertices = new Vector3[vertices.Count];
-            foreach (var item in network)
-            {
-                foreach (var item2 in item.Value.Points)
-                {
-                        var connection = item.Value.Connection;
-                        var v = Vector3.zero;
-                        foreach (int adj in connection)
-                        {
-                            v += vertices[adj];
-                        }
-                        vertices[i] = v / connection.Count;
-                }
-            }
-			for(int i = 0, n = vertices.Count; i < n; i++) {
-
-
+		static Vector3[] LaplacianFilter(Dictionary<int, VertexConnection> network, Vector3[] origin, int[] triangles) {
+			Vector3[] vertices = new Vector3[origin.Length];
+			for(int i = 0, n = origin.Length; i < n; i++) {
 				var connection = network[i].Connection;
 				var v = Vector3.zero;
 				foreach(int adj in connection) {

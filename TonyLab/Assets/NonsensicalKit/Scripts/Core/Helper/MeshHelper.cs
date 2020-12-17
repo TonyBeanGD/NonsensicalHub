@@ -429,6 +429,34 @@ namespace NonsensicalKit
             triangles.Add(rawLength + 3);
         }
 
+        public void AddQuad_3(Vector3[] _vertices, Vector3[] _centers, Vector2 _uv)
+        {
+            int rawLength = vertices.Count;
+
+            vertices.Add(_vertices[0]);
+            vertices.Add(_vertices[1]);
+            vertices.Add(_vertices[2]);
+            vertices.Add(_vertices[3]);
+
+            normals.Add(_vertices[0] - _centers[0]);
+            normals.Add(_vertices[1] - _centers[1]);
+            normals.Add(_vertices[2] - _centers[2]);
+            normals.Add(_vertices[3] - _centers[3]);
+
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+            uv.Add(_uv);
+
+            triangles.Add(rawLength + 0);
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 3);
+
+            triangles.Add(rawLength + 1);
+            triangles.Add(rawLength + 2);
+            triangles.Add(rawLength + 3);
+        }
+
         public void AddRound(Vector3 center, float radius, Vector3 dir, int smoothness)
         {
             if (smoothness < 3)
@@ -487,7 +515,8 @@ namespace NonsensicalKit
                     next = 0;
                 }
 
-                AddQuad(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] }, (pointArray1[i] + pointArray2[i] + pointArray2[next] + pointArray1[next]) * 0.25f, new Vector2(0.5f, 0.5f));
+                //AddQuad(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] }, (pointArray1[i] + pointArray2[i] + pointArray2[next] + pointArray1[next]) * 0.25f, new Vector2(0.5f, 0.5f));
+                AddQuad(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] },-dir, new Vector2(0.5f, 0.5f));
             }
         }
 
@@ -517,7 +546,8 @@ namespace NonsensicalKit
                 {
                     next = 0;
                 }
-                AddQuad(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] }, (pointArray1[i] + pointArray2[i] + pointArray2[next] + pointArray1[next]) * 0.25f, new Vector2(0.5f, 0.5f));
+               // AddQuad(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] }, (pointArray1[i] + pointArray2[i] + pointArray2[next] + pointArray1[next]) * 0.25f- (ringSide1+ringSide2)*0.5f, new Vector2(0.5f, 0.5f));
+                AddQuad_3(new Vector3[] { pointArray1[i], pointArray2[i], pointArray2[next], pointArray1[next] },new Vector3[] { ringSide1, ringSide2, ringSide2, ringSide1 }, new Vector2(0.5f, 0.5f));
             }
         }
 

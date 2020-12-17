@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[SerializeField]
 public class DataObject<T> :IData where T:IData,new ()
 {
-    private List<IData> Childs=new List<IData>();
+
+    public List<IData> Childs {  get; private set; } =new List<IData>();
 
     public int Count { get { return Childs.Count; } }
     public List<IData> GetChilds() 

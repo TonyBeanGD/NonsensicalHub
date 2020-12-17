@@ -6,9 +6,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanEdit where ListData : DataObject<ElementData> where ListElement :ListElementBase<ElementData> where ElementData : class, IData, new()
+public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanEdit
+    where ListData : DataObject<ElementData>
+    where ListElement :ListElementBase<ElementData> 
+    where ElementData : class, IData, new()
 {
-    [SerializeField] private Transform buttonGroup;
+    [SerializeField] private Transform _group;
 
     [SerializeField] private Button btn_Add;
 
@@ -22,6 +25,8 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
 
         MessageAggregator<ListData>.Instance.Subscribe("Load", OnLoadFunc);
         MessageAggregator<ElementData>.Instance.Subscribe("TopSort", OnTopSortFunc);
+        MessageAggregator<bool>.Instance.Subscribe("CanEditSwitch",OnCanEditSwitch);
+        
 
         btn_Add.onClick.AddListener(OnAddButtonClick);
         btn_Remove.onClick.AddListener(OnRemoveButtonClick);
@@ -32,6 +37,7 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
         base.OnDestroy();
         MessageAggregator<ListData>.Instance.Unsubscribe("Load", OnLoadFunc);
         MessageAggregator<ElementData>.Instance.Unsubscribe("TopSort", OnTopSortFunc);
+        MessageAggregator<bool>.Instance.Unsubscribe("CanEditSwitch", OnCanEditSwitch);
     }
 
 
@@ -61,24 +67,24 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
 
     protected virtual void UpdateUI()
     {
-        buttonGroup.gameObject.SetActive(listData.Count != 0);
+        _group.gameObject.SetActive(listData.Count != 0);
 
-        int max = Mathf.Max(buttonGroup.childCount - 1, listData.Count);
+        int max = Mathf.Max(_group.childCount - 1, listData.Count);
 
-        GameObject prefab = buttonGroup.GetChild(0).gameObject;
+        GameObject prefab = _group.GetChild(0).gameObject;
         prefab.gameObject.SetActive(false);
         for (int i = 0; i < max; i++)
         {
             if (i < listData.Count)
             {
                 ListElement crtView;
-                if (i + 1 < buttonGroup.childCount)
+                if (i + 1 < _group.childCount)
                 {
-                    crtView = buttonGroup.GetChild(i + 1).GetComponent<ListElement>();
+                    crtView = _group.GetChild(i + 1).GetComponent<ListElement>();
                 }
                 else
                 {
-                    crtView = Instantiate(prefab, buttonGroup).GetComponent<ListElement>();
+                    crtView = Instantiate(prefab, _group).GetComponent<ListElement>();
                 }
 
                 crtView.Init((ElementData)listData[i]);
@@ -86,7 +92,7 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
             }
             else
             {
-                buttonGroup.GetChild(i + 1).gameObject.SetActive(false);
+                _group.GetChild(i + 1).gameObject.SetActive(false);
             }
         }
     }

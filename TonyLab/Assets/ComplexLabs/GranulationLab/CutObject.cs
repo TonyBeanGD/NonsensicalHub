@@ -88,7 +88,6 @@ public abstract class CutObject : GranulationObject
 
                 _meshBuffer.Apply(mesh);
                 
-                GetComponent<MeshFilter>().  mesh = MeshSmoothing.LaplacianFilter(GetComponent<MeshFilter>().mesh, 2);
             }
         }
     }

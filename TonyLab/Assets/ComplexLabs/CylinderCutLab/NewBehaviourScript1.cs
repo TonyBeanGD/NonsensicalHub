@@ -22,13 +22,14 @@ namespace MyNamespace
             gameObject.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/white");
 
             cylinderBurin = new CylinderBurin(Knife.position, Knife.GetComponent<MeshFilter>().mesh);
-            cylinderModel = new CylinderModel(transform.position, Vector3.up, 0.01f, 0.03f, 0.03f);
+            cylinderModel = new CylinderModel(transform.position, Vector3.up, 0.1f, 5f,3f);
         }
 
         private void Update()
         {
             cylinderBurin.MoveTo(Knife.position);
             cylinderBurin.RotateTo(Knife.rotation);
+            cylinderBurin.ScaleTo(Knife.lossyScale);
             cylinderModel.MoveTo(transform.position);
             cylinderModel.RotateTo(transform.up);
             cylinderModel.CuttingBy(cylinderBurin);
@@ -71,7 +72,7 @@ namespace MyNamespace
     {
         private Vector3 _firstMiddlePointPosition;
         private Vector3 _dir;
-        
+
 
         private readonly float _interval;
         private CylinderSection[] _cylinderSectionArray;
@@ -83,7 +84,7 @@ namespace MyNamespace
             this._dir = dir;
             this._interval = interval;
 
-            int pointCount = (int)(height / interval)+1;
+            int pointCount = (int)(height / interval) + 1;
             _cylinderSectionArray = new CylinderSection[pointCount];
 
             for (int i = 0; i < pointCount; i++)
@@ -113,9 +114,9 @@ namespace MyNamespace
             }
             for (int i = 0; i < cylinderBurin.Mesh.triangles.Length; i += 3)
             {
-                Vector3 p1 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i]];
-                Vector3 p2 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i + 1]];
-                Vector3 p3 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i + 2]];
+                Vector3 p1 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * (Vector3.Scale(cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i + 0]], cylinderBurin.LossyScale));
+                Vector3 p2 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * (Vector3.Scale(cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i + 1]], cylinderBurin.LossyScale));
+                Vector3 p3 = cylinderBurin.CenterPoint + cylinderBurin.Rotation * (Vector3.Scale(cylinderBurin.Mesh.vertices[cylinderBurin.Mesh.triangles[i + 2]], cylinderBurin.LossyScale));
                 CuttingWithLine(p1, p2);
                 CuttingWithLine(p1, p3);
                 CuttingWithLine(p2, p3);
@@ -268,7 +269,7 @@ namespace MyNamespace
             return Vector3.up * index * _interval;
         }
 
-        public void ToMesh(Mesh mesh, int smoothness = 16)
+        public void ToMesh(Mesh mesh, int smoothness = 32)
         {
             MeshBuffer meshBuffer = new MeshBuffer();
 
@@ -300,7 +301,7 @@ namespace MyNamespace
                         }
                         for (int k = 0; k < _cylinderSectionArray[i].Point.Count - 1; k += 2)
                         {
-                            if (i + 1 < _cylinderSectionArray.Length && (_cylinderSectionArray[i +1].Point.Count <= 0 || _cylinderSectionArray[i].Point[k + 1] > _cylinderSectionArray[i + 1].Point[_cylinderSectionArray[i + 1].Point.Count - 1]))
+                            if (i + 1 < _cylinderSectionArray.Length && (_cylinderSectionArray[i + 1].Point.Count <= 0 || _cylinderSectionArray[i].Point[k + 1] > _cylinderSectionArray[i + 1].Point[_cylinderSectionArray[i + 1].Point.Count - 1]))
                             {
                                 meshBuffer.AddRing(GetLocalPos(i), _cylinderSectionArray[i].Point[k], _cylinderSectionArray[i].Point[k + 1], -Vector3.up, smoothness);
                             }
@@ -600,6 +601,7 @@ namespace MyNamespace
     class CylinderBurin
     {
         public Vector3 CenterPoint { get; private set; }
+        public Vector3 LossyScale { get; private set; }
         public Quaternion Rotation { get; private set; }
         public Mesh Mesh { get; private set; }
 
@@ -617,6 +619,11 @@ namespace MyNamespace
         public void RotateTo(Quaternion rotation)
         {
             Rotation = rotation;
+        }
+
+        public void ScaleTo(Vector3 scale)
+        {
+            LossyScale = scale;
         }
     }
 }
