@@ -22,7 +22,7 @@ namespace MyNamespace
             gameObject.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/white");
 
             cylinderBurin = new CylinderBurin(Knife.position, Knife.GetComponent<MeshFilter>().mesh);
-            cylinderModel = new CylinderModel(transform.position, Vector3.up, 0.1f, 5f,3f);
+            cylinderModel = new CylinderModel(transform.position, Vector3.up, 0.001f,0.03f,0.03f);
         }
 
         private void Update()
