@@ -60,7 +60,7 @@ namespace NonsensicalKit
             yield return AllLateInitComplete();
 
 
-            MessageAggregator<int>.Instance.Publish("InitEnd", new MessageArgs<int>(this, 1));
+            MessageAggregator<int>.Instance.Publish((uint)CoreEnum.InitEnd, new MessageArgs<int>(this, 1));
         }
 
         private IEnumerator AllInitComplete()

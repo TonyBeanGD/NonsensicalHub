@@ -17,7 +17,7 @@ public class DraggingModel2D : MonoBehaviour
 
     private void Awake()
     {
-        MessageAggregator<int>.Instance.Subscribe("SetDragModel2DtoBackpack", SetDragModel2DtoBackpack);
+        MessageAggregator<int>.Instance.Subscribe((uint)UIEnum.SetDragModel2DtoBackpack, SetDragModel2DtoBackpack);
     }
 
     private void Update()
@@ -35,13 +35,13 @@ public class DraggingModel2D : MonoBehaviour
 
     public void OnDestroy()
     {
-        MessageAggregator<int>.Instance.Unsubscribe("SetDragModel2DtoBackpack", SetDragModel2DtoBackpack);
+        MessageAggregator<int>.Instance.Unsubscribe((uint)UIEnum.SetDragModel2DtoBackpack, SetDragModel2DtoBackpack);
     }
 
     private void SetDragModel2DtoBackpack(MessageArgs<int> value)
     {
 
-        MessageAggregator<BackpackItemInfo>.Instance.Publish("SetItemToBackpack", new MessageArgs<BackpackItemInfo>(this, buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack, new MessageArgs<BackpackItemInfo>(this, buffer));
         Destroy(gameObject);
     }
 
@@ -72,7 +72,7 @@ public class DraggingModel2D : MonoBehaviour
 
     private void ReturnToBackpack()
     {
-        MessageAggregator<BackpackItemInfo>.Instance.Publish("SetItemToBackpack", new MessageArgs<BackpackItemInfo>(this, buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack, new MessageArgs<BackpackItemInfo>(this, buffer));
 
         Destroy(gameObject);
     }

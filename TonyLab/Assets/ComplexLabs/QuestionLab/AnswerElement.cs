@@ -18,7 +18,7 @@ public class AnswerElement : ListElementBase<AnswerArgs>, ICanEdit
     
     protected override void Awake()
     {
-        MessageAggregator<bool>.Instance.Subscribe("CanEditSwitch", OnCanEditSwitchFunc);
+        MessageAggregator<bool>.Instance.Subscribe((uint)UIEnum.CanEditSwitch, OnCanEditSwitchFunc);
 
         tog_Answer.onValueChanged.AddListener(OnToggleChoice);
         btn_Top.onClick.AddListener(OnTopSort);
@@ -27,7 +27,7 @@ public class AnswerElement : ListElementBase<AnswerArgs>, ICanEdit
 
     protected override void OnDestroy()
     {
-        MessageAggregator<bool>.Instance.Unsubscribe("CanEditSwitch", OnCanEditSwitchFunc);
+        MessageAggregator<bool>.Instance.Unsubscribe((uint)UIEnum.CanEditSwitch, OnCanEditSwitchFunc);
     }
 
     private void OnToggleChoice(bool isSelect)

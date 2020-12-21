@@ -40,7 +40,7 @@ public class BackpackItem : MonoBehaviour
 
         if (num <= 0)
         {
-            MessageAggregator<string>.Instance.Publish("RemoveItemInBackpack", new MessageArgs<string>(this, buffer.Name));
+            MessageAggregator<string>.Instance.Publish((uint)UIEnum.RemoveItemInBackpack, new MessageArgs<string>(this, buffer.Name));
 
             Destroy(gameObject);
         }
@@ -63,6 +63,6 @@ public class BackpackItem : MonoBehaviour
 
     private void OnClick()
     {
-        MessageAggregator<BackpackItemInfo>.Instance.Publish("BackpackGridClick",new MessageArgs<BackpackItemInfo>(this,buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.BackpackGridClick,new MessageArgs<BackpackItemInfo>(this,buffer));
     }
 }

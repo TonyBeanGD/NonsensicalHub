@@ -24,11 +24,10 @@ public class BackpackWindowManager : UIBase
 
         items = new Dictionary<string, BackpackItem>();
 
-        MessageAggregator<int>.Instance.Subscribe("SwitchBackpackWindow", SwitchBackpackWindow);
-
-        MessageAggregator<string>.Instance.Subscribe("RemoveItemInBackpack", RemoveItemInBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Subscribe("SetItemToBackpack", SetItemToBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Subscribe("GetItemFormBackpack", GetItemFromBackpack);
+        MessageAggregator<int>.Instance.Subscribe((uint)UIEnum.SwitchBackpackWindow, SwitchBackpackWindow);
+        MessageAggregator<string>.Instance.Subscribe((uint)UIEnum.RemoveItemInBackpack, RemoveItemInBackpack);
+        MessageAggregator<BackpackItemInfo>.Instance.Subscribe((uint)UIEnum.SetItemToBackpack, SetItemToBackpack);
+        MessageAggregator<BackpackItemInfo>.Instance.Subscribe((uint)UIEnum.GetItemFormBackpack, GetItemFromBackpack);
 
         btn_Topping.onClick.AddListener(() => { scrollbar.value = 1; });
     }
@@ -36,10 +35,10 @@ public class BackpackWindowManager : UIBase
 
     protected override void OnDestroy()
     {
-        MessageAggregator<int>.Instance.Unsubscribe("SwitchBackpackWindow", SwitchBackpackWindow);
-        MessageAggregator<string>.Instance.Unsubscribe("RemoveItemInBackpack", RemoveItemInBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe("SetItemToBackpack", SetItemToBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe("GetItemFormBackpack", GetItemFromBackpack);
+        MessageAggregator<int>.Instance.Unsubscribe((uint)UIEnum.SwitchBackpackWindow, SwitchBackpackWindow);
+        MessageAggregator<string>.Instance.Unsubscribe((uint)UIEnum.RemoveItemInBackpack, RemoveItemInBackpack);
+        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe((uint)UIEnum.SetItemToBackpack, SetItemToBackpack);
+        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe((uint)UIEnum.GetItemFormBackpack, GetItemFromBackpack);
     }
 
     private void SwitchBackpackWindow(MessageArgs<int> value)

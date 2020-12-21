@@ -13,49 +13,47 @@ namespace NonsensicalKit
         /// 不能使用单例基类，会使构造函数暴露
         /// </summary>
         public static MessageAggregator<T> Instance = new MessageAggregator<T>();
-
-        private readonly Dictionary<string, MessageHandler<T>> _messages = new Dictionary<string, MessageHandler<T>>();
+        
+        private readonly Dictionary<uint, MessageHandler<T>> _messages_Uint = new Dictionary<uint, MessageHandler<T>>();
 
         private MessageAggregator()
         {
 
         }
-
-        public void Subscribe(string name, MessageHandler<T> handler)
+        public void Subscribe(uint name, MessageHandler<T> handler)
         {
-            if (!_messages.ContainsKey(name))
+            if (!_messages_Uint.ContainsKey(name))
             {
-                _messages.Add(name, handler);
+                _messages_Uint.Add(name, handler);
             }
             else
             {
-                _messages[name] += handler;
+                _messages_Uint[name] += handler;
             }
         }
 
-        public void Unsubscribe(string name, MessageHandler<T> handler)
+        public void Unsubscribe(uint name, MessageHandler<T> handler)
         {
-            if (!_messages.ContainsKey(name))
+            if (!_messages_Uint.ContainsKey(name))
             {
                 return;
             }
             else
             {
-                _messages[name] -= handler;
+                _messages_Uint[name] -= handler;
 
-                if (_messages[name] == null)
+                if (_messages_Uint[name] == null)
                 {
-                    _messages.Remove(name);
+                    _messages_Uint.Remove(name);
                 }
             }
         }
-        
-        public void Publish(string name, MessageArgs<T> args)
+
+        public void Publish(uint name, MessageArgs<T> args)
         {
-            if (_messages.ContainsKey(name) && _messages[name] != null)
+            if (_messages_Uint.ContainsKey(name) && _messages_Uint[name] != null)
             {
-                //转发
-                _messages[name](args);
+                _messages_Uint[name](args);
             }
         }
     }
@@ -69,4 +67,11 @@ namespace NonsensicalKit
             Item = item;
         }
     }
+
+    public enum TypeEnum
+    {
+        Test1=15000,
+        Test2,
+    }
+
 }

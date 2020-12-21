@@ -23,9 +23,9 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
     {
         base.Awake();
 
-        MessageAggregator<ListData>.Instance.Subscribe("Load", OnLoadFunc);
-        MessageAggregator<ElementData>.Instance.Subscribe("TopSort", OnTopSortFunc);
-        MessageAggregator<bool>.Instance.Subscribe("CanEditSwitch",OnCanEditSwitch);
+        MessageAggregator<ListData>.Instance.Subscribe((uint)UIEnum.Load, OnLoadFunc);
+        MessageAggregator<ElementData>.Instance.Subscribe((uint)UIEnum.TopSort, OnTopSortFunc);
+        MessageAggregator<bool>.Instance.Subscribe((uint)UIEnum.CanEditSwitch, OnCanEditSwitch);
         
 
         btn_Add.onClick.AddListener(OnAddButtonClick);
@@ -35,9 +35,9 @@ public class ListManagerBase<ListData, ListElement, ElementData> : UIBase, ICanE
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        MessageAggregator<ListData>.Instance.Unsubscribe("Load", OnLoadFunc);
-        MessageAggregator<ElementData>.Instance.Unsubscribe("TopSort", OnTopSortFunc);
-        MessageAggregator<bool>.Instance.Unsubscribe("CanEditSwitch", OnCanEditSwitch);
+        MessageAggregator<ListData>.Instance.Unsubscribe((uint)UIEnum.Load, OnLoadFunc);
+        MessageAggregator<ElementData>.Instance.Unsubscribe((uint)UIEnum.TopSort, OnTopSortFunc);
+        MessageAggregator<bool>.Instance.Unsubscribe((uint)UIEnum.CanEditSwitch, OnCanEditSwitch);
     }
 
 

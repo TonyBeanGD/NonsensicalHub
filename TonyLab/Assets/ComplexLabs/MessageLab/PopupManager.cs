@@ -21,13 +21,13 @@ public class PopupManager : UIBase
     protected override void Awake()
     {
         base.Awake();
-        MessageAggregator<PopupArgs>.Instance.Subscribe("Popup", Popup);
+        MessageAggregator<PopupArgs>.Instance.Subscribe((uint) UIEnum.Popup, Popup);
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        MessageAggregator<PopupArgs>.Instance.Unsubscribe("Popup", Popup);
+        MessageAggregator<PopupArgs>.Instance.Unsubscribe((uint)UIEnum.Popup, Popup);
     }
 
     private void Popup(MessageArgs<PopupArgs> value)

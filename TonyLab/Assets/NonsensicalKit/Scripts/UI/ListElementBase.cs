@@ -11,12 +11,12 @@ public abstract class ListElementBase<ElementData>:MonoBehaviour where ElementDa
 
     protected virtual void Awake()
     {
-        MessageAggregator<ElementData>.Instance.Subscribe("Select", OnSelectFunc);
+        MessageAggregator<ElementData>.Instance.Subscribe((uint)UIEnum.Select, OnSelectFunc);
     }
 
     protected virtual void OnDestroy()
     {
-        MessageAggregator<ElementData>.Instance.Unsubscribe("Select", OnSelectFunc);
+        MessageAggregator<ElementData>.Instance.Unsubscribe((uint)UIEnum.Select, OnSelectFunc);
     }
 
     protected virtual void OnSelectFunc(MessageArgs<ElementData> value)
@@ -33,7 +33,7 @@ public abstract class ListElementBase<ElementData>:MonoBehaviour where ElementDa
 
     protected virtual void OnTopSort()
     {
-        MessageAggregator<ElementData>.Instance.Publish("TopSort", new MessageArgs<ElementData>(this, _elementData));
+        MessageAggregator<ElementData>.Instance.Publish((uint)UIEnum.TopSort, new MessageArgs<ElementData>(this, _elementData));
     }
 
     protected abstract void UpdateUI();
