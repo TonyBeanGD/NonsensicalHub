@@ -42,8 +42,7 @@ public abstract class GranulationObject : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(granulation.point + granulation.originOffset, granulation.point + granulation.originOffset + granulation._up);
-
-
+        
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(granulation.point + granulation.originOffset, granulation.point + granulation.originOffset + granulation._forward);
     }

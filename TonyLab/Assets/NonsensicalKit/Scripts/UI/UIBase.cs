@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NonsensicalKit.Helper;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ namespace NonsensicalKit.UI
         public bool IsShow { get; private set; }
 
         protected CanvasGroup _canvasGroup;
-        
+
         protected virtual void Awake()
         {
             _canvasGroup = transform.GetComponent<CanvasGroup>();

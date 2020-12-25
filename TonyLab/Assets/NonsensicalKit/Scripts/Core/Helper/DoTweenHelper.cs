@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NonsensicalKit
+namespace NonsensicalKit.Helper
 {
     public static class DoTweenHelper
     {
@@ -20,6 +20,15 @@ namespace NonsensicalKit
         {
             TransformMoveTweener newTweener = new TransformMoveTweener(_transform, endValue, duration);
             
+            NonsensicalUnityInstance.Instance.tweenners.Add(newTweener);
+
+            return newTweener;
+        }
+
+        public static Tweenner DoLocalMoveX(this Transform _transform, float endValue, float duration)
+        {
+            TransformLocalMoveXTweener newTweener = new TransformLocalMoveXTweener(_transform, endValue, duration);
+
             NonsensicalUnityInstance.Instance.tweenners.Add(newTweener);
 
             return newTweener;
@@ -131,6 +140,31 @@ namespace NonsensicalKit
             }
             transform.position = Vector3.Lerp(startValue, endValue, schedule); 
 
+            return false;
+        }
+    }
+
+    public class TransformLocalMoveXTweener : Tweenner
+    {
+        private readonly Transform transform;
+        private readonly float startValue;
+        private readonly float endValue;
+        public TransformLocalMoveXTweener(Transform _transform, float _endValue, float _duration) : base(_duration)
+        {
+            transform = _transform;
+            startValue = _transform.localPosition.x;
+            endValue = _endValue;
+        }
+
+        public override bool DoSpecific(float schedule)
+        {
+            if (transform == null)
+            {
+                return true;
+            }
+            Vector3 temp = transform.localPosition;
+            temp.x = startValue * schedule + endValue * (1 - schedule);
+            transform.localPosition = temp;
             return false;
         }
     }

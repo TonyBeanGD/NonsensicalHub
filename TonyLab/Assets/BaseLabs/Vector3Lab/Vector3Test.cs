@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NonsensicalKit;
+using NonsensicalKit.Helper;
 
 public class Vector3Test : MonoBehaviour
 {
