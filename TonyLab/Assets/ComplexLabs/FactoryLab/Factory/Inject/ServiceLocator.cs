@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Sources.Core.Factory;
-using UnityEditor.VersionControl;
 
 namespace Assets.Sources.Core.Inject
 {
