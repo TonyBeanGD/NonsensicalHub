@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NonsensicalKit;
+using NonsensicalKit.Utility;
 
 public class PareTest : MonoBehaviour
 {

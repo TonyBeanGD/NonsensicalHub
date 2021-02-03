@@ -1,5 +1,6 @@
 ﻿using System;
 using NonsensicalKit;
+using NonsensicalKit.Utility;
 
 namespace Assets.Sources.Core.Factory
 {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using NonsensicalKit.Utility;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class SortingAlgorithmLab : MonoBehaviour
                 }
             }
         }
-        Debug.Log("原数组："+NonsensicalKit.StringHelper.GetSetString(a));
+        Debug.Log("原数组："+StringHelper.GetSetString(a));
 
         for (int i = 0; i < a.Length - 1; i++)
         {
@@ -38,6 +39,6 @@ public class SortingAlgorithmLab : MonoBehaviour
             }
         }
         
-        Debug.Log("排序后的数组：" + NonsensicalKit.StringHelper.GetSetString(a));
+        Debug.Log("排序后的数组：" + StringHelper.GetSetString(a));
     }
 }

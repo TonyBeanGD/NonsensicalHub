@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-public  class ProtocolManager
+public class ProtocolManager
 {
     private static ProtocolManager instance;
 
@@ -24,7 +24,7 @@ public  class ProtocolManager
                 Type[] types = Assembly.GetExecutingAssembly().GetTypes();
                 foreach (var item in types)
                 {
-                 var v=   typeof(ReceivedMessageEvent<>).MakeGenericType(item);
+                    var v = typeof(ReceivedMessageEvent<>).MakeGenericType(item);
                     TestSignalNameAttribute temp = (TestSignalNameAttribute)item.GetCustomAttribute(typeof(TestSignalNameAttribute));
                     if (temp != null)
                     {
@@ -37,7 +37,7 @@ public  class ProtocolManager
         }
     }
 
-   internal class SignalInfo<T>
+    internal class SignalInfo<T>
     {
         public Type t;
 

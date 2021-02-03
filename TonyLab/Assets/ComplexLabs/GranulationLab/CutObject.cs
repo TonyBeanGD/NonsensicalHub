@@ -1,5 +1,6 @@
 ﻿using mattatz.MeshSmoothingSystem;
 using NonsensicalKit;
+using NonsensicalKit.Utility;
 using NonsensicalKit.Custom;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,7 +123,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 0] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 1, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 1, new PointI3(i, j, k), bool6s);
                             }
                         }
 
@@ -130,7 +131,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 1] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 2, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 2, new PointI3(i, j, k), bool6s);
                             }
                         }
 
@@ -138,7 +139,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 2] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 3, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 3, new PointI3(i, j, k), bool6s);
                             }
                         }
 
@@ -146,7 +147,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 3] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 4, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 4, new PointI3(i, j, k), bool6s);
                             }
                         }
 
@@ -154,7 +155,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 4] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 5, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 5, new PointI3(i, j, k), bool6s);
                             }
                         }
 
@@ -162,7 +163,7 @@ public abstract class CutObject : GranulationObject
                         {
                             if (bool6s[i, j, k, 5] == false)
                             {
-                                AddFace(crtMeshBuffer, granulation, 6, new Int3(i, j, k), bool6s);
+                                AddFace(crtMeshBuffer, granulation, 6, new PointI3(i, j, k), bool6s);
                             }
                         }
                     }
@@ -187,61 +188,61 @@ public abstract class CutObject : GranulationObject
     /// <param name="dir">1到6分别为x负，x正，y负，y正，z负，z正</param>
     /// <param name="crtPoint"></param>
     /// <param name="bool6s"></param>
-    private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, Int3 crtPoint, Bool4Array bool6s)
+    private void AddFace(MeshBuffer meshBuffer, Granulation granulation, int dir, PointI3 crtPoint, Bool4Array bool6s)
     {
-        Int3 dir1;
-        Int3 dir2;
-        Int3 normal;
+        PointI3 dir1;
+        PointI3 dir2;
+        PointI3 normal;
 
         switch (dir)
         {
             case 1:
                 {
-                    dir1 = new Int3(0, 1, 0);
-                    dir2 = new Int3(0, 0, 1);
-                    normal = new Int3(-1, 0, 0);
+                    dir1 = new PointI3(0, 1, 0);
+                    dir2 = new PointI3(0, 0, 1);
+                    normal = new PointI3(-1, 0, 0);
                 }
                 break;
             case 2:
                 {
-                    dir1 = new Int3(0, 1, 0);
-                    dir2 = new Int3(0, 0, 1);
-                    normal = new Int3(1, 0, 0);
+                    dir1 = new PointI3(0, 1, 0);
+                    dir2 = new PointI3(0, 0, 1);
+                    normal = new PointI3(1, 0, 0);
                 }
                 break;
             case 3:
                 {
-                    dir1 = new Int3(1, 0, 0);
-                    dir2 = new Int3(0, 0, 1);
-                    normal = new Int3(0, -1, 0);
+                    dir1 = new PointI3(1, 0, 0);
+                    dir2 = new PointI3(0, 0, 1);
+                    normal = new PointI3(0, -1, 0);
                 }
                 break;
             case 4:
                 {
-                    dir1 = new Int3(1, 0, 0);
-                    dir2 = new Int3(0, 0, 1);
-                    normal = new Int3(0, 1, 0);
+                    dir1 = new PointI3(1, 0, 0);
+                    dir2 = new PointI3(0, 0, 1);
+                    normal = new PointI3(0, 1, 0);
                 }
                 break;
             case 5:
                 {
-                    dir1 = new Int3(1, 0, 0);
-                    dir2 = new Int3(0, 1, 0);
-                    normal = new Int3(0, 0, -1);
+                    dir1 = new PointI3(1, 0, 0);
+                    dir2 = new PointI3(0, 1, 0);
+                    normal = new PointI3(0, 0, -1);
                 }
                 break;
             case 6:
                 {
-                    dir1 = new Int3(1, 0, 0);
-                    dir2 = new Int3(0, 1, 0);
-                    normal = new Int3(0, 0, 1);
+                    dir1 = new PointI3(1, 0, 0);
+                    dir2 = new PointI3(0, 1, 0);
+                    normal = new PointI3(0, 0, 1);
                 }
                 break;
             default:
                 return;
         }
 
-        Stack<Int3> points = new Stack<Int3>();
+        Stack<PointI3> points = new Stack<PointI3>();
 
         int minDir1Limit = -1;
         int maxDir1Limit = 2147483647;
@@ -257,7 +258,7 @@ public abstract class CutObject : GranulationObject
 
         while (points.Count > 0)
         {
-            Int3 point = points.Pop();
+            PointI3 point = points.Pop();
 
             int dir1Value = point.GetValue(dir1);
             int dir2Value = point.GetValue(dir2);
@@ -270,14 +271,14 @@ public abstract class CutObject : GranulationObject
             bool6s[point.i1, point.i2, point.i3, dir - 1] = true;
             buffer[point.i1, point.i2, point.i3] = true;
 
-            Int3 dir1Negative = point + (-dir1);
-            Int3 dir1Positive = point + dir1;
-            Int3 dir2Negative = point + (-dir2);
-            Int3 dir2Positive = point + dir2;
-            Int3 dir1NegativeFace = dir1Negative + normal;
-            Int3 dir1PositiveFace = dir1Positive + normal;
-            Int3 dir2NegativeFace = dir2Negative + normal;
-            Int3 dir2PositiveFace = dir2Positive + normal;
+            PointI3 dir1Negative = point + (-dir1);
+            PointI3 dir1Positive = point + dir1;
+            PointI3 dir2Negative = point + (-dir2);
+            PointI3 dir2Positive = point + dir2;
+            PointI3 dir1NegativeFace = dir1Negative + normal;
+            PointI3 dir1PositiveFace = dir1Positive + normal;
+            PointI3 dir2NegativeFace = dir2Negative + normal;
+            PointI3 dir2PositiveFace = dir2Positive + normal;
 
             if (dir1Negative.CheckBound(arrMax1, arrMax2, arrMax3) == true)
             {
@@ -411,7 +412,7 @@ public abstract class CutObject : GranulationObject
                 {
                     if (buffer[i, j, k] == true)
                     {
-                        Int3 point = new Int3(i, j, k);
+                        PointI3 point = new PointI3(i, j, k);
                         int dir1Value = point.GetValue(dir1);
                         int dir2Value = point.GetValue(dir2);
 

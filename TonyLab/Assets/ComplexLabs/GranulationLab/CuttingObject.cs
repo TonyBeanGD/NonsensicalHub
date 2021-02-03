@@ -37,8 +37,8 @@ public abstract class CuttingObject : GranulationObject
                 {
                     if (granulation.points[i, j, k] == true)
                     {
-                        Float3 point_data = csd.GetCoordinate(new Float3(i, j, k));
-                        Int3 int3 = new Int3(point_data);
+                        PointF3 point_data = csd.GetCoordinate(new PointF3(i, j, k));
+                        PointI3 int3 = new PointI3(point_data);
 
                         if (int3.i1 < 0 || int3.i2 < 0 || int3.i3 < 0
                             || int3.i1 >= cutGranulation.length0

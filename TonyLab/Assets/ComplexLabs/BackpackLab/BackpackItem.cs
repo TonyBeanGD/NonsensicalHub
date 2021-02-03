@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using NonsensicalKit;
+using NonsensicalKit.UI;
 
 public class BackpackItem : MonoBehaviour
 {
@@ -40,7 +41,7 @@ public class BackpackItem : MonoBehaviour
 
         if (num <= 0)
         {
-            MessageAggregator<string>.Instance.Publish((uint)UIEnum.RemoveItemInBackpack, new MessageArgs<string>(this, buffer.Name));
+            MessageAggregator<string>.Instance.Publish((uint)UIEnum.RemoveItemInBackpack,buffer.Name);
 
             Destroy(gameObject);
         }
@@ -63,6 +64,6 @@ public class BackpackItem : MonoBehaviour
 
     private void OnClick()
     {
-        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.BackpackGridClick,new MessageArgs<BackpackItemInfo>(this,buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.BackpackGridClick,buffer);
     }
 }

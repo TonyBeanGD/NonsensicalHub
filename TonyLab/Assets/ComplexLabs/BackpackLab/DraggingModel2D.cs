@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NonsensicalKit;
+using NonsensicalKit.UI;
 
 /// <summary>
 /// 鼠标拖拽2d模型
@@ -38,10 +39,10 @@ public class DraggingModel2D : MonoBehaviour
         MessageAggregator<int>.Instance.Unsubscribe((uint)UIEnum.SetDragModel2DtoBackpack, SetDragModel2DtoBackpack);
     }
 
-    private void SetDragModel2DtoBackpack(MessageArgs<int> value)
+    private void SetDragModel2DtoBackpack(int value)
     {
 
-        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack, new MessageArgs<BackpackItemInfo>(this, buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack,  buffer);
         Destroy(gameObject);
     }
 
@@ -72,7 +73,7 @@ public class DraggingModel2D : MonoBehaviour
 
     private void ReturnToBackpack()
     {
-        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack, new MessageArgs<BackpackItemInfo>(this, buffer));
+        MessageAggregator<BackpackItemInfo>.Instance.Publish((uint)UIEnum.SetItemToBackpack,  buffer);
 
         Destroy(gameObject);
     }

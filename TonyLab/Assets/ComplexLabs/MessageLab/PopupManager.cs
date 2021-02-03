@@ -30,9 +30,9 @@ public class PopupManager : UIBase
         MessageAggregator<PopupArgs>.Instance.Unsubscribe((uint)UIEnum.Popup, Popup);
     }
 
-    private void Popup(MessageArgs<PopupArgs> value)
+    private void Popup(PopupArgs value)
     {
-        PopupArgs popupArgs = value.Item;
+        PopupArgs popupArgs = value;
 
         txt_Title.text = popupArgs.Title;
         txt_Message.text = popupArgs.Message;

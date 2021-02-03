@@ -20,9 +20,9 @@ public class AlphaLab : MonoBehaviour
 
         CoordinateSystemDiff csd = new CoordinateSystemDiff(cs1, cs2);
 
-        Float3 t1cCod = cs1.GetCoordinate(target1Child.position);
+        PointF3 t1cCod = cs1.GetCoordinate(target1Child.position);
 
-        Float3 f3 = csd.GetCoordinate(t1cCod);
+        PointF3 f3 = csd.GetCoordinate(t1cCod);
 
         Vector3 t2cPos = cs2.GetWorldPos(f3);
 

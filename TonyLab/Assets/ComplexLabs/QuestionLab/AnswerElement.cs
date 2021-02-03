@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using NonsensicalKit;
+using NonsensicalKit.UI;
 
 public class AnswerElement : ListElementBase<AnswerArgs>, ICanEdit
 {
@@ -48,9 +49,9 @@ public class AnswerElement : ListElementBase<AnswerArgs>, ICanEdit
         }
     }
 
-    private void OnCanEditSwitchFunc(MessageArgs<bool> value)
+    private void OnCanEditSwitchFunc(bool value)
     {
-        CanEditSwitch(value.Item);
+        CanEditSwitch(value);
         UpdateUI();
     }
 

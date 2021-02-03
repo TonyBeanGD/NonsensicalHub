@@ -24,24 +24,15 @@ public class BackpackWindowManager : UIBase
 
         items = new Dictionary<string, BackpackItem>();
 
-        MessageAggregator<int>.Instance.Subscribe((uint)UIEnum.SwitchBackpackWindow, SwitchBackpackWindow);
-        MessageAggregator<string>.Instance.Subscribe((uint)UIEnum.RemoveItemInBackpack, RemoveItemInBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Subscribe((uint)UIEnum.SetItemToBackpack, SetItemToBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Subscribe((uint)UIEnum.GetItemFormBackpack, GetItemFromBackpack);
+        Subscribe<int>((uint)UIEnum.SwitchBackpackWindow, SwitchBackpackWindow);
+        Subscribe<string>((uint)UIEnum.RemoveItemInBackpack, RemoveItemInBackpack);
+        Subscribe<BackpackItemInfo>((uint)UIEnum.SetItemToBackpack, SetItemToBackpack);
+        Subscribe<BackpackItemInfo>((uint)UIEnum.GetItemFormBackpack, GetItemFromBackpack);
 
         btn_Topping.onClick.AddListener(() => { scrollbar.value = 1; });
     }
 
-
-    protected override void OnDestroy()
-    {
-        MessageAggregator<int>.Instance.Unsubscribe((uint)UIEnum.SwitchBackpackWindow, SwitchBackpackWindow);
-        MessageAggregator<string>.Instance.Unsubscribe((uint)UIEnum.RemoveItemInBackpack, RemoveItemInBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe((uint)UIEnum.SetItemToBackpack, SetItemToBackpack);
-        MessageAggregator<BackpackItemInfo>.Instance.Unsubscribe((uint)UIEnum.GetItemFormBackpack, GetItemFromBackpack);
-    }
-
-    private void SwitchBackpackWindow(MessageArgs<int> value)
+    private void SwitchBackpackWindow(int value)
     {
         SwitchSelf();
     }
@@ -63,9 +54,9 @@ public class BackpackWindowManager : UIBase
         scrollbar.value = 1;
     }
 
-    private void SetItemToBackpack(MessageArgs<BackpackItemInfo> value)
+    private void SetItemToBackpack(BackpackItemInfo value)
     {
-        BackpackItemInfo itemInfo = value.Item;
+        BackpackItemInfo itemInfo = value;
 
         if (items.ContainsKey(itemInfo.Name))
         {
@@ -85,9 +76,9 @@ public class BackpackWindowManager : UIBase
         AutoFit();
     }
 
-    private void GetItemFromBackpack(MessageArgs<BackpackItemInfo> value)
+    private void GetItemFromBackpack(BackpackItemInfo value)
     {
-        BackpackItemInfo itemInfo = value.Item;
+        BackpackItemInfo itemInfo = value;
 
         if (items.ContainsKey(itemInfo.Name))
         {
@@ -99,9 +90,9 @@ public class BackpackWindowManager : UIBase
         }
     }
 
-    private void RemoveItemInBackpack(MessageArgs<string> value)
+    private void RemoveItemInBackpack(string value)
     {
-        string name = value.Item;
+        string name = value;
 
         if (items.ContainsKey(name))
         {
